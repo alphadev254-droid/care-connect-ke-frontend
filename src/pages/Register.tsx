@@ -9,12 +9,24 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Heart, Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight, ArrowLeft, Check, CreditCard, Loader2 } from "lucide-react";
+import { Heart, Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight, ArrowLeft, Check, CreditCard, Loader2, Plus, Trash2, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { api } from "@/lib/api";
+
+const AVAILABILITY_DAYS = [
+  { value: 1, label: 'Monday' },
+  { value: 2, label: 'Tuesday' },
+  { value: 3, label: 'Wednesday' },
+  { value: 4, label: 'Thursday' },
+  { value: 5, label: 'Friday' },
+  { value: 6, label: 'Saturday' },
+  { value: 0, label: 'Sunday' },
+];
+
+type AvailabilitySlot = { dayOfWeek: number; startTime: string; endTime: string };
 
 const Register = () => {
   const navigate = useNavigate();
@@ -161,6 +173,21 @@ const Register = () => {
     village: "" as string | string[], // Single for patients, array for caregivers
   });
   const [showCustomRelationship, setShowCustomRelationship] = useState(false);
+  const [regAvailability, setRegAvailability] = useState<AvailabilitySlot[]>([]);
+
+  const addAvailabilitySlot = () => {
+    setRegAvailability(prev => [...prev, { dayOfWeek: 1, startTime: '09:00', endTime: '17:00' }]);
+  };
+  const removeAvailabilitySlot = (index: number) => {
+    setRegAvailability(prev => prev.filter((_, i) => i !== index));
+  };
+  const updateAvailabilitySlot = (index: number, field: keyof AvailabilitySlot, value: string | number) => {
+    setRegAvailability(prev => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
 
   // Calculate age from date of birth
   const calculateAge = (dateOfBirth: string): number => {
@@ -441,7 +468,9 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (step < 3) {
+    const maxSteps = formData.userType === 'caregiver' ? 4 : 3;
+
+    if (step < maxSteps) {
       // Validate mandatory fields before proceeding
       if (!validateMandatoryFields()) {
         return;
@@ -456,7 +485,7 @@ const Register = () => {
       return;
     }
 
-    // Validate step 3 fields
+    // Validate final step fields (step 3 location for patients, step 4 is optional availability for caregivers)
     if (!validateMandatoryFields()) {
       return;
     }
@@ -542,6 +571,11 @@ const Register = () => {
         // Add referral code for caregiver-to-caregiver referrals
         if (formData.referralCode) {
           formDataToSend.append('referralCode', formData.referralCode);
+        }
+
+        // Add availability data if set
+        if (regAvailability.length > 0) {
+          formDataToSend.append('availability', JSON.stringify(regAvailability));
         }
       }
 
@@ -653,7 +687,9 @@ const Register = () => {
                   </CardDescription>
 
               <div className="flex items-center justify-center gap-1 mt-4">
-                {[1, 2, 3].map((i) => (
+                {Array.from({ length: formData.userType === 'caregiver' ? 4 : 3 }, (_, i) => i + 1).map((i) => {
+                  const totalStepsIndicator = formData.userType === 'caregiver' ? 4 : 3;
+                  return (
                   <div key={i} className="flex items-center gap-1">
                     <div
                       className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
@@ -666,7 +702,7 @@ const Register = () => {
                     >
                       {step > i ? <Check className="h-3 w-3" /> : i}
                     </div>
-                    {i < 3 && (
+                    {i < totalStepsIndicator && (
                       <div
                         className={`w-8 h-0.5 rounded ${
                           step > i ? "bg-success" : "bg-muted"
@@ -674,7 +710,8 @@ const Register = () => {
                       />
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </CardHeader>
             <CardContent className="pt-4">
@@ -1439,6 +1476,76 @@ const Register = () => {
                   </div>
                 )}
 
+                {step === 4 && formData.userType === 'caregiver' && (
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-primary" />
+                        Set Your Availability
+                        <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Add the days and times you're available to work. You can also set or update this later from your Schedule page.
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {regAvailability.map((slot, index) => (
+                        <div key={index} className="flex flex-wrap items-center gap-2 p-3 border rounded-lg">
+                          <select
+                            value={slot.dayOfWeek}
+                            onChange={(e) => updateAvailabilitySlot(index, 'dayOfWeek', parseInt(e.target.value))}
+                            className="px-2 py-1.5 border rounded-md text-sm bg-background"
+                          >
+                            {AVAILABILITY_DAYS.map((day) => (
+                              <option key={day.value} value={day.value}>{day.label}</option>
+                            ))}
+                          </select>
+                          <Input
+                            type="time"
+                            value={slot.startTime}
+                            onChange={(e) => updateAvailabilitySlot(index, 'startTime', e.target.value)}
+                            className="w-28 h-8 text-sm"
+                          />
+                          <span className="text-muted-foreground text-sm">to</span>
+                          <Input
+                            type="time"
+                            value={slot.endTime}
+                            onChange={(e) => updateAvailabilitySlot(index, 'endTime', e.target.value)}
+                            className="w-28 h-8 text-sm"
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => removeAvailabilitySlot(index)}
+                            className="h-8 w-8 shrink-0"
+                          >
+                            <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addAvailabilitySlot}
+                      className="gap-2"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add Time Slot
+                    </Button>
+
+                    {regAvailability.length === 0 && (
+                      <p className="text-xs text-muted-foreground italic">
+                        No availability added. You can skip this step and configure it later.
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex gap-3 mt-4">
                   {step > 1 && (
                     <Button
@@ -1456,7 +1563,7 @@ const Register = () => {
                     className="flex-1 bg-gradient-primary hover:opacity-90 gap-2 h-9"
                     disabled={isLoading}
                   >
-                    {step < 3 ? (
+                    {step < (formData.userType === 'caregiver' ? 4 : 3) ? (
                       <>
                         Continue
                         <ArrowRight className="h-3 w-3" />

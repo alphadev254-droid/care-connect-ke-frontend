@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { appointmentService } from "@/services/appointmentService";
 import { reportService } from "@/services/reportService";
 import { api } from "@/lib/api";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import CaregiverOnboardingDialog from "@/components/CaregiverOnboardingDialog";
 import {
   Calendar,
   Search,
@@ -30,6 +32,20 @@ import {
 const Dashboard = () => {
   const { user } = useAuth();
   const { hasPermission } = usePermissions();
+
+  const onboardingKey = user ? `caregiver_onboarded_${user.id}` : null;
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (user?.role === 'caregiver' && onboardingKey && !localStorage.getItem(onboardingKey)) {
+      setShowOnboarding(true);
+    }
+  }, [user, onboardingKey]);
+
+  const handleOnboardingClose = () => {
+    if (onboardingKey) localStorage.setItem(onboardingKey, '1');
+    setShowOnboarding(false);
+  };
 
   // Fetch admin data for system managers and regional managers only
   const { data: adminData } = useQuery({
@@ -1030,6 +1046,7 @@ const Dashboard = () => {
           })}
         </div>
       </div>
+      <CaregiverOnboardingDialog open={showOnboarding} onClose={handleOnboardingClose} />
     </DashboardLayout>
   );
 };
