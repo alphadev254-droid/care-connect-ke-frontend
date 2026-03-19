@@ -12,6 +12,7 @@ import { Wallet, Search, Users, TrendingUp, ArrowDownToLine, Eye, CheckCircle, X
 import { api } from '@/lib/api';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { usePermissions } from '@/hooks/usePermissions';
+import { dashboardCard, responsive } from '@/theme';
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -100,58 +101,52 @@ const AdminWithdrawalsPage = () => {
 
   return (
     <DashboardLayout userRole="admin">
-      <div className="space-y-6">
+      <div className="space-y-3 md:space-y-4">
         <div>
-          <h1 className="text-2xl font-bold">Caregiver Withdrawals</h1>
-          <p className="text-muted-foreground">Monitor all caregiver earnings, balances, and withdrawal activities</p>
+          <h1 className={responsive.pageTitle}>Caregiver Withdrawals</h1>
+          <p className={responsive.pageSubtitle}>Monitor all caregiver earnings, balances, and withdrawal activities</p>
         </div>
 
         {/* PayChangu Live Balance */}
         {canViewPaychangu && paychanguBalance && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border-indigo-200 bg-indigo-50/30">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">PayChangu Main Balance</p>
-                    <p className="text-2xl font-bold text-indigo-700">
-                      MWK {Number(paychanguBalance.main_balance || 0).toLocaleString()}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">Available for payouts</p>
-                  </div>
-                  <div className="h-10 w-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                    <Landmark className="h-5 w-5 text-indigo-600" />
-                  </div>
+          <div className={dashboardCard.compactStatGrid}>
+            <Card className={dashboardCard.base}>
+              <CardContent className={dashboardCard.compactStatContent}>
+                <div>
+                  <p className={responsive.bodyMuted}>PayChangu Main Balance</p>
+                  <p className={`${dashboardCard.compactBalanceValue} text-primary`}>
+                    MWK {Number(paychanguBalance.main_balance || 0).toLocaleString()}
+                  </p>
+                  <p className={`${responsive.bodyMuted} mt-0.5`}>Available for payouts</p>
+                </div>
+                <div className={dashboardCard.iconWell.primary}>
+                  <Landmark className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-indigo-200 bg-indigo-50/30">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">PayChangu Collection Balance</p>
-                    <p className="text-2xl font-bold text-indigo-700">
-                      MWK {Number(paychanguBalance.collection_balance || 0).toLocaleString()}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">Pending settlement</p>
-                  </div>
-                  <div className="h-10 w-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                    <Banknote className="h-5 w-5 text-indigo-600" />
-                  </div>
+            <Card className={dashboardCard.base}>
+              <CardContent className={dashboardCard.compactStatContent}>
+                <div>
+                  <p className={responsive.bodyMuted}>PayChangu Collection Balance</p>
+                  <p className={`${dashboardCard.compactBalanceValue} text-primary`}>
+                    MWK {Number(paychanguBalance.collection_balance || 0).toLocaleString()}
+                  </p>
+                  <p className={`${responsive.bodyMuted} mt-0.5`}>Pending settlement</p>
+                </div>
+                <div className={dashboardCard.iconWell.primary}>
+                  <Banknote className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-indigo-200 bg-indigo-50/30">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Environment</p>
-                    <p className="text-2xl font-bold text-indigo-700 capitalize">{paychanguBalance.environment}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{paychanguBalance.currency} account</p>
-                  </div>
-                  <div className="h-10 w-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                    <Wallet className="h-5 w-5 text-indigo-600" />
-                  </div>
+            <Card className={dashboardCard.base}>
+              <CardContent className={dashboardCard.compactStatContent}>
+                <div>
+                  <p className={responsive.bodyMuted}>Environment</p>
+                  <p className={`${dashboardCard.compactBalanceValue} text-primary capitalize`}>{paychanguBalance.environment}</p>
+                  <p className={`${responsive.bodyMuted} mt-0.5`}>{paychanguBalance.currency} account</p>
+                </div>
+                <div className={dashboardCard.iconWell.primary}>
+                  <Wallet className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                 </div>
               </CardContent>
             </Card>
@@ -159,77 +154,59 @@ const AdminWithdrawalsPage = () => {
         )}
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card>
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Caregivers</p>
-                  <p className="text-2xl font-bold">{overviewPagination.totalRecords || 0}</p>
-                </div>
-                <div className="h-10 w-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-blue-600" />
-                </div>
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-1.5 sm:gap-2 md:gap-3">
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Total Caregivers</p>
+                <p className={dashboardCard.compactStatValue}>{overviewPagination.totalRecords || 0}</p>
+              </div>
+              <div className={dashboardCard.iconWell.primary}>
+                <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Available</p>
-                  <p className="text-2xl font-bold">
-                    MWK {Number(statsData?.totalAvailableBalance || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="h-10 w-10 rounded-xl bg-green-100 flex items-center justify-center">
-                  <Wallet className="h-5 w-5 text-green-600" />
-                </div>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Total Available</p>
+                <p className={dashboardCard.compactStatValue}>MWK {Number(statsData?.totalAvailableBalance || 0).toLocaleString()}</p>
+              </div>
+              <div className={dashboardCard.iconWell.success}>
+                <Wallet className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Locked (Pending Reports)</p>
-                  <p className="text-2xl font-bold text-orange-600">
-                    MWK {Number(statsData?.totalLockedBalance || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="h-10 w-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                  <Lock className="h-5 w-5 text-orange-600" />
-                </div>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Locked (Pending Reports)</p>
+                <p className={`${dashboardCard.compactStatValue} text-warning`}>MWK {Number(statsData?.totalLockedBalance || 0).toLocaleString()}</p>
+              </div>
+              <div className={dashboardCard.iconWell.warning}>
+                <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Paid Out</p>
-                  <p className="text-2xl font-bold">
-                    MWK {Number(statsData?.totalProcessed || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="h-10 w-10 rounded-xl bg-purple-100 flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5 text-purple-600" />
-                </div>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Total Paid Out</p>
+                <p className={dashboardCard.compactStatValue}>MWK {Number(statsData?.totalProcessed || 0).toLocaleString()}</p>
+              </div>
+              <div className={dashboardCard.iconWell.secondary}>
+                <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-secondary" />
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Pending</p>
-                  <p className="text-2xl font-bold">
-                    MWK {Number(statsData?.totalPending || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="h-10 w-10 rounded-xl bg-yellow-100 flex items-center justify-center">
-                  <AlertCircle className="h-5 w-5 text-yellow-600" />
-                </div>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Pending</p>
+                <p className={dashboardCard.compactStatValue}>MWK {Number(statsData?.totalPending || 0).toLocaleString()}</p>
+              </div>
+              <div className={dashboardCard.iconWell.accent}>
+                <AlertCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-accent" />
               </div>
             </CardContent>
           </Card>
@@ -267,8 +244,8 @@ const AdminWithdrawalsPage = () => {
               </Select>
             </div>
 
-            <Card>
-              <CardContent className="p-0">
+            <Card className={dashboardCard.base}>
+              <CardContent className="p-0 overflow-hidden">
                 {overviewLoading ? (
                   <div className="flex items-center justify-center py-16">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -280,7 +257,8 @@ const AdminWithdrawalsPage = () => {
                   </div>
                 ) : (
                   <>
-                    <Table>
+                    <div className={dashboardCard.tableWrapper}>
+                    <Table className={dashboardCard.tableMinWidth}>
                       <TableHeader>
                         <TableRow>
                           <TableHead>Caregiver</TableHead>
@@ -343,7 +321,7 @@ const AdminWithdrawalsPage = () => {
                         ))}
                       </TableBody>
                     </Table>
-
+                    </div>
                     {/* Pagination */}
                     <div className="flex items-center justify-between px-4 py-3 border-t">
                       <p className="text-sm text-muted-foreground">
@@ -379,8 +357,8 @@ const AdminWithdrawalsPage = () => {
               </Select>
             </div>
 
-            <Card>
-              <CardContent className="p-0">
+            <Card className={dashboardCard.base}>
+              <CardContent className="p-0 overflow-hidden">
                 {historyLoading ? (
                   <div className="flex items-center justify-center py-16">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -392,7 +370,8 @@ const AdminWithdrawalsPage = () => {
                   </div>
                 ) : (
                   <>
-                    <Table>
+                    <div className={dashboardCard.tableWrapper}>
+                    <Table className={dashboardCard.tableMinWidth}>
                       <TableHeader>
                         <TableRow>
                           <TableHead>Date</TableHead>
@@ -428,7 +407,7 @@ const AdminWithdrawalsPage = () => {
                         ))}
                       </TableBody>
                     </Table>
-
+                    </div>
                     <div className="flex items-center justify-between px-4 py-3 border-t">
                       <p className="text-sm text-muted-foreground">
                         {historyPagination.totalRecords > 0

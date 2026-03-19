@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { withdrawalService } from '@/services/withdrawalService';
 import DashboardLayout from '@/components/layout/DashboardLayout';
+import { dashboardCard, responsive } from '@/theme';
 
 const WithdrawalsPage = () => {
   const { user } = useAuth();
@@ -138,48 +139,48 @@ const WithdrawalsPage = () => {
 
   return (
     <DashboardLayout userRole="caregiver">
-      <div className="space-y-6">
+      <div className="space-y-3 md:space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Withdrawals</h1>
-            <p className="text-muted-foreground">Manage your earnings and withdrawal requests</p>
+            <h1 className={responsive.pageTitle}>Withdrawals</h1>
+            <p className={responsive.pageSubtitle}>Manage your earnings and withdrawal requests</p>
           </div>
         </div>
 
       {/* Balance Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wallet className="h-5 w-5" />
-            Wallet Balance
-          </CardTitle>
-          <CardDescription>Your current earnings and available balance</CardDescription>
+      <Card className={dashboardCard.base}>
+        <CardHeader className={dashboardCard.header}>
+          <div>
+            <CardTitle className={`flex items-center gap-2 ${responsive.cardTitle}`}>
+              <Wallet className="h-5 w-5 text-primary" />
+              Wallet Balance
+            </CardTitle>
+            <CardDescription className={responsive.cardDesc}>Your current earnings and available balance</CardDescription>
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-muted-foreground">Total Earnings</p>
-              <p className="text-2xl font-bold text-blue-600">
+        <CardContent className={dashboardCard.body}>
+          <div className={dashboardCard.compactStatGrid}>
+            <div className={dashboardCard.balanceBlockPrimary}>
+              <p className={responsive.bodyMuted}>Total Earnings</p>
+              <p className={`${dashboardCard.compactBalanceValue} text-primary`}>
                 {balance?.currency} {balance?.totalEarnings || '0.00'}
               </p>
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-sm text-muted-foreground">Available Balance</p>
-              <p className="text-2xl font-bold text-green-600">
+            <div className={dashboardCard.balanceBlockSuccess}>
+              <p className={responsive.bodyMuted}>Available Balance</p>
+              <p className={`${dashboardCard.compactBalanceValue} text-success`}>
                 {balance?.currency} {balance?.availableBalance || '0.00'}
               </p>
             </div>
-            <div className="text-center p-4 bg-orange-50 rounded-lg">
-              <div className="flex items-center justify-center gap-1 mb-1">
-                <Lock className="h-3.5 w-3.5 text-orange-600" />
-                <p className="text-sm text-muted-foreground">Locked (Pending Reports)</p>
+            <div className={dashboardCard.balanceBlockWarning}>
+              <div className="flex items-center justify-center gap-1">
+                <Lock className="h-3 w-3 text-warning" />
+                <p className={responsive.bodyMuted}>Locked</p>
               </div>
-              <p className="text-2xl font-bold text-orange-600">
+              <p className={`${dashboardCard.compactBalanceValue} text-warning`}>
                 {balance?.currency} {balance?.lockedBalance || '0.00'}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Submit care reports to unlock
-              </p>
+              <p className={responsive.bodyMuted}>Submit reports to unlock</p>
             </div>
             <div className="flex items-center justify-center">
               <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
@@ -194,8 +195,8 @@ const WithdrawalsPage = () => {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Request Withdrawal</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className={responsive.dialogTitle}>Request Withdrawal</DialogTitle>
+                    <DialogDescription className={responsive.dialogDesc}>
                       Withdraw your earnings to your mobile money or bank account
                     </DialogDescription>
                   </DialogHeader>
@@ -352,63 +353,67 @@ const WithdrawalsPage = () => {
       </Card>
 
       {/* Withdrawal History */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Withdrawal History</CardTitle>
-          <CardDescription>Your recent withdrawal requests and their status</CardDescription>
+      <Card className={dashboardCard.base}>
+        <CardHeader className={dashboardCard.header}>
+          <div>
+            <CardTitle className={responsive.cardTitle}>Withdrawal History</CardTitle>
+            <CardDescription className={responsive.cardDesc}>Your recent withdrawal requests and their status</CardDescription>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0 overflow-hidden">
           {withdrawals.length === 0 ? (
             <div className="text-center py-8">
               <ArrowDownToLine className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No withdrawals yet</h3>
-              <p className="text-muted-foreground">Your withdrawal requests will appear here</p>
+              <h3 className={`${responsive.cardTitle} mb-2`}>No withdrawals yet</h3>
+              <p className={responsive.bodyMuted}>Your withdrawal requests will appear here</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Fee</TableHead>
-                  <TableHead>Net Payout</TableHead>
-                  <TableHead>Recipient</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {withdrawals.map((withdrawal) => (
-                  <TableRow key={withdrawal.id}>
-                    <TableCell>
-                      {new Date(withdrawal.requestedAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      {balance?.currency} {parseFloat(withdrawal.requestedAmount).toFixed(2)}
-                    </TableCell>
-                    <TableCell>
-                      {balance?.currency} {parseFloat(withdrawal.withdrawalFee).toFixed(2)}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {balance?.currency} {parseFloat(withdrawal.netPayout).toFixed(2)}
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        <p className="capitalize">{withdrawal.recipientType.replace('_', ' ')}</p>
-                        <p className="text-muted-foreground">{withdrawal.recipientNumber}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(withdrawal.status)}>
-                        <div className="flex items-center gap-1">
-                          {getStatusIcon(withdrawal.status)}
-                          <span className="capitalize">{withdrawal.status}</span>
-                        </div>
-                      </Badge>
-                    </TableCell>
+            <div className={dashboardCard.tableWrapper}>
+              <Table className={dashboardCard.tableMinWidth}>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className={dashboardCard.th}>Date</TableHead>
+                    <TableHead className={dashboardCard.th}>Amount</TableHead>
+                    <TableHead className={dashboardCard.th}>Fee</TableHead>
+                    <TableHead className={dashboardCard.th}>Net Payout</TableHead>
+                    <TableHead className={dashboardCard.th}>Recipient</TableHead>
+                    <TableHead className={dashboardCard.th}>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {withdrawals.map((withdrawal) => (
+                    <TableRow key={withdrawal.id} className={dashboardCard.tr}>
+                      <TableCell className={dashboardCard.td}>
+                        {new Date(withdrawal.requestedAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell className={dashboardCard.td}>
+                        {balance?.currency} {parseFloat(withdrawal.requestedAmount).toFixed(2)}
+                      </TableCell>
+                      <TableCell className={dashboardCard.td}>
+                        {balance?.currency} {parseFloat(withdrawal.withdrawalFee).toFixed(2)}
+                      </TableCell>
+                      <TableCell className={`${dashboardCard.td} font-medium`}>
+                        {balance?.currency} {parseFloat(withdrawal.netPayout).toFixed(2)}
+                      </TableCell>
+                      <TableCell className={dashboardCard.td}>
+                        <div>
+                          <p className={`${responsive.body} capitalize`}>{withdrawal.recipientType.replace('_', ' ')}</p>
+                          <p className={responsive.bodyMuted}>{withdrawal.recipientNumber}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell className={dashboardCard.td}>
+                        <Badge className={getStatusColor(withdrawal.status)}>
+                          <div className="flex items-center gap-1">
+                            {getStatusIcon(withdrawal.status)}
+                            <span className="capitalize">{withdrawal.status}</span>
+                          </div>
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

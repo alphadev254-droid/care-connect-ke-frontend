@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { Key, Check, X } from "lucide-react";
+import { dashboardCard, responsive } from "@/theme";
 
 interface Permission {
   id: number;
@@ -128,20 +129,20 @@ const PermissionsManagement = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-display text-2xl md:text-3xl font-bold">Permissions Management</h1>
-            <p className="text-muted-foreground mt-1">Manage role permissions</p>
+            <h1 className={responsive.pageTitle}>Permissions Management</h1>
+            <p className={responsive.pageSubtitle}>Manage role permissions</p>
           </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Key className="h-5 w-5" />
+        <Card className={dashboardCard.base}>
+          <CardHeader className={dashboardCard.compactHeader}>
+            <div className={dashboardCard.compactHeaderRow}>
+              <CardTitle className={`flex items-center gap-2 ${responsive.cardTitle}`}>
+                <Key className="h-4 w-4 text-primary" />
                 Role Permissions
               </CardTitle>
               <Select value={selectedRoleId} onValueChange={setSelectedRoleId}>
-                <SelectTrigger className="w-64">
+                <SelectTrigger className={dashboardCard.selectTriggerSm}>
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -155,31 +156,29 @@ const PermissionsManagement = () => {
               </Select>
             </div>
             {selectedRole && (
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className={`${responsive.bodyMuted} mt-2`}>
                 Managing permissions for: <strong>{selectedRole.name.replace('_', ' ')}</strong>
               </p>
             )}
           </CardHeader>
-          <CardContent>
+          <CardContent className={dashboardCard.compactBody}>
             {selectedRoleId === "all" ? (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {Object.entries(categorizedPermissions).map(([category, categoryPermissions]) => {
                   if (categoryPermissions.length === 0) return null;
                   return (
                     <div key={category}>
-                      <h3 className="text-lg font-semibold mb-3 text-primary">{category}</h3>
-                      <div className="grid gap-2">
+                      <h3 className={`${responsive.cardTitle} mb-2 text-primary`}>{category}</h3>
+                      <div className={dashboardCard.tightGrid}>
                         {categoryPermissions.map((permission: Permission) => (
-                          <div key={permission.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div key={permission.id} className={dashboardCard.compactRow}>
                             <div>
-                              <Badge variant="outline" className="capitalize mb-1">
+                              <Badge variant="outline" className="capitalize text-xs mb-0.5">
                                 {permission.name.replace(/_/g, ' ')}
                               </Badge>
-                              <p className="text-sm text-muted-foreground">
-                                {permission.description || "No description"}
-                              </p>
+                              <p className={responsive.bodyMuted}>{permission.description || "No description"}</p>
                             </div>
-                            <span className="text-xs text-muted-foreground">
+                            <span className={responsive.bodyMuted}>
                               {new Date(permission.createdAt).toLocaleDateString()}
                             </span>
                           </div>
@@ -190,25 +189,23 @@ const PermissionsManagement = () => {
                 })}
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {Object.entries(categorizedPermissions).map(([category, categoryPermissions]) => {
                   if (categoryPermissions.length === 0) return null;
                   return (
                     <div key={category}>
-                      <h3 className="text-lg font-semibold mb-3 text-primary">{category}</h3>
-                      <div className="grid gap-2">
+                      <h3 className={`${responsive.cardTitle} mb-2 text-primary`}>{category}</h3>
+                      <div className={dashboardCard.tightGrid}>
                         {categoryPermissions.map((permission: Permission) => (
-                          <div key={permission.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div key={permission.id} className={dashboardCard.compactRow}>
                             <div className="flex-1">
-                              <Badge variant="outline" className="capitalize mb-1">
+                              <Badge variant="outline" className="capitalize text-xs mb-0.5">
                                 {permission.name.replace(/_/g, ' ')}
                               </Badge>
-                              <p className="text-sm text-muted-foreground">
-                                {permission.description || "No description"}
-                              </p>
+                              <p className={responsive.bodyMuted}>{permission.description || "No description"}</p>
                             </div>
-                            <div className="flex items-center gap-4">
-                              <span className="text-xs text-muted-foreground">
+                            <div className="flex items-center gap-3">
+                              <span className={responsive.bodyMuted}>
                                 {new Date(permission.createdAt).toLocaleDateString()}
                               </span>
                               <Checkbox

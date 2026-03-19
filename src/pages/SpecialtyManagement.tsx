@@ -39,15 +39,14 @@ import { usePermissions } from "@/hooks/usePermissions";
 import { api } from "@/lib/api";
 import { Users, Calendar } from "lucide-react";
 import {
-  Heart,
   Plus,
   Edit,
   Trash2,
   DollarSign,
   RotateCcw,
   CheckCircle,
-  XCircle,
 } from "lucide-react";
+import { dashboardCard, responsive } from "@/theme";
 
 interface Specialty {
   id: number;
@@ -74,13 +73,6 @@ const SpecialtyManagement = () => {
     sessionFee: "",
     bookingFee: "",
   });
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-MW', {
-      style: 'currency',
-      currency: 'MWK'
-    }).format(amount);
-  };
 
   const { data: specialties, isLoading } = useQuery({
     queryKey: ["specialties", "all"],
@@ -151,10 +143,7 @@ const SpecialtyManagement = () => {
   };
 
   const handleCreate = () => {
-    if (!formData.name.trim()) {
-      toast.error("Please enter a specialty name");
-      return;
-    }
+    if (!formData.name.trim()) { toast.error("Please enter a specialty name"); return; }
     createMutation.mutate(formData);
   };
 
@@ -171,10 +160,7 @@ const SpecialtyManagement = () => {
 
   const handleUpdate = () => {
     if (!selectedSpecialty) return;
-    if (!formData.name.trim()) {
-      toast.error("Please enter a specialty name");
-      return;
-    }
+    if (!formData.name.trim()) { toast.error("Please enter a specialty name"); return; }
     updateMutation.mutate({ id: selectedSpecialty.id, data: formData });
   };
 
@@ -184,14 +170,10 @@ const SpecialtyManagement = () => {
   };
 
   const confirmDelete = () => {
-    if (selectedSpecialty) {
-      deleteMutation.mutate(selectedSpecialty.id);
-    }
+    if (selectedSpecialty) deleteMutation.mutate(selectedSpecialty.id);
   };
 
-  const handleRestore = (id: number) => {
-    restoreMutation.mutate(id);
-  };
+  const handleRestore = (id: number) => restoreMutation.mutate(id);
 
   const activeSpecialties = specialties?.filter((s: Specialty) => s.isActive) || [];
   const inactiveSpecialties = specialties?.filter((s: Specialty) => !s.isActive) || [];
@@ -199,11 +181,11 @@ const SpecialtyManagement = () => {
   return (
     <ProtectedRoute requiredPermission="view_specialties">
       <DashboardLayout userRole="admin">
-      <div className="space-y-6">
+      <div className="space-y-3 md:space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Specialty Management</h1>
-            <p className="text-muted-foreground">
+            <h1 className={responsive.pageTitle}>Specialty Management</h1>
+            <p className={responsive.pageSubtitle}>
               Manage healthcare specialties and their associated fees
             </p>
           </div>
@@ -215,210 +197,196 @@ const SpecialtyManagement = () => {
           )}
         </div>
 
-        <div className="grid gap-3 md:grid-cols-4">
-          <Card className="p-3">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-              <CardTitle className="text-xs font-medium text-muted-foreground">Total Caregivers</CardTitle>
-              <Users className="h-3 w-3 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="text-lg font-bold">
-                {activeSpecialties.reduce((sum, s) => sum + (s.activeCaregiversCount || 0), 0)}
+        <div className={dashboardCard.compactStatGrid}>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Total Caregivers</p>
+                <p className={dashboardCard.compactStatValue}>
+                  {activeSpecialties.reduce((sum, s) => sum + (s.activeCaregiversCount || 0), 0)}
+                </p>
+              </div>
+              <div className={dashboardCard.iconWell.primary}>
+                <Users className="h-3 w-3 text-primary" />
               </div>
             </CardContent>
           </Card>
-          <Card className="p-3">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-              <CardTitle className="text-xs font-medium text-muted-foreground">Patients Booked</CardTitle>
-              <Calendar className="h-3 w-3 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="text-lg font-bold">
-                {activeSpecialties.reduce((sum, s) => sum + (s.completedAppointments || 0), 0)}
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Patients Booked</p>
+                <p className={dashboardCard.compactStatValue}>
+                  {activeSpecialties.reduce((sum, s) => sum + (s.completedAppointments || 0), 0)}
+                </p>
+              </div>
+              <div className={dashboardCard.iconWell.secondary}>
+                <Calendar className="h-3 w-3 text-secondary" />
               </div>
             </CardContent>
           </Card>
-          <Card className="p-3">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-              <CardTitle className="text-xs font-medium text-muted-foreground">Total Income (MWK)</CardTitle>
-              <DollarSign className="h-3 w-3 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="text-lg font-bold text-green-600">
-                {activeSpecialties.reduce((sum, s) => sum + parseFloat(s.totalIncome?.toString() || '0'), 0).toLocaleString()}
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Total Income (MWK)</p>
+                <p className={`${dashboardCard.compactStatValue} text-success`}>
+                  {activeSpecialties.reduce((sum, s) => sum + parseFloat(s.totalIncome?.toString() || '0'), 0).toLocaleString()}
+                </p>
+              </div>
+              <div className={dashboardCard.iconWell.success}>
+                <DollarSign className="h-3 w-3 text-success" />
               </div>
             </CardContent>
           </Card>
-          <Card className="p-3">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-              <CardTitle className="text-xs font-medium text-muted-foreground">Active Specialties</CardTitle>
-              <CheckCircle className="h-3 w-3 text-success" />
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="text-lg font-bold">{activeSpecialties.length}</div>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Active Specialties</p>
+                <p className={dashboardCard.compactStatValue}>{activeSpecialties.length}</p>
+              </div>
+              <div className={dashboardCard.iconWell.accent}>
+                <CheckCircle className="h-3 w-3 text-accent" />
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Active Specialties</CardTitle>
-            <CardDescription>
-              Currently available specialties for caregivers
-            </CardDescription>
+        <Card className={dashboardCard.base}>
+          <CardHeader className={dashboardCard.header}>
+            <div>
+              <CardTitle className={responsive.cardTitle}>Active Specialties</CardTitle>
+              <CardDescription className={responsive.cardDesc}>
+                Currently available specialties for caregivers
+              </CardDescription>
+            </div>
           </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Caregivers</TableHead>
-                  <TableHead>Patients Booked</TableHead>
-                  <TableHead>Total Income (MWK)</TableHead>
-                  <TableHead>Session Fee (MWK)</TableHead>
-                  <TableHead>Booking Fee (MWK)</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
+          <CardContent className="p-0 overflow-hidden">
+            <div className={dashboardCard.tableWrapper}>
+              <Table className={dashboardCard.tableMinWidth}>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8">
-                      Loading specialties...
-                    </TableCell>
+                    <TableHead className={dashboardCard.th}>Name</TableHead>
+                    <TableHead className={dashboardCard.th}>Description</TableHead>
+                    <TableHead className={dashboardCard.th}>Caregivers</TableHead>
+                    <TableHead className={dashboardCard.th}>Patients Booked</TableHead>
+                    <TableHead className={dashboardCard.th}>Total Income (MWK)</TableHead>
+                    <TableHead className={dashboardCard.th}>Session Fee (MWK)</TableHead>
+                    <TableHead className={dashboardCard.th}>Booking Fee (MWK)</TableHead>
+                    <TableHead className={dashboardCard.th}>Status</TableHead>
+                    <TableHead className={dashboardCard.th}>Actions</TableHead>
                   </TableRow>
-                ) : activeSpecialties.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
-                      No active specialties found
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  activeSpecialties.map((specialty: Specialty) => {
-                    const caregiverCount = specialty.activeCaregiversCount || 0;
-                    const patientCount = specialty.completedAppointments || 0;
-                    const income = parseFloat(specialty.totalIncome?.toString() || '0');
-                    
-                    return (
-                      <TableRow key={specialty.id}>
-                        <TableCell className="font-medium">{specialty.name}</TableCell>
-                        <TableCell className="max-w-xs truncate">
-                          {specialty.description || "-"}
-                        </TableCell>
-                        <TableCell>
-                          <span className="flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            {caregiverCount}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <span className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            {patientCount}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <span className="flex items-center gap-1 text-green-600 font-medium">
-                            {income.toLocaleString()}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <span className="flex items-center gap-1">
-                             {specialty.sessionFee || 0}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <span className="flex items-center gap-1">
-                            {specialty.bookingFee || 0}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="success">Active</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            {hasPermission('edit_specialties') && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleEdit(specialty)}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                            )}
-                            {hasPermission('delete_specialties') && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleDelete(specialty)}
-                              >
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                              </Button>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className="text-center py-8">
+                        Loading specialties...
+                      </TableCell>
+                    </TableRow>
+                  ) : activeSpecialties.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className={`text-center py-8 ${responsive.bodyMuted}`}>
+                        No active specialties found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    activeSpecialties.map((specialty: Specialty) => {
+                      const caregiverCount = specialty.activeCaregiversCount || 0;
+                      const patientCount = specialty.completedAppointments || 0;
+                      const income = parseFloat(specialty.totalIncome?.toString() || '0');
+                      return (
+                        <TableRow key={specialty.id} className={dashboardCard.tr}>
+                          <TableCell className={`${dashboardCard.td} font-medium`}>{specialty.name}</TableCell>
+                          <TableCell className={`${dashboardCard.td} max-w-xs truncate`}>
+                            {specialty.description || "-"}
+                          </TableCell>
+                          <TableCell className={dashboardCard.td}>
+                            <span className="flex items-center gap-1">
+                              <Users className="h-3 w-3" />{caregiverCount}
+                            </span>
+                          </TableCell>
+                          <TableCell className={dashboardCard.td}>
+                            <span className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />{patientCount}
+                            </span>
+                          </TableCell>
+                          <TableCell className={dashboardCard.td}>
+                            <span className="text-success font-medium">{income.toLocaleString()}</span>
+                          </TableCell>
+                          <TableCell className={dashboardCard.td}>{specialty.sessionFee || 0}</TableCell>
+                          <TableCell className={dashboardCard.td}>{specialty.bookingFee || 0}</TableCell>
+                          <TableCell className={dashboardCard.td}>
+                            <Badge variant="success">Active</Badge>
+                          </TableCell>
+                          <TableCell className={dashboardCard.td}>
+                            <div className="flex gap-2">
+                              {hasPermission('edit_specialties') && (
+                                <Button variant="ghost" size="icon" onClick={() => handleEdit(specialty)}>
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              )}
+                              {hasPermission('delete_specialties') && (
+                                <Button variant="ghost" size="icon" onClick={() => handleDelete(specialty)}>
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
 
         {inactiveSpecialties.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Inactive Specialties</CardTitle>
-              <CardDescription>
-                Deactivated specialties that can be restored
-              </CardDescription>
+          <Card className={dashboardCard.base}>
+            <CardHeader className={dashboardCard.header}>
+              <div>
+                <CardTitle className={responsive.cardTitle}>Inactive Specialties</CardTitle>
+                <CardDescription className={responsive.cardDesc}>
+                  Deactivated specialties that can be restored
+                </CardDescription>
+              </div>
             </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Session Fee</TableHead>
-                    <TableHead>Booking Fee</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {inactiveSpecialties.map((specialty: Specialty) => (
-                    <TableRow key={specialty.id}>
-                      <TableCell className="font-medium opacity-60">{specialty.name}</TableCell>
-                      <TableCell className="max-w-xs truncate opacity-60">
-                        {specialty.description || "-"}
-                      </TableCell>
-                      <TableCell className="opacity-60">
-                        MWK {specialty.sessionFee || 0}
-                      </TableCell>
-                      <TableCell className="opacity-60">
-                        MWK {specialty.bookingFee || 0}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">Inactive</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleRestore(specialty.id)}
-                          className="gap-2"
-                        >
-                          <RotateCcw className="h-3 w-3" />
-                          Restore
-                        </Button>
-                      </TableCell>
+            <CardContent className="p-0 overflow-hidden">
+              <div className={dashboardCard.tableWrapper}>
+                <Table className={dashboardCard.tableMinWidth}>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className={dashboardCard.th}>Name</TableHead>
+                      <TableHead className={dashboardCard.th}>Description</TableHead>
+                      <TableHead className={dashboardCard.th}>Session Fee</TableHead>
+                      <TableHead className={dashboardCard.th}>Booking Fee</TableHead>
+                      <TableHead className={dashboardCard.th}>Status</TableHead>
+                      <TableHead className={dashboardCard.th}>Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {inactiveSpecialties.map((specialty: Specialty) => (
+                      <TableRow key={specialty.id} className={dashboardCard.tr}>
+                        <TableCell className={`${dashboardCard.td} font-medium opacity-60`}>{specialty.name}</TableCell>
+                        <TableCell className={`${dashboardCard.td} max-w-xs truncate opacity-60`}>
+                          {specialty.description || "-"}
+                        </TableCell>
+                        <TableCell className={`${dashboardCard.td} opacity-60`}>MWK {specialty.sessionFee || 0}</TableCell>
+                        <TableCell className={`${dashboardCard.td} opacity-60`}>MWK {specialty.bookingFee || 0}</TableCell>
+                        <TableCell className={dashboardCard.td}>
+                          <Badge variant="secondary">Inactive</Badge>
+                        </TableCell>
+                        <TableCell className={dashboardCard.td}>
+                          <Button variant="outline" size="sm" onClick={() => handleRestore(specialty.id)} className="gap-2">
+                            <RotateCcw className="h-3 w-3" />
+                            Restore
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -427,58 +395,37 @@ const SpecialtyManagement = () => {
       <Dialog open={createDialog} onOpenChange={setCreateDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Specialty</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className={responsive.dialogTitle}>Create New Specialty</DialogTitle>
+            <DialogDescription className={responsive.dialogDesc}>
               Add a new healthcare specialty with associated fees
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Specialty Name</Label>
-              <Input
-                id="name"
-                placeholder="e.g., Elderly Care"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
+              <Input id="name" placeholder="e.g., Elderly Care" value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                placeholder="Brief description of the specialty"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={3}
-              />
+              <Textarea id="description" placeholder="Brief description of the specialty"
+                value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={3} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="sessionFee">Session Fee (MWK)</Label>
-                <Input
-                  id="sessionFee"
-                  type="number"
-                  placeholder="0.00"
-                  value={formData.sessionFee}
-                  onChange={(e) => setFormData({ ...formData, sessionFee: e.target.value })}
-                />
+                <Input id="sessionFee" type="number" placeholder="0.00" value={formData.sessionFee}
+                  onChange={(e) => setFormData({ ...formData, sessionFee: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bookingFee">Booking Fee (MWK)</Label>
-                <Input
-                  id="bookingFee"
-                  type="number"
-                  placeholder="0.00"
-                  value={formData.bookingFee}
-                  onChange={(e) => setFormData({ ...formData, bookingFee: e.target.value })}
-                />
+                <Input id="bookingFee" type="number" placeholder="0.00" value={formData.bookingFee}
+                  onChange={(e) => setFormData({ ...formData, bookingFee: e.target.value })} />
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setCreateDialog(false)}>
-              Cancel
-            </Button>
+            <Button variant="outline" onClick={() => setCreateDialog(false)}>Cancel</Button>
             <Button onClick={handleCreate} disabled={createMutation.isPending}>
               {createMutation.isPending ? "Creating..." : "Create Specialty"}
             </Button>
@@ -489,54 +436,37 @@ const SpecialtyManagement = () => {
       <Dialog open={editDialog} onOpenChange={setEditDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Specialty</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className={responsive.dialogTitle}>Edit Specialty</DialogTitle>
+            <DialogDescription className={responsive.dialogDesc}>
               Update specialty information and fees
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="edit-name">Specialty Name</Label>
-              <Input
-                id="edit-name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
+              <Input id="edit-name" value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit-description">Description</Label>
-              <Textarea
-                id="edit-description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={3}
-              />
+              <Textarea id="edit-description" value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })} rows={3} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-sessionFee">Session Fee (MWK)</Label>
-                <Input
-                  id="edit-sessionFee"
-                  type="number"
-                  value={formData.sessionFee}
-                  onChange={(e) => setFormData({ ...formData, sessionFee: e.target.value })}
-                />
+                <Input id="edit-sessionFee" type="number" value={formData.sessionFee}
+                  onChange={(e) => setFormData({ ...formData, sessionFee: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-bookingFee">Booking Fee (MWK)</Label>
-                <Input
-                  id="edit-bookingFee"
-                  type="number"
-                  value={formData.bookingFee}
-                  onChange={(e) => setFormData({ ...formData, bookingFee: e.target.value })}
-                />
+                <Input id="edit-bookingFee" type="number" value={formData.bookingFee}
+                  onChange={(e) => setFormData({ ...formData, bookingFee: e.target.value })} />
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditDialog(false)}>
-              Cancel
-            </Button>
+            <Button variant="outline" onClick={() => setEditDialog(false)}>Cancel</Button>
             <Button onClick={handleUpdate} disabled={updateMutation.isPending}>
               {updateMutation.isPending ? "Updating..." : "Update Specialty"}
             </Button>
@@ -547,18 +477,15 @@ const SpecialtyManagement = () => {
       <AlertDialog open={deleteDialog} onOpenChange={setDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Deactivate Specialty</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className={responsive.dialogTitle}>Deactivate Specialty</AlertDialogTitle>
+            <AlertDialogDescription className={responsive.dialogDesc}>
               Are you sure you want to deactivate this specialty? This will remove
               it from the active specialties list, but you can restore it later.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              className="bg-destructive hover:bg-destructive/90"
-            >
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive hover:bg-destructive/90">
               Deactivate
             </AlertDialogAction>
           </AlertDialogFooter>

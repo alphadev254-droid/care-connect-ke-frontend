@@ -49,7 +49,9 @@ import {
   Wallet,
   HelpCircle,
 } from "lucide-react";
+import { CLOUDINARY_IMAGES } from "@/config/images";
 import CaregiverOnboardingDialog from "@/components/CaregiverOnboardingDialog";
+import { responsive } from "@/theme";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -176,13 +178,11 @@ const DashboardLayout = ({ children, userRole = "patient" }: DashboardLayoutProp
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-muted/30">
+      <div className="min-h-screen flex w-full overflow-hidden bg-muted/30">
         <Sidebar className="border-r">
           <div className="p-4 border-b">
             <Link to="/" className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-xl bg-gradient-primary flex items-center justify-center">
-                <Heart className="h-5 w-5 text-primary-foreground" />
-              </div>
+              <img src={CLOUDINARY_IMAGES.logo} alt="CareConnect" className="h-8 w-auto" />
               <span className="font-display text-lg font-bold">
                 Care<span className="text-primary">Connect</span>
               </span>
@@ -237,7 +237,7 @@ const DashboardLayout = ({ children, userRole = "patient" }: DashboardLayoutProp
           </SidebarContent>
         </Sidebar>
 
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Top Header */}
           <header className="h-16 border-b bg-card flex items-center justify-between px-6">
             <div className="flex items-center gap-4">
@@ -332,7 +332,7 @@ const DashboardLayout = ({ children, userRole = "patient" }: DashboardLayoutProp
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="gap-2">
-                    <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
+                    <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
                       {getInitials()}
                     </div>
                     <span className="hidden md:inline">{getFullName()}</span>
@@ -366,7 +366,7 @@ const DashboardLayout = ({ children, userRole = "patient" }: DashboardLayoutProp
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-6">
+          <main className={responsive.main}>
             {children}
           </main>
         </div>

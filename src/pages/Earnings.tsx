@@ -13,6 +13,7 @@ import { ExportButton } from "@/components/shared/ExportButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
 import { mapUserRole } from "@/lib/roleMapper";
+import { dashboardCard, responsive } from "@/theme";
 import {
   DollarSign,
   TrendingUp,
@@ -583,10 +584,10 @@ const Earnings = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">
+            <h1 className={responsive.pageTitle}>
               {isAdmin ? 'Platform Earnings' : user?.role === 'caregiver' ? 'Earnings' : 'Payment History'}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className={responsive.pageSubtitle}>
               {isAdmin
                 ? 'Monitor all platform earnings and transactions'
                 : user?.role === 'caregiver'
@@ -731,11 +732,11 @@ const Earnings = () => {
 
         {/* Date Range Filter - Show for all users when custom period is selected */}
         {selectedPeriod === 'custom' && (
-          <Card>
+          <Card className={dashboardCard.base}>
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-3">
                 <Calendar className="h-4 w-4" />
-                <h3 className="font-medium">Date Range</h3>
+                <h3 className={responsive.cardTitle}>Date Range</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
@@ -776,11 +777,11 @@ const Earnings = () => {
 
         {/* Filters */}
         {(isAdmin || user?.role === 'caregiver') && (
-          <Card>
+          <Card className={dashboardCard.base}>
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-3">
                 <Filter className="h-4 w-4" />
-                <h3 className="font-medium">{isAdmin ? 'Filters' : 'Patient Filters'}</h3>
+                <h3 className={responsive.cardTitle}>{isAdmin ? 'Filters' : 'Patient Filters'}</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-8 gap-3">
                 <div>
@@ -971,14 +972,14 @@ const Earnings = () => {
         {/* Combined Stats Summary */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
           {stats.map((stat: StatItem) => (
-            <Card key={stat.title}>
-              <CardContent className="p-2">
+            <Card key={stat.title} className={dashboardCard.base}>
+              <CardContent className="p-3">
                 <div className="flex items-start justify-between mb-1">
                   <div className="flex-1">
-                    <p className="text-xs text-muted-foreground mb-0.5">{stat.title}</p>
-                    <p className="text-base font-bold">{stat.value}</p>
+                    <p className={responsive.bodyMuted}>{stat.title}</p>
+                    <p className={responsive.statValue}>{stat.value}</p>
                   </div>
-                  <div className="h-6 w-6 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <div className={dashboardCard.iconWell.primary}>
                     <stat.icon className="h-3 w-3 text-primary" />
                   </div>
                 </div>
@@ -987,41 +988,41 @@ const Earnings = () => {
           ))}
           {transactions.length > 0 && (
             <>
-              <Card>
-                <CardContent className="p-2">
+              <Card className={dashboardCard.base}>
+                <CardContent className="p-3">
                   <div className="text-center">
-                    <p className="text-xs text-muted-foreground mb-0.5">Total Transactions</p>
-                    <p className="text-base font-bold">{transactions.length}</p>
+                    <p className={responsive.bodyMuted}>Total Transactions</p>
+                    <p className={responsive.statValue}>{transactions.length}</p>
                   </div>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="p-2">
+              <Card className={dashboardCard.base}>
+                <CardContent className="p-3">
                   <div className="text-center">
-                    <p className="text-xs text-muted-foreground mb-0.5">Completed</p>
-                    <p className="text-base font-bold text-green-600">
+                    <p className={responsive.bodyMuted}>Completed</p>
+                    <p className={`${responsive.statValue} text-success`}>
                       {transactions.filter((t: Transaction) => t.status === 'completed').length}
                     </p>
                   </div>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="p-2">
+              <Card className={dashboardCard.base}>
+                <CardContent className="p-3">
                   <div className="text-center">
-                    <p className="text-xs text-muted-foreground mb-0.5">Pending</p>
-                    <p className="text-base font-bold text-orange-600">
+                    <p className={responsive.bodyMuted}>Pending</p>
+                    <p className={`${responsive.statValue} text-warning`}>
                       {transactions.filter((t: Transaction) => t.status === 'pending').length}
                     </p>
                   </div>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="p-2">
+              <Card className={dashboardCard.base}>
+                <CardContent className="p-3">
                   <div className="text-center">
-                    <p className="text-xs text-muted-foreground mb-0.5">
+                    <p className={responsive.bodyMuted}>
                       {isAdmin ? 'Total Paid' : user?.role === 'caregiver' ? 'Total Earned' : 'Total Paid'}
                     </p>
-                    <p className="text-base font-bold">
+                    <p className={responsive.statValue}>
                       MWK {transactions
                         .filter((t: Transaction) => t.status === 'completed')
                         .reduce((sum: number, t: Transaction) => sum + parseFloat(t.amount || '0'), 0)
@@ -1035,44 +1036,47 @@ const Earnings = () => {
         </div>
 
         {/* Transactions Table */}
-        <Card>
-          <div className="p-4 border-b">
-            <h2 className="font-semibold">
-              {isAdmin ? 'All Platform Transactions' : user?.role === 'caregiver' ? 'Recent Earnings' : 'Payment Transactions'}
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {isAdmin
-                ? 'Complete transaction history across all caregivers and patients'
-                : `View all your ${user?.role === 'caregiver' ? 'earnings' : 'payments'} and transaction details`
-              }
-            </p>
+        <Card className={dashboardCard.base}>
+          <div className={`${dashboardCard.header} border-b`}>
+            <div>
+              <h2 className={responsive.cardTitle}>
+                {isAdmin ? 'All Platform Transactions' : user?.role === 'caregiver' ? 'Recent Earnings' : 'Payment Transactions'}
+              </h2>
+              <p className={responsive.bodyMuted}>
+                {isAdmin
+                  ? 'Complete transaction history across all caregivers and patients'
+                  : `View all your ${user?.role === 'caregiver' ? 'earnings' : 'payments'} and transaction details`
+                }
+              </p>
+            </div>
           </div>
-          <CardContent className="p-0">
+          <CardContent className="p-0 overflow-hidden">
             {transactions.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="text-xs font-semibold">Date</TableHead>
-                    {isAdmin && <TableHead className="text-xs font-semibold">Caregiver</TableHead>}
-                    <TableHead className="text-xs font-semibold">
-                      {isAdmin ? 'Patient' : user?.role === 'caregiver' ? 'Patient' : 'Caregiver'}
-                    </TableHead>
-                    <TableHead className="text-xs font-semibold">Service</TableHead>
-                    <TableHead className="text-xs font-semibold">Payment Type</TableHead>
-                    <TableHead className="text-xs font-semibold text-right">Base Fee</TableHead>
-                    <TableHead className="text-xs font-semibold text-right">Tax</TableHead>
-                    <TableHead className="text-xs font-semibold text-right">Processing Fee</TableHead>
-                    {isAdmin && <TableHead className="text-xs font-semibold text-right">Commission</TableHead>}
-                    {user?.role === 'caregiver' && <TableHead className="text-xs font-semibold text-right">Commission</TableHead>}
-                    {user?.role === 'caregiver' && <TableHead className="text-xs font-semibold text-right">Net Earnings</TableHead>}
-                    <TableHead className="text-xs font-semibold text-right">Total</TableHead>
-                    <TableHead className="text-xs font-semibold">Status</TableHead>
-                    {(isAdmin || user?.role === 'caregiver') && <TableHead className="text-xs font-semibold">Actions</TableHead>}
-                  </TableRow>
-                </TableHeader>
+              <div className={dashboardCard.tableWrapper}>
+                <Table className={dashboardCard.tableMinWidth}>
+                  <TableHeader>
+                    <TableRow className="bg-muted/50">
+                      <TableHead className={dashboardCard.th}>Date</TableHead>
+                      {isAdmin && <TableHead className={dashboardCard.th}>Caregiver</TableHead>}
+                      <TableHead className={dashboardCard.th}>
+                        {isAdmin ? 'Patient' : user?.role === 'caregiver' ? 'Patient' : 'Caregiver'}
+                      </TableHead>
+                      <TableHead className={dashboardCard.th}>Service</TableHead>
+                      <TableHead className={dashboardCard.th}>Payment Type</TableHead>
+                      <TableHead className={`${dashboardCard.th} text-right`}>Base Fee</TableHead>
+                      <TableHead className={`${dashboardCard.th} text-right`}>Tax</TableHead>
+                      <TableHead className={`${dashboardCard.th} text-right`}>Processing Fee</TableHead>
+                      {isAdmin && <TableHead className={`${dashboardCard.th} text-right`}>Commission</TableHead>}
+                      {user?.role === 'caregiver' && <TableHead className={`${dashboardCard.th} text-right`}>Commission</TableHead>}
+                      {user?.role === 'caregiver' && <TableHead className={`${dashboardCard.th} text-right`}>Net Earnings</TableHead>}
+                      <TableHead className={`${dashboardCard.th} text-right`}>Total</TableHead>
+                      <TableHead className={dashboardCard.th}>Status</TableHead>
+                      {(isAdmin || user?.role === 'caregiver') && <TableHead className={dashboardCard.th}>Actions</TableHead>}
+                    </TableRow>
+                  </TableHeader>
                 <TableBody>
                   {transactions.map((transaction: Transaction) => (
-                    <TableRow key={transaction.id} className="hover:bg-muted/30">
+                    <TableRow key={transaction.id} className={dashboardCard.tr}>
                       <TableCell className="text-xs">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-3 w-3 text-muted-foreground" />
@@ -1179,7 +1183,7 @@ const Earnings = () => {
                             </DialogTrigger>
                             <DialogContent className="max-w-2xl">
                               <DialogHeader>
-                                <DialogTitle>Transaction Details</DialogTitle>
+                                <DialogTitle className={responsive.dialogTitle}>Transaction Details</DialogTitle>
                               </DialogHeader>
                               <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
@@ -1262,11 +1266,12 @@ const Earnings = () => {
                   ))}
                 </TableBody>
               </Table>
+            </div>
             ) : (
               <div className="py-12 text-center">
                 <DollarSign className="h-10 w-10 mx-auto text-muted-foreground mb-3 opacity-50" />
-                <h3 className="font-semibold text-sm mb-1">No transactions yet</h3>
-                <p className="text-xs text-muted-foreground">
+                <h3 className={`${responsive.cardTitle} mb-1`}>No transactions yet</h3>
+                <p className={responsive.bodyMuted}>
                   {user?.role === 'caregiver'
                     ? 'Your earnings from completed sessions will appear here'
                     : 'Your payment transactions will appear here'
@@ -1281,7 +1286,7 @@ const Earnings = () => {
         {transactions.length > 0 && (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Rows per page:</span>
+              <span className={responsive.bodyMuted}>Rows per page:</span>
               <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
                 <SelectTrigger className="w-20 h-8">
                   <SelectValue />
@@ -1295,7 +1300,7 @@ const Earnings = () => {
               </Select>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
+              <span className={responsive.bodyMuted}>
                 Page {currentPage} of {totalPages}
               </span>
               <div className="flex gap-1">

@@ -11,6 +11,7 @@ import { reportService } from "@/services/reportService";
 import { api } from "@/lib/api";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import CaregiverOnboardingDialog from "@/components/CaregiverOnboardingDialog";
+import { dashboardTokens, dashboardCard, responsive } from "@/theme";
 import {
   Calendar,
   Search,
@@ -311,14 +312,14 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout userRole={['system_manager', 'regional_manager', 'Accountant'].includes(user?.role || '') ? 'admin' : (user?.role || "patient")}>
-      <div className="space-y-6">
-        {/* Welcome Section - Compact */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="space-y-4 md:space-y-6">
+        {/* Welcome Section */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="font-display text-2xl md:text-3xl font-bold">
+            <h1 className={responsive.pageTitle}>
               Welcome back, {user?.firstName || "User"}!
             </h1>
-            <p className="text-muted-foreground mt-1 text-sm">
+            <p className={responsive.pageSubtitle}>
               {user?.role === 'Accountant'
                 ? "Financial overview and earnings dashboard"
                 : ['system_manager', 'regional_manager'].includes(user?.role || '')
@@ -334,7 +335,7 @@ const Dashboard = () => {
           {user?.role === 'patient' && (
             <div className="flex items-center gap-2">
               <Link to="/dashboard/caregivers">
-                <Button size="sm" className="gap-2 bg-gradient-primary h-9 text-xs">
+                <Button size="sm" className="gap-2 bg-primary text-white hover:bg-primary/90 h-9 text-xs">
                   <Search className="h-4 w-4" />
                   Find Caregiver
                 </Button>
@@ -348,17 +349,17 @@ const Dashboard = () => {
           {['system_manager', 'regional_manager', 'Accountant'].includes(user?.role || '') ? (
             <>
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Total Collections</p>
-                      <p className="text-2xl font-bold mt-1">
+                      <p className={responsive.bodyMuted}>Total Collections</p>
+                      <p className={responsive.statValue}>
                         MWK {transactions
                           .filter((t: Record<string, unknown>) => t.status === 'completed')
                           .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.amount || 0), 0)
                           .toLocaleString()}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className={responsive.bodyMuted}>
                         {transactions.filter((t: Record<string, unknown>) => t.status === 'completed').length} transactions
                       </p>
                     </div>
@@ -370,19 +371,17 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Tax Collected</p>
-                      <p className="text-2xl font-bold mt-1">
+                      <p className={responsive.bodyMuted}>Tax Collected</p>
+                      <p className={responsive.statValue}>
                         MWK {transactions
                           .filter((t: Record<string, unknown>) => t.status === 'completed')
                           .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.taxAmount || 0), 0)
                           .toLocaleString()}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        VAT @ 17.5%
-                      </p>
+                      <p className={responsive.bodyMuted}>VAT @ 17.5%</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-secondary/10 flex items-center justify-center">
                       <FileText className="h-5 w-5 text-secondary" />
@@ -392,19 +391,17 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Platform Commission</p>
-                      <p className="text-2xl font-bold mt-1">
+                      <p className={responsive.bodyMuted}>Platform Commission</p>
+                      <p className={responsive.statValue}>
                         MWK {transactions
                           .filter((t: Record<string, unknown>) => t.status === 'completed')
                           .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.convenienceFeeAmount || 0), 0)
                           .toLocaleString()}
                       </p>
-                      <p className="text-xs text-success mt-1">
-                        Platform revenue
-                      </p>
+                      <p className={`${responsive.bodyMuted} text-success`}>Platform revenue</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center">
                       <TrendingUp className="h-5 w-5 text-success" />
@@ -414,19 +411,17 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Caregiver Earnings</p>
-                      <p className="text-2xl font-bold mt-1">
+                      <p className={responsive.bodyMuted}>Caregiver Earnings</p>
+                      <p className={responsive.statValue}>
                         MWK {transactions
                           .filter((t: Record<string, unknown>) => t.status === 'completed')
                           .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.baseFee || 0), 0)
                           .toLocaleString()}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Total payable
-                      </p>
+                      <p className={responsive.bodyMuted}>Total payable</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
                       <Wallet className="h-5 w-5 text-accent" />
@@ -438,19 +433,17 @@ const Dashboard = () => {
           ) : user?.role === 'caregiver' ? (
             <>
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Net Earnings</p>
-                      <p className="text-2xl font-bold mt-1">
+                      <p className={responsive.bodyMuted}>Net Earnings</p>
+                      <p className={responsive.statValue}>
                         MWK {transactions
                           .filter((t: Record<string, unknown>) => t.status === 'completed' && t.paymentType === 'session_fee')
                           .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.caregiverEarnings || 0), 0)
                           .toLocaleString()}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        After commission
-                      </p>
+                      <p className={responsive.bodyMuted}>After commission</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Wallet className="h-5 w-5 text-primary" />
@@ -460,19 +453,17 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Commission Deducted</p>
-                      <p className="text-2xl font-bold mt-1">
+                      <p className={responsive.bodyMuted}>Commission Deducted</p>
+                      <p className={responsive.statValue}>
                         MWK {transactions
                           .filter((t: Record<string, unknown>) => t.status === 'completed' && t.paymentType === 'session_fee')
                           .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.platformCommissionAmount || 0), 0)
                           .toLocaleString()}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Platform fee @ 20%
-                      </p>
+                      <p className={responsive.bodyMuted}>Platform fee @ 20%</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-secondary/10 flex items-center justify-center">
                       <TrendingUp className="h-5 w-5 text-secondary" />
@@ -482,16 +473,14 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Sessions Completed</p>
-                      <p className="text-2xl font-bold mt-1">
+                      <p className={responsive.bodyMuted}>Sessions Completed</p>
+                      <p className={responsive.statValue}>
                         {transactions.filter((t: Record<string, unknown>) => t.status === 'completed' && t.paymentType === 'session_fee').length}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Total sessions
-                      </p>
+                      <p className={responsive.bodyMuted}>Total sessions</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center">
                       <Activity className="h-5 w-5 text-success" />
@@ -501,11 +490,11 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Avg Earnings/Session</p>
-                      <p className="text-2xl font-bold mt-1">
+                      <p className={responsive.bodyMuted}>Avg Earnings/Session</p>
+                      <p className={responsive.statValue}>
                         MWK {(() => {
                           const sessionTxs = transactions.filter((t: Record<string, unknown>) => t.status === 'completed' && t.paymentType === 'session_fee');
                           const totalEarnings = sessionTxs.reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.caregiverEarnings || 0), 0);
@@ -513,9 +502,7 @@ const Dashboard = () => {
                           return avgEarnings.toLocaleString();
                         })()}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Per completed session
-                      </p>
+                      <p className={responsive.bodyMuted}>Per completed session</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
                       <DollarSign className="h-5 w-5 text-accent" />
@@ -527,14 +514,12 @@ const Dashboard = () => {
           ) : user?.role === 'primary_physician' ? (
             <>
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Active Patients</p>
-                      <p className="text-2xl font-bold mt-1">0</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Under care
-                      </p>
+                      <p className={responsive.bodyMuted}>Active Patients</p>
+                      <p className={responsive.statValue}>0</p>
+                      <p className={responsive.bodyMuted}>Under care</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Users className="h-5 w-5 text-primary" />
@@ -544,14 +529,12 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Recommendations</p>
-                      <p className="text-2xl font-bold mt-1">0</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Caregivers referred
-                      </p>
+                      <p className={responsive.bodyMuted}>Recommendations</p>
+                      <p className={responsive.statValue}>0</p>
+                      <p className={responsive.bodyMuted}>Caregivers referred</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-secondary/10 flex items-center justify-center">
                       <Star className="h-5 w-5 text-secondary" />
@@ -561,14 +544,12 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Health Reports</p>
-                      <p className="text-2xl font-bold mt-1">{recentReports?.length || 0}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Reviews pending
-                      </p>
+                      <p className={responsive.bodyMuted}>Health Reports</p>
+                      <p className={responsive.statValue}>{recentReports?.length || 0}</p>
+                      <p className={responsive.bodyMuted}>Reviews pending</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
                       <FileText className="h-5 w-5 text-accent" />
@@ -578,14 +559,12 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Patient Status</p>
-                      <p className="text-2xl font-bold mt-1">Stable</p>
-                      <p className="text-xs text-success mt-1">
-                        Overall health
-                      </p>
+                      <p className={responsive.bodyMuted}>Patient Status</p>
+                      <p className={responsive.statValue}>Stable</p>
+                      <p className={`${responsive.bodyMuted} text-success`}>Overall health</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center">
                       <Activity className="h-5 w-5 text-success" />
@@ -597,14 +576,12 @@ const Dashboard = () => {
           ) : user?.role !== 'Accountant' ? (
             <>
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Upcoming Appointments</p>
-                      <p className="text-2xl font-bold mt-1">{upcomingAppointments?.length || 0}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Scheduled sessions
-                      </p>
+                      <p className={responsive.bodyMuted}>Upcoming Appointments</p>
+                      <p className={responsive.statValue}>{upcomingAppointments?.length || 0}</p>
+                      <p className={responsive.bodyMuted}>Scheduled sessions</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Calendar className="h-5 w-5 text-primary" />
@@ -614,14 +591,12 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Active Caregivers</p>
-                      <p className="text-2xl font-bold mt-1">{caregiversData?.length || 0}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Available now
-                      </p>
+                      <p className={responsive.bodyMuted}>Active Caregivers</p>
+                      <p className={responsive.statValue}>{caregiversData?.length || 0}</p>
+                      <p className={responsive.bodyMuted}>Available now</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-secondary/10 flex items-center justify-center">
                       <Heart className="h-5 w-5 text-secondary" />
@@ -631,14 +606,12 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Care Reports</p>
-                      <p className="text-2xl font-bold mt-1">{recentReports?.length || 0}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Total received
-                      </p>
+                      <p className={responsive.bodyMuted}>Care Reports</p>
+                      <p className={responsive.statValue}>{recentReports?.length || 0}</p>
+                      <p className={responsive.bodyMuted}>Total received</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
                       <FileText className="h-5 w-5 text-accent" />
@@ -648,14 +621,14 @@ const Dashboard = () => {
               </Card>
 
               <Card>
-                <CardContent className="p-4">
+                <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Next Appointment</p>
-                      <p className="text-2xl font-bold mt-1">
+                      <p className={responsive.bodyMuted}>Next Appointment</p>
+                      <p className={responsive.statValue}>
                         {upcomingAppointments?.[0] ? formatDate(upcomingAppointments[0].scheduledDate).split(',')[0] : 'None'}
                       </p>
-                      <p className="text-xs text-success mt-1">
+                      <p className={`${responsive.bodyMuted} text-success`}>
                         {upcomingAppointments?.[0] ? 'Confirmed' : 'Book now'}
                       </p>
                     </div>
@@ -672,10 +645,10 @@ const Dashboard = () => {
         {user?.role !== 'Accountant' && (
           <div className="grid lg:grid-cols-3 gap-4">
             {/* Role-based main content - Compact */}
-            <Card className="lg:col-span-2">
-              <CardHeader className="flex flex-row items-center justify-between p-4">
+            <Card className={`lg:col-span-2 ${dashboardCard.base}`}>
+              <CardHeader className={dashboardCard.header}>
                 <div>
-                  <CardTitle className="font-display text-base">
+                  <CardTitle className={responsive.cardTitle}>
                     {user?.role === 'system_manager' || user?.role === 'regional_manager'
                       ? "Recent User Activity"
                       : user?.role === 'caregiver'
@@ -685,7 +658,7 @@ const Dashboard = () => {
                       : "Upcoming Appointments"
                     }
                   </CardTitle>
-                  <CardDescription className="text-xs">
+                  <CardDescription className={responsive.cardDesc}>
                     {user?.role === 'system_manager' || user?.role === 'regional_manager'
                       ? "Latest registrations and system activity"
                       : user?.role === 'caregiver'
@@ -702,21 +675,21 @@ const Dashboard = () => {
                   </Button>
                 </Link>
               </CardHeader>
-              <CardContent className="p-4 pt-0">
+              <CardContent className={dashboardCard.body}>
                 {user?.role === 'system_manager' || user?.role === 'regional_manager' ? (
                   <div className="space-y-2">
                     {adminData?.users?.slice(0, 5).map((user: Record<string, unknown>) => (
                       <div
                         key={user.id}
-                        className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                        className={dashboardCard.listRow}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
+                          <div className={dashboardTokens.avatar}>
                             {user.firstName?.charAt(0)}
                           </div>
                           <div>
-                            <p className="font-medium text-sm">{user.firstName} {user.lastName}</p>
-                            <p className="text-xs text-muted-foreground capitalize">{user.Role?.name?.replace('_', ' ')}</p>
+                            <p className={`font-medium ${responsive.body}`}>{user.firstName} {user.lastName}</p>
+                            <p className={`${responsive.bodyMuted} capitalize`}>{user.Role?.name?.replace('_', ' ')}</p>
                           </div>
                         </div>
                         <Badge
@@ -748,15 +721,15 @@ const Dashboard = () => {
                       return (
                         <div
                           key={appointment.id}
-                          className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                          className={dashboardCard.listRow}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
+                            <div className={dashboardTokens.avatar}>
                               {caregiverName.charAt(0)}
                             </div>
                             <div>
-                              <p className="font-medium text-sm">{caregiverName}</p>
-                              <p className="text-xs text-muted-foreground">{specialtyName}</p>
+                              <p className={`font-medium ${responsive.body}`}>{caregiverName}</p>
+                              <p className={responsive.bodyMuted}>{specialtyName}</p>
                             </div>
                           </div>
                           <div className="text-right">
@@ -785,9 +758,9 @@ const Dashboard = () => {
             </Card>
 
             {/* Role-based sidebar - Compact */}
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle className="font-display text-base">
+            <Card className={dashboardCard.base}>
+              <CardHeader className="p-3 sm:p-5">
+                <CardTitle className={responsive.cardTitle}>
                   {user?.role === 'system_manager' || user?.role === 'regional_manager'
                     ? "System Status"
                     : user?.role === 'caregiver'
@@ -808,7 +781,7 @@ const Dashboard = () => {
                   }
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4 p-4 pt-0">
+              <CardContent className="space-y-4 p-3 pt-0 sm:p-5 sm:pt-0">
                 {user?.role === 'system_manager' || user?.role === 'regional_manager' ? (
                   <div className="text-center p-4 rounded-lg bg-primary/10">
                     <Activity className="h-6 w-6 text-primary mx-auto mb-2" />
@@ -889,10 +862,10 @@ const Dashboard = () => {
 
         {/* Role-based bottom section - Compact */}
         {user?.role !== 'Accountant' && (
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between p-4">
+          <Card className={dashboardCard.base}>
+            <CardHeader className={dashboardCard.header}>
               <div>
-                <CardTitle className="font-display text-base">
+                <CardTitle className={responsive.cardTitle}>
                   {user?.role === 'caregiver'
                     ? "Recent Patients"
                     : user?.role === 'primary_physician'
@@ -915,7 +888,7 @@ const Dashboard = () => {
                 </Button>
               </Link>
             </CardHeader>
-            <CardContent className="p-4 pt-0">
+            <CardContent className={dashboardCard.body}>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {user?.role === 'system_manager' || user?.role === 'regional_manager' ? (
                   // Show real admin stats - Compact
@@ -942,7 +915,7 @@ const Dashboard = () => {
                         className="p-3 rounded-lg border hover:border-primary/30 hover:shadow-md transition-all"
                       >
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs">
+                          <div className={dashboardTokens.avatar}>
                             {patient.User?.firstName?.charAt(0) || 'P'}
                           </div>
                           <div>
@@ -975,7 +948,7 @@ const Dashboard = () => {
                       className="p-3 rounded-lg border hover:border-primary/30 hover:shadow-md transition-all"
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
+                        <div className={dashboardTokens.avatar}>
                           {caregiver.firstName?.charAt(0) || 'C'}
                         </div>
                         <div>
@@ -999,7 +972,7 @@ const Dashboard = () => {
                       className="p-3 rounded-lg border hover:border-primary/30 hover:shadow-md transition-all"
                     >
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
+                        <div className={dashboardTokens.avatar}>
                           C{i}
                         </div>
                         <div>
@@ -1028,15 +1001,15 @@ const Dashboard = () => {
             const IconComponent = action.icon;
             return (
               <Link key={index} to={action.href}>
-                <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                  <CardContent className="p-4">
+                <Card className={dashboardCard.actionCard}>
+                  <CardContent className={dashboardCard.statContent}>
                     <div className="flex items-center gap-3">
-                      <div className={`h-10 w-10 rounded-lg bg-${action.color}/10 flex items-center justify-center`}>
+                      <div className={dashboardCard.actionIconWell[action.color as keyof typeof dashboardCard.actionIconWell]}>
                         <IconComponent className={`h-5 w-5 text-${action.color}`} />
                       </div>
                       <div>
-                        <p className="font-medium text-sm">{action.label}</p>
-                        <p className="text-xs text-muted-foreground">{action.description}</p>
+                        <p className={`font-medium ${responsive.body}`}>{action.label}</p>
+                        <p className={responsive.bodyMuted}>{action.description}</p>
                       </div>
                     </div>
                   </CardContent>

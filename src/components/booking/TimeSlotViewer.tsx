@@ -1,72 +1,52 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Calendar, Clock, User, RefreshCw } from 'lucide-react';
 import { timeSlotService, TimeSlot } from '@/services/timeSlotService';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import { toast } from 'sonner';
+import { dashboardCard, responsive } from '@/theme';
 
 export const TimeSlotViewer = () => {
   const { user } = useAuth();
-  const [slots, setSlots] = useState<TimeSlot[]>([]);
-  const [caregiverId, setCaregiverId] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState<'all' | 'available' | 'booked'>('all');
 
-  useEffect(() => {
-    if (user) {
-      fetchCaregiverProfile();
-    }
-  }, [user]);
-
-  const fetchCaregiverProfile = async () => {
-    try {
+  const { data: profileData } = useQuery({
+    queryKey: ['caregiver-profile'],
+    queryFn: async () => {
       const response = await api.get('/caregivers/profile');
-      const caregiver = response.data.caregiver;
-      setCaregiverId(caregiver.id);
-      loadTimeSlots(caregiver.id);
-    } catch (error) {
-      toast.error('Failed to load caregiver profile');
-    }
-  };
+      return response.data.caregiver;
+    },
+    enabled: !!user,
+  });
 
-  const loadTimeSlots = async (id: number) => {
-    setLoading(true);
-    try {
-      const response = await api.get(`/timeslots/caregiver/${id}`);
-      setSlots(response.data.slots || []);
-    } catch (error) {
-      // Fallback to available slots endpoint
+  const caregiverId = profileData?.id ?? null;
+
+  const { data: slots = [], isLoading } = useQuery({
+    queryKey: ['caregiver-timeslots', caregiverId],
+    queryFn: async () => {
       try {
-        const availableSlots = await timeSlotService.getAvailableSlots({ caregiverId: id });
-        setSlots(availableSlots);
-      } catch (fallbackError) {
-        toast.error('Failed to load time slots');
+        const response = await api.get(`/timeslots/caregiver/${caregiverId}`);
+        return (response.data.slots || []) as TimeSlot[];
+      } catch {
+        return timeSlotService.getAvailableSlots({ caregiverId: caregiverId! }) as Promise<TimeSlot[]>;
       }
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    enabled: !!caregiverId,
+  });
 
-  const refreshSlots = () => {
-    if (caregiverId) {
-      loadTimeSlots(caregiverId);
-    }
-  };
+  const refreshSlots = () =>
+    queryClient.invalidateQueries({ queryKey: ['caregiver-timeslots', caregiverId] });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'available':
-        return 'bg-green-100 text-green-800';
-      case 'booked':
-        return 'bg-blue-100 text-blue-800';
-      case 'locked':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+      case 'available': return 'bg-success/10 text-success';
+      case 'booked':    return 'bg-primary/10 text-primary';
+      case 'locked':    return 'bg-warning/10 text-warning';
+      default:          return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -82,33 +62,33 @@ export const TimeSlotViewer = () => {
   const lockedCount = slots.filter(s => s.status === 'locked').length;
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className={dashboardCard.base}>
+      <CardHeader className={dashboardCard.compactHeader}>
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
+          <CardTitle className={`flex items-center gap-2 ${responsive.cardTitle}`}>
+            <Calendar className="h-4 w-4" />
             My Time Slots (3-hour sessions)
           </CardTitle>
-          <Button variant="outline" size="sm" onClick={refreshSlots} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          <Button variant="outline" size="sm" onClick={refreshSlots} disabled={isLoading}>
+            <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className={`${dashboardCard.compactBody} space-y-3`}>
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">{availableCount}</div>
-            <div className="text-sm text-green-700">Available</div>
+        <div className={dashboardCard.compactStatGrid}>
+          <div className={dashboardCard.balanceBlockSuccess}>
+            <p className={`${dashboardCard.compactStatValue} text-success`}>{availableCount}</p>
+            <p className={responsive.bodyMuted}>Available</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">{bookedCount}</div>
-            <div className="text-sm text-blue-700">Booked</div>
+          <div className={dashboardCard.balanceBlockPrimary}>
+            <p className={`${dashboardCard.compactStatValue} text-primary`}>{bookedCount}</p>
+            <p className={responsive.bodyMuted}>Booked</p>
           </div>
-          <div className="text-center p-3 bg-yellow-50 rounded-lg">
-            <div className="text-2xl font-bold text-yellow-600">{lockedCount}</div>
-            <div className="text-sm text-yellow-700">Locked</div>
+          <div className={dashboardCard.balanceBlockWarning}>
+            <p className={`${dashboardCard.compactStatValue} text-warning`}>{lockedCount}</p>
+            <p className={responsive.bodyMuted}>Locked</p>
           </div>
         </div>
 
@@ -138,8 +118,10 @@ export const TimeSlotViewer = () => {
         </div>
 
         {/* Slots Grid */}
-        {loading ? (
-          <div className="text-center py-8">Loading time slots...</div>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-10">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+          </div>
         ) : filteredSlots.length === 0 ? (
           <div className="text-center py-8">
             <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -152,42 +134,32 @@ export const TimeSlotViewer = () => {
             </p>
           </div>
         ) : (
-          <div className="grid gap-3 max-h-96 overflow-y-auto">
+          <div className="grid gap-2 max-h-96 overflow-y-auto">
             {filteredSlots.map((slot) => (
-              <Card key={slot.id} className="hover:shadow-sm transition-shadow">
-                <CardContent className="p-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">
-                          {new Date(slot.date).toLocaleDateString('en-US', {
-                            weekday: 'short',
-                            month: 'short',
-                            day: 'numeric'
-                          })}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>{slot.startTime} - {slot.endTime}</span>
-                        <Badge variant="secondary" className="text-xs">3hrs</Badge>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge className={getStatusColor(slot.status)}>
-                        {slot.status}
-                      </Badge>
-                      {slot.status === 'booked' && slot.appointmentId && (
-                        <Badge variant="outline">
-                          <User className="h-3 w-3 mr-1" />
-                          Appointment #{slot.appointmentId}
-                        </Badge>
-                      )}
-                    </div>
+              <div key={slot.id} className={dashboardCard.listRow}>
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="font-medium">
+                      {new Date(slot.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                    </span>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span>{slot.startTime} - {slot.endTime}</span>
+                    <Badge variant="secondary">3hrs</Badge>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge className={getStatusColor(slot.status)}>{slot.status}</Badge>
+                  {slot.status === 'booked' && slot.appointmentId && (
+                    <Badge variant="outline">
+                      <User className="h-3 w-3 mr-1" />
+                      #{slot.appointmentId}
+                    </Badge>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         )}

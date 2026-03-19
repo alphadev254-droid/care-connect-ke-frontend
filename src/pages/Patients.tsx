@@ -11,6 +11,7 @@ import { ExportButton } from "@/components/shared/ExportButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
 import { mapUserRole } from "@/lib/roleMapper";
+import { dashboardCard, responsive } from "@/theme";
 import {
   Search,
   User,
@@ -69,35 +70,48 @@ const Patients = () => {
 
   return (
     <DashboardLayout userRole={mapUserRole(user?.role || 'caregiver')}>
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">My Patients</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Manage and monitor your patient care
-            </p>
+            <h1 className={responsive.pageTitle}>My Patients</h1>
+            <p className={responsive.pageSubtitle}>Manage and monitor your patient care</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-xl font-bold">{activePatients.length}</div>
-              <p className="text-xs text-muted-foreground">Active Patients</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-xl font-bold">{filteredPatients.length}</div>
-              <p className="text-xs text-muted-foreground">Total Patients</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-xl font-bold">
-                {filteredPatients.filter((p: any) => p.lastVisit === 'Today').length}
+        <div className={dashboardCard.compactStatGrid}>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Active Patients</p>
+                <p className={dashboardCard.compactStatValue}>{activePatients.length}</p>
               </div>
-              <p className="text-xs text-muted-foreground">Visits Today</p>
+              <div className={dashboardCard.iconWell.success}>
+                <Activity className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Total Patients</p>
+                <p className={dashboardCard.compactStatValue}>{filteredPatients.length}</p>
+              </div>
+              <div className={dashboardCard.iconWell.primary}>
+                <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.compactStatContent}>
+              <div>
+                <p className={responsive.bodyMuted}>Visits Today</p>
+                <p className={dashboardCard.compactStatValue}>
+                  {filteredPatients.filter((p: any) => p.lastVisit === 'Today').length}
+                </p>
+              </div>
+              <div className={dashboardCard.iconWell.accent}>
+                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-accent" />
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -162,10 +176,11 @@ const Patients = () => {
           />
         </div>
 
-        <Card>
-          <CardContent className="p-0">
+        <Card className={dashboardCard.base}>
+          <CardContent className="p-0 overflow-hidden">
             {filteredPatients.length > 0 ? (
-              <Table>
+              <div className={dashboardCard.tableWrapper}>
+              <Table className={dashboardCard.tableMinWidth}>
                 <TableHeader>
                   <TableRow className="bg-muted/50">
                     <TableHead className="text-xs font-semibold">Patient</TableHead>
@@ -259,11 +274,12 @@ const Patients = () => {
                   ))}
                 </TableBody>
               </Table>
+              </div>
             ) : (
               <div className="py-12 text-center">
                 <User className="h-10 w-10 mx-auto text-muted-foreground mb-3 opacity-50" />
-                <h3 className="font-semibold text-sm mb-1">No patients found</h3>
-                <p className="text-xs text-muted-foreground">
+                <h3 className={`${responsive.cardTitle} mb-1`}>No patients found</h3>
+                <p className={responsive.bodyMuted}>
                   {searchQuery ? 'Try adjusting your search' : 'Patients will appear here once assigned'}
                 </p>
               </div>

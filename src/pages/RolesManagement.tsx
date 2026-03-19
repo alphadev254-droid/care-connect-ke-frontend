@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { UserCheck, Plus, Edit, Trash2, Shield, MapPin } from "lucide-react";
+import { dashboardCard, responsive } from "@/theme";
 
 interface Role {
   id: number;
@@ -155,57 +156,59 @@ const RolesManagement = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-display text-2xl md:text-3xl font-bold">Roles Management</h1>
-            <p className="text-muted-foreground mt-1">Manage user roles and permissions</p>
+            <h1 className={responsive.pageTitle}>Roles Management</h1>
+            <p className={responsive.pageSubtitle}>Manage user roles and permissions</p>
           </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
+        <Card className={dashboardCard.base}>
+          <CardHeader className={dashboardCard.header}>
+            <CardTitle className={`flex items-center gap-2 ${responsive.cardTitle}`}>
+              <Shield className="h-5 w-5 text-primary" />
               System Roles
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Role Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Users Count</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {roles?.map((role: Role) => (
-                  <TableRow key={role.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="capitalize">
-                          {role.name}
-                        </Badge>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {role.description || "No description"}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">
-                        {role.userCount || 0} users
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {new Date(role.createdAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span className="text-muted-foreground text-sm">View Only</span>
-                    </TableCell>
+          <CardContent className="p-0 overflow-hidden">
+            <div className={dashboardCard.tableWrapper}>
+              <Table className={dashboardCard.tableMinWidth}>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className={dashboardCard.th}>Role Name</TableHead>
+                    <TableHead className={dashboardCard.th}>Description</TableHead>
+                    <TableHead className={dashboardCard.th}>Users Count</TableHead>
+                    <TableHead className={dashboardCard.th}>Created</TableHead>
+                    <TableHead className={`${dashboardCard.th} text-right`}>Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {roles?.map((role: Role) => (
+                    <TableRow key={role.id} className={dashboardCard.tr}>
+                      <TableCell className={dashboardCard.td}>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="capitalize">
+                            {role.name}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell className={`${dashboardCard.td} ${responsive.bodyMuted}`}>
+                        {role.description || "No description"}
+                      </TableCell>
+                      <TableCell className={dashboardCard.td}>
+                        <Badge variant="secondary">
+                          {role.userCount || 0} users
+                        </Badge>
+                      </TableCell>
+                      <TableCell className={`${dashboardCard.td} ${responsive.bodyMuted}`}>
+                        {new Date(role.createdAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell className={`${dashboardCard.td} text-right`}>
+                        <span className={responsive.bodyMuted}>View Only</span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>

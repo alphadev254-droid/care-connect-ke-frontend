@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
 import { mapUserRole } from "@/lib/roleMapper";
 import { toast } from "sonner";
+import { dashboardCard } from "@/theme";
 import {
   Calendar,
   Clock,
@@ -1224,7 +1225,7 @@ const CareReports = () => {
                     )}
                   </div>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-hidden">
                   {filteredAppointments.filter(apt => !apt.hasReport).length === 0 ? (
                     <div className="py-12 text-center">
                       <FileText className="h-10 w-10 text-muted-foreground mx-auto mb-3 opacity-50" />
@@ -1234,7 +1235,8 @@ const CareReports = () => {
                       </p>
                     </div>
                   ) : (
-                    <Table>
+                    <div className={dashboardCard.tableWrapper}>
+                    <Table className={dashboardCard.tableMinWidth}>
                       <TableHeader>
                         <TableRow className="bg-muted/50">
                           <TableHead className="text-xs font-semibold">Session</TableHead>
@@ -1340,6 +1342,7 @@ const CareReports = () => {
                           ))}
                       </TableBody>
                     </Table>
+                    </div>
                   )}
                 </CardContent>
               </Card>
@@ -1365,7 +1368,7 @@ const CareReports = () => {
                     )}
                   </div>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-hidden">
                   {filteredAppointments.filter(apt => apt.hasReport).length === 0 ? (
                     <div className="py-12 text-center">
                       <CheckCircle className="h-10 w-10 text-muted-foreground mx-auto mb-3 opacity-50" />
@@ -1375,7 +1378,8 @@ const CareReports = () => {
                       </p>
                     </div>
                   ) : (
-                    <Table>
+                    <div className={dashboardCard.tableWrapper}>
+                    <Table className={dashboardCard.tableMinWidth}>
                       <TableHeader>
                         <TableRow className="bg-muted/50">
                           <TableHead className="text-xs font-semibold">Session</TableHead>
@@ -1502,6 +1506,7 @@ const CareReports = () => {
                           ))}
                       </TableBody>
                     </Table>
+                    </div>
                   )}
                 </CardContent>
               </Card>

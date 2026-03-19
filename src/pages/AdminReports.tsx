@@ -9,6 +9,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
 import { mapUserRole } from "@/lib/roleMapper";
+import { dashboardCard, responsive } from "@/theme";
 import {
   BarChart3,
   Users,
@@ -142,11 +143,11 @@ const AdminReports = () => {
 
   return (
     <DashboardLayout userRole={mapUserRole(user?.role || 'system_manager')}>
-      <div className="space-y-6">
+      <div className="space-y-3 md:space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="font-display text-2xl md:text-3xl font-bold">System Reports & Analytics</h1>
-            <p className="text-muted-foreground mt-1">
+            <h1 className={responsive.pageTitle}>System Reports & Analytics</h1>
+            <p className={responsive.pageSubtitle}>
               Comprehensive system analytics and performance metrics
             </p>
           </div>
@@ -176,18 +177,16 @@ const AdminReports = () => {
         </div>
 
         {/* Stats Cards - Compact */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className={dashboardCard.compactStatGrid}>
           {stats.map((stat) => (
-            <Card key={stat.title}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-muted-foreground">{stat.title}</p>
-                    <p className="text-xl font-bold mt-1">{stat.value}</p>
-                  </div>
-                  <div className={`h-10 w-10 rounded-lg ${stat.color} flex items-center justify-center`}>
-                    <stat.icon className="h-5 w-5" />
-                  </div>
+            <Card key={stat.title} className={dashboardCard.base}>
+              <CardContent className={dashboardCard.compactStatContent}>
+                <div>
+                  <p className={responsive.bodyMuted}>{stat.title}</p>
+                  <p className={dashboardCard.compactStatValue}>{stat.value}</p>
+                </div>
+                <div className={`h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-lg ${stat.color} flex items-center justify-center flex-shrink-0`}>
+                  <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </div>
               </CardContent>
             </Card>
@@ -205,14 +204,15 @@ const AdminReports = () => {
 
           <TabsContent value="overview" className="space-y-4">
             <div className="grid lg:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader className="p-4">
-                  <CardTitle className="text-base">Appointments by Specialty</CardTitle>
-                  <CardDescription className="text-xs">Number of appointments per specialty</CardDescription>
+              <Card className={dashboardCard.base}>
+                <CardHeader className={dashboardCard.compactHeader}>
+                  <CardTitle className={responsive.cardTitle}>Appointments by Specialty</CardTitle>
+                  <CardDescription className={responsive.cardDesc}>Number of appointments per specialty</CardDescription>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-hidden">
                   {specialtyAppointments && specialtyAppointments.length > 0 ? (
-                    <Table>
+                    <div className={dashboardCard.tableWrapper}>
+                    <Table className={dashboardCard.tableMinWidth}>
                       <TableHeader>
                         <TableRow>
                           <TableHead className="h-9">Specialty</TableHead>
@@ -224,18 +224,19 @@ const AdminReports = () => {
                       <TableBody>
                         {specialtyAppointments.map((item: any) => (
                           <TableRow key={item.specialtyId}>
-                            <TableCell className="py-2 font-medium">{item.Specialty?.name || 'Unknown'}</TableCell>
-                            <TableCell className="py-2 text-right">{item.appointmentCount}</TableCell>
-                            <TableCell className="py-2 text-right text-xs text-muted-foreground">
+                            <TableCell className="font-medium">{item.Specialty?.name || 'Unknown'}</TableCell>
+                            <TableCell className="text-right">{item.appointmentCount}</TableCell>
+                            <TableCell className="text-right text-muted-foreground">
                               MWK {parseFloat(item.avgRevenue || 0).toLocaleString()}
                             </TableCell>
-                            <TableCell className="py-2 text-right font-semibold">
+                            <TableCell className="text-right font-semibold">
                               MWK {parseFloat(item.totalRevenue || 0).toLocaleString()}
                             </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
+                    </div>
                   ) : (
                     <div className="text-center py-8 text-sm text-muted-foreground">
                       No appointment data available
@@ -244,14 +245,15 @@ const AdminReports = () => {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="p-4">
-                  <CardTitle className="text-base">Appointment Status</CardTitle>
-                  <CardDescription className="text-xs">Breakdown by current status</CardDescription>
+              <Card className={dashboardCard.base}>
+                <CardHeader className={dashboardCard.compactHeader}>
+                  <CardTitle className={responsive.cardTitle}>Appointment Status</CardTitle>
+                  <CardDescription className={responsive.cardDesc}>Breakdown by current status</CardDescription>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-hidden">
                   {appointmentStats?.byStatus && appointmentStats.byStatus.length > 0 ? (
-                    <Table>
+                    <div className={dashboardCard.tableWrapper}>
+                    <Table className={dashboardCard.tableMinWidth}>
                       <TableHeader>
                         <TableRow>
                           <TableHead className="h-9">Status</TableHead>
@@ -263,18 +265,19 @@ const AdminReports = () => {
                       <TableBody>
                         {appointmentStats.byStatus.map((item: any) => (
                           <TableRow key={item.status}>
-                            <TableCell className="py-2 font-medium capitalize">{item.status}</TableCell>
-                            <TableCell className="py-2 text-right">{item.count}</TableCell>
-                            <TableCell className="py-2 text-right text-xs">
+                            <TableCell className="font-medium capitalize">{item.status}</TableCell>
+                            <TableCell className="text-right">{item.count}</TableCell>
+                            <TableCell className="text-right">
                               {((item.count / appointmentStats.total) * 100).toFixed(1)}%
                             </TableCell>
-                            <TableCell className="py-2 text-right font-semibold">
+                            <TableCell className="text-right font-semibold">
                               MWK {parseFloat(item.totalAmount || 0).toLocaleString()}
                             </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
+                    </div>
                   ) : (
                     <div className="text-center py-8 text-sm text-muted-foreground">
                       No appointment data available
@@ -284,27 +287,27 @@ const AdminReports = () => {
               </Card>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>System Performance Metrics</CardTitle>
-                <CardDescription>Key performance indicators for the platform</CardDescription>
+            <Card className={dashboardCard.base}>
+              <CardHeader className={dashboardCard.compactHeader}>
+                <CardTitle className={responsive.cardTitle}>System Performance Metrics</CardTitle>
+                <CardDescription className={responsive.cardDesc}>Key performance indicators for the platform</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid sm:grid-cols-3 gap-6">
-                  <div className="text-center p-4 rounded-lg bg-muted/50">
-                    <BarChart3 className="h-8 w-8 mx-auto text-primary mb-2" />
-                    <p className="text-2xl font-bold">{usersData?.filter((u: any) => u.isActive)?.length || 0}</p>
-                    <p className="text-sm text-muted-foreground">Active Users</p>
+              <CardContent className={dashboardCard.compactBody}>
+                <div className="grid sm:grid-cols-3 gap-3">
+                  <div className={dashboardCard.balanceBlockPrimary}>
+                    <BarChart3 className="h-6 w-6 sm:h-7 sm:w-7 mx-auto text-primary mb-1" />
+                    <p className={dashboardCard.compactStatValue}>{usersData?.filter((u: any) => u.isActive)?.length || 0}</p>
+                    <p className={responsive.bodyMuted}>Active Users</p>
                   </div>
-                  <div className="text-center p-4 rounded-lg bg-muted/50">
-                    <Users className="h-8 w-8 mx-auto text-success mb-2" />
-                    <p className="text-2xl font-bold">{usersData?.filter((u: any) => u.Role?.name === 'caregiver' && u.isActive)?.length || 0}</p>
-                    <p className="text-sm text-muted-foreground">Active Caregivers</p>
+                  <div className={dashboardCard.balanceBlockSuccess}>
+                    <Users className="h-6 w-6 sm:h-7 sm:w-7 mx-auto text-success mb-1" />
+                    <p className={dashboardCard.compactStatValue}>{usersData?.filter((u: any) => u.Role?.name === 'caregiver' && u.isActive)?.length || 0}</p>
+                    <p className={responsive.bodyMuted}>Active Caregivers</p>
                   </div>
-                  <div className="text-center p-4 rounded-lg bg-muted/50">
-                    <TrendingUp className="h-8 w-8 mx-auto text-accent mb-2" />
-                    <p className="text-2xl font-bold">{usersData?.filter((u: any) => u.Role?.name === 'patient')?.length || 0}</p>
-                    <p className="text-sm text-muted-foreground">Total Patients</p>
+                  <div className={dashboardCard.balanceBlockWarning}>
+                    <TrendingUp className="h-6 w-6 sm:h-7 sm:w-7 mx-auto text-accent mb-1" />
+                    <p className={dashboardCard.compactStatValue}>{usersData?.filter((u: any) => u.Role?.name === 'patient')?.length || 0}</p>
+                    <p className={responsive.bodyMuted}>Total Patients</p>
                   </div>
                 </div>
               </CardContent>
@@ -312,14 +315,15 @@ const AdminReports = () => {
           </TabsContent>
 
           <TabsContent value="caregivers" className="space-y-4">
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle className="text-base">Top Performing Caregivers</CardTitle>
-                <CardDescription className="text-xs">Ranked by appointments and revenue</CardDescription>
+            <Card className={dashboardCard.base}>
+              <CardHeader className={dashboardCard.compactHeader}>
+                <CardTitle className={responsive.cardTitle}>Top Performing Caregivers</CardTitle>
+                <CardDescription className={responsive.cardDesc}>Ranked by appointments and revenue</CardDescription>
               </CardHeader>
-              <CardContent className="p-0">
+              <CardContent className="p-0 overflow-hidden">
                 {topCaregivers && topCaregivers.length > 0 ? (
-                  <Table>
+                  <div className={dashboardCard.tableWrapper}>
+                  <Table className={dashboardCard.tableMinWidth}>
                     <TableHeader>
                       <TableRow>
                         <TableHead className="h-9 w-12">Rank</TableHead>
@@ -335,30 +339,31 @@ const AdminReports = () => {
                         .sort((a: any, b: any) => parseFloat(b.totalEarnings || 0) - parseFloat(a.totalEarnings || 0))
                         .map((item: any, index: number) => (
                           <TableRow key={item.caregiverId}>
-                            <TableCell className="py-2">
-                              <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 text-primary text-xs font-bold">
+                            <TableCell>
+                              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
                                 #{index + 1}
                               </div>
                             </TableCell>
-                            <TableCell className="py-2 font-medium">
+                            <TableCell className="font-medium">
                               {item.Caregiver?.User?.firstName} {item.Caregiver?.User?.lastName}
                             </TableCell>
-                            <TableCell className="py-2 text-xs text-muted-foreground">
+                            <TableCell className="text-muted-foreground">
                               {item.Caregiver?.User?.email}
                             </TableCell>
-                            <TableCell className="py-2 text-right font-semibold">
+                            <TableCell className="text-right font-semibold">
                               {item.appointmentCount}
                             </TableCell>
-                            <TableCell className="py-2 text-right font-bold text-success">
+                            <TableCell className="text-right font-bold text-success">
                               MWK {parseFloat(item.totalEarnings || 0).toLocaleString()}
                             </TableCell>
-                            <TableCell className="py-2 text-right text-xs text-muted-foreground">
+                            <TableCell className="text-right text-muted-foreground">
                               MWK {(parseFloat(item.totalEarnings || 0) / item.appointmentCount).toLocaleString()}
                             </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>
                   </Table>
+                  </div>
                 ) : (
                   <div className="text-center py-12 text-sm text-muted-foreground">
                     <Award className="h-10 w-10 mx-auto mb-3 opacity-50" />
@@ -370,14 +375,15 @@ const AdminReports = () => {
           </TabsContent>
 
           <TabsContent value="appointments" className="space-y-4">
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle className="text-base">Revenue by Specialty</CardTitle>
-                <CardDescription className="text-xs">Total revenue generated per specialty (completed appointments)</CardDescription>
+            <Card className={dashboardCard.base}>
+              <CardHeader className={dashboardCard.compactHeader}>
+                <CardTitle className={responsive.cardTitle}>Revenue by Specialty</CardTitle>
+                <CardDescription className={responsive.cardDesc}>Total revenue generated per specialty (completed appointments)</CardDescription>
               </CardHeader>
-              <CardContent className="p-0">
+              <CardContent className="p-0 overflow-hidden">
                 {revenueBySpecialty && revenueBySpecialty.length > 0 ? (
-                  <Table>
+                  <div className={dashboardCard.tableWrapper}>
+                  <Table className={dashboardCard.tableMinWidth}>
                     <TableHeader>
                       <TableRow>
                         <TableHead className="h-9">Specialty</TableHead>
@@ -393,20 +399,21 @@ const AdminReports = () => {
                         const percentage = ((parseFloat(item.totalRevenue || 0) / totalRev) * 100).toFixed(1);
                         return (
                           <TableRow key={item.specialtyId}>
-                            <TableCell className="py-2 font-medium">{item.Specialty?.name || 'Unknown'}</TableCell>
-                            <TableCell className="py-2 text-right">{item.appointmentCount}</TableCell>
-                            <TableCell className="py-2 text-right font-bold text-success">
+                            <TableCell className="font-medium">{item.Specialty?.name || 'Unknown'}</TableCell>
+                            <TableCell className="text-right">{item.appointmentCount}</TableCell>
+                            <TableCell className="text-right font-bold text-success">
                               MWK {parseFloat(item.totalRevenue || 0).toLocaleString()}
                             </TableCell>
-                            <TableCell className="py-2 text-right text-xs text-muted-foreground">
+                            <TableCell className="text-right text-muted-foreground">
                               MWK {(parseFloat(item.totalRevenue || 0) / item.appointmentCount).toLocaleString()}
                             </TableCell>
-                            <TableCell className="py-2 text-right text-xs">{percentage}%</TableCell>
+                            <TableCell className="text-right">{percentage}%</TableCell>
                           </TableRow>
                         );
                       })}
                     </TableBody>
                   </Table>
+                  </div>
                 ) : (
                   <div className="text-center py-12 text-sm text-muted-foreground">
                     <DollarSign className="h-10 w-10 mx-auto mb-3 opacity-50" />
@@ -419,14 +426,15 @@ const AdminReports = () => {
 
           <TabsContent value="locations" className="space-y-4">
             <div className="grid lg:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader className="p-4">
-                  <CardTitle className="text-base">Caregivers by Location</CardTitle>
-                  <CardDescription className="text-xs">Distribution of caregivers across regions</CardDescription>
+              <Card className={dashboardCard.base}>
+                <CardHeader className={dashboardCard.compactHeader}>
+                  <CardTitle className={responsive.cardTitle}>Caregivers by Location</CardTitle>
+                  <CardDescription className={responsive.cardDesc}>Distribution of caregivers across regions</CardDescription>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-hidden">
                   {caregiversByLocation && caregiversByLocation.length > 0 ? (
-                    <Table>
+                    <div className={dashboardCard.tableWrapper}>
+                    <Table className={dashboardCard.tableMinWidth}>
                       <TableHeader>
                         <TableRow>
                           <TableHead className="h-9">Region</TableHead>
@@ -439,15 +447,16 @@ const AdminReports = () => {
                       <TableBody>
                         {caregiversByLocation.map((item: any, index: number) => (
                           <TableRow key={index}>
-                            <TableCell className="py-2 font-medium">{item.region || '-'}</TableCell>
-                            <TableCell className="py-2">{item.district || '-'}</TableCell>
-                            <TableCell className="py-2 text-xs text-muted-foreground">{item.traditionalAuthority || '-'}</TableCell>
-                            <TableCell className="py-2 text-xs text-muted-foreground">{item.village || '-'}</TableCell>
-                            <TableCell className="py-2 text-right font-semibold">{item.caregiverCount}</TableCell>
+                            <TableCell className="font-medium">{item.region || '-'}</TableCell>
+                            <TableCell>{item.district || '-'}</TableCell>
+                            <TableCell className="text-muted-foreground">{item.traditionalAuthority || '-'}</TableCell>
+                            <TableCell className="text-muted-foreground">{item.village || '-'}</TableCell>
+                            <TableCell className="text-right font-semibold">{item.caregiverCount}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
+                    </div>
                   ) : (
                     <div className="text-center py-12 text-sm text-muted-foreground">
                       <Users className="h-10 w-10 mx-auto mb-3 opacity-50" />
@@ -457,14 +466,15 @@ const AdminReports = () => {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="p-4">
-                  <CardTitle className="text-base">Patients by Location</CardTitle>
-                  <CardDescription className="text-xs">Distribution of patients across regions</CardDescription>
+              <Card className={dashboardCard.base}>
+                <CardHeader className={dashboardCard.compactHeader}>
+                  <CardTitle className={responsive.cardTitle}>Patients by Location</CardTitle>
+                  <CardDescription className={responsive.cardDesc}>Distribution of patients across regions</CardDescription>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 overflow-hidden">
                   {patientsByLocation && patientsByLocation.length > 0 ? (
-                    <Table>
+                    <div className={dashboardCard.tableWrapper}>
+                    <Table className={dashboardCard.tableMinWidth}>
                       <TableHeader>
                         <TableRow>
                           <TableHead className="h-9">Region</TableHead>
@@ -477,15 +487,16 @@ const AdminReports = () => {
                       <TableBody>
                         {patientsByLocation.map((item: any, index: number) => (
                           <TableRow key={index}>
-                            <TableCell className="py-2 font-medium">{item.region || '-'}</TableCell>
-                            <TableCell className="py-2">{item.district || '-'}</TableCell>
-                            <TableCell className="py-2 text-xs text-muted-foreground">{item.traditionalAuthority || '-'}</TableCell>
-                            <TableCell className="py-2 text-xs text-muted-foreground">{item.village || '-'}</TableCell>
-                            <TableCell className="py-2 text-right font-semibold">{item.patientCount}</TableCell>
+                            <TableCell className="font-medium">{item.region || '-'}</TableCell>
+                            <TableCell>{item.district || '-'}</TableCell>
+                            <TableCell className="text-muted-foreground">{item.traditionalAuthority || '-'}</TableCell>
+                            <TableCell className="text-muted-foreground">{item.village || '-'}</TableCell>
+                            <TableCell className="text-right font-semibold">{item.patientCount}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
+                    </div>
                   ) : (
                     <div className="text-center py-12 text-sm text-muted-foreground">
                       <Users className="h-10 w-10 mx-auto mb-3 opacity-50" />
@@ -496,14 +507,15 @@ const AdminReports = () => {
               </Card>
             </div>
 
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle className="text-base">Location Summary by Region</CardTitle>
-                <CardDescription className="text-xs">Combined view of caregivers and patients per region</CardDescription>
+            <Card className={dashboardCard.base}>
+              <CardHeader className={dashboardCard.compactHeader}>
+                <CardTitle className={responsive.cardTitle}>Location Summary by Region</CardTitle>
+                <CardDescription className={responsive.cardDesc}>Combined view of caregivers and patients per region</CardDescription>
               </CardHeader>
-              <CardContent className="p-0">
+              <CardContent className="p-0 overflow-hidden">
                 {locationSummary && locationSummary.length > 0 ? (
-                  <Table>
+                  <div className={dashboardCard.tableWrapper}>
+                  <Table className={dashboardCard.tableMinWidth}>
                     <TableHeader>
                       <TableRow>
                         <TableHead className="h-9">Region</TableHead>
@@ -520,17 +532,17 @@ const AdminReports = () => {
                           : 'N/A';
                         return (
                           <TableRow key={item.region}>
-                            <TableCell className="py-2 font-medium">{item.region || 'Unknown'}</TableCell>
-                            <TableCell className="py-2 text-right text-primary font-semibold">
+                            <TableCell className="font-medium">{item.region || 'Unknown'}</TableCell>
+                            <TableCell className="text-right text-primary font-semibold">
                               {item.caregiverCount}
                             </TableCell>
-                            <TableCell className="py-2 text-right text-secondary font-semibold">
+                            <TableCell className="text-right text-secondary font-semibold">
                               {item.patientCount}
                             </TableCell>
-                            <TableCell className="py-2 text-right font-bold">
+                            <TableCell className="text-right font-bold">
                               {item.caregiverCount + item.patientCount}
                             </TableCell>
-                            <TableCell className="py-2 text-right text-xs text-muted-foreground">
+                            <TableCell className="text-right text-muted-foreground">
                               {ratio}
                             </TableCell>
                           </TableRow>
@@ -538,6 +550,7 @@ const AdminReports = () => {
                       })}
                     </TableBody>
                   </Table>
+                  </div>
                 ) : (
                   <div className="text-center py-12 text-sm text-muted-foreground">
                     <BarChart3 className="h-10 w-10 mx-auto mb-3 opacity-50" />

@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { api } from '@/lib/api';
+import { dashboardCard, responsive } from '@/theme';
 import {
   Settings,
   Video,
@@ -194,8 +195,8 @@ const TeleconferenceAdmin = () => {
     <DashboardLayout userRole={user?.role || 'admin'}>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Teleconference Management</h1>
-          <p className="text-muted-foreground">Manage video consultation settings and sessions</p>
+          <h1 className={responsive.pageTitle}>Teleconference Management</h1>
+          <p className={responsive.pageSubtitle}>Manage video consultation settings and sessions</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -216,12 +217,12 @@ const TeleconferenceAdmin = () => {
 
           {/* SESSIONS TAB */}
           <TabsContent value="sessions" className="space-y-4">
-            <Card>
-              <CardHeader>
+            <Card className={dashboardCard.base}>
+              <CardHeader className={dashboardCard.compactHeader}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Teleconference Sessions</CardTitle>
-                    <CardDescription>View and manage all video consultation sessions</CardDescription>
+                    <CardTitle className={responsive.cardTitle}>Teleconference Sessions</CardTitle>
+                    <CardDescription className={responsive.cardDesc}>View and manage all video consultation sessions</CardDescription>
                   </div>
                   <div className="flex gap-2">
                     <select
@@ -244,9 +245,9 @@ const TeleconferenceAdmin = () => {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="rounded-md border">
-                  <Table>
+              <CardContent className="p-0 overflow-hidden">
+                <div className={dashboardCard.tableWrapper}>
+                  <Table className={dashboardCard.tableMinWidth}>
                     <TableHeader>
                       <TableRow>
                         <TableHead>ID</TableHead>
@@ -373,10 +374,10 @@ const TeleconferenceAdmin = () => {
 
           {/* SETTINGS TAB */}
           <TabsContent value="settings" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Meeting Settings</CardTitle>
-                <CardDescription>Configure teleconference behavior and features</CardDescription>
+            <Card className={dashboardCard.base}>
+              <CardHeader className={dashboardCard.compactHeader}>
+                <CardTitle className={responsive.cardTitle}>Meeting Settings</CardTitle>
+                <CardDescription className={responsive.cardDesc}>Configure teleconference behavior and features</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
@@ -496,68 +497,68 @@ const TeleconferenceAdmin = () => {
 
           {/* STATISTICS TAB */}
           <TabsContent value="statistics" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Sessions</CardTitle>
-                  <Video className="h-4 w-4 text-muted-foreground" />
+            <div className={dashboardCard.compactStatGrid}>
+              <Card className={dashboardCard.base}>
+                <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 pb-1">
+                  <CardTitle className={responsive.cardTitle}>Total Sessions</CardTitle>
+                  <Video className="h-3.5 w-3.5 text-muted-foreground" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{statistics.total_sessions || 0}</div>
+                <CardContent className="px-3 sm:px-4 pb-3">
+                  <div className={dashboardCard.compactStatValue}>{statistics.total_sessions || 0}</div>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Completed Sessions</CardTitle>
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <Card className={dashboardCard.base}>
+                <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 pb-1">
+                  <CardTitle className={responsive.cardTitle}>Completed Sessions</CardTitle>
+                  <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{statistics.completed_sessions || 0}</div>
+                <CardContent className="px-3 sm:px-4 pb-3">
+                  <div className={`${dashboardCard.compactStatValue} text-success`}>{statistics.completed_sessions || 0}</div>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
-                  <Clock className="h-4 w-4 text-blue-600" />
+              <Card className={dashboardCard.base}>
+                <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 pb-1">
+                  <CardTitle className={responsive.cardTitle}>Active Sessions</CardTitle>
+                  <Clock className="h-3.5 w-3.5 text-primary" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{statistics.active_sessions || 0}</div>
+                <CardContent className="px-3 sm:px-4 pb-3">
+                  <div className={`${dashboardCard.compactStatValue} text-primary`}>{statistics.active_sessions || 0}</div>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Avg Duration</CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
+              <Card className={dashboardCard.base}>
+                <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 pb-1">
+                  <CardTitle className={responsive.cardTitle}>Avg Duration</CardTitle>
+                  <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
+                <CardContent className="px-3 sm:px-4 pb-3">
+                  <div className={dashboardCard.compactStatValue}>
                     {statistics.avg_duration ? `${Math.floor(Number(statistics.avg_duration) / 60)} min` : '0 min'}
                   </div>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Avg Participants</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
+              <Card className={dashboardCard.base}>
+                <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 pb-1">
+                  <CardTitle className={responsive.cardTitle}>Avg Participants</CardTitle>
+                  <Users className="h-3.5 w-3.5 text-muted-foreground" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
+                <CardContent className="px-3 sm:px-4 pb-3">
+                  <div className={dashboardCard.compactStatValue}>
                     {statistics.avg_participants ? Number(statistics.avg_participants).toFixed(1) : '0'}
                   </div>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Disconnections</CardTitle>
-                  <AlertCircle className="h-4 w-4 text-orange-600" />
+              <Card className={dashboardCard.base}>
+                <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-4 pb-1">
+                  <CardTitle className={responsive.cardTitle}>Total Disconnections</CardTitle>
+                  <AlertCircle className="h-3.5 w-3.5 text-warning" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{statistics.total_disconnections || 0}</div>
+                <CardContent className="px-3 sm:px-4 pb-3">
+                  <div className={`${dashboardCard.compactStatValue} text-warning`}>{statistics.total_disconnections || 0}</div>
                 </CardContent>
               </Card>
             </div>

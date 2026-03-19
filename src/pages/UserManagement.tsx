@@ -33,6 +33,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { usePermissions } from "@/hooks/usePermissions";
 import { api } from "@/lib/api";
 import { mapUserRole } from "@/lib/roleMapper";
+import { dashboardCard, dashboardTokens, responsive } from "@/theme";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -348,56 +349,61 @@ const UserManagement = () => {
       title: "Total Users",
       value: statsData?.total || 0,
       icon: Users,
-      color: "bg-primary/10 text-primary",
+      well: dashboardCard.iconWell.primary,
+      iconColor: "text-primary",
     },
     {
       title: "Active Users",
       value: statsData?.active || 0,
       icon: UserCheck,
-      color: "bg-success/10 text-success",
+      well: dashboardCard.iconWell.success,
+      iconColor: "text-success",
     },
     {
       title: "Caregivers",
       value: statsData?.caregivers || 0,
       icon: Heart,
-      color: "bg-secondary/10 text-secondary",
+      well: dashboardCard.iconWell.secondary,
+      iconColor: "text-secondary",
     },
     {
       title: "Patients",
       value: statsData?.patients || 0,
       icon: Activity,
-      color: "bg-accent/10 text-accent",
+      well: dashboardCard.iconWell.accent,
+      iconColor: "text-accent",
     },
     {
       title: "Accountants",
       value: statsData?.accountants || 0,
       icon: Users,
-      color: "bg-blue-100 text-blue-600",
+      well: dashboardCard.iconWell.primary,
+      iconColor: "text-primary",
     },
     {
       title: "Regional Managers",
       value: statsData?.regionalManagers || 0,
       icon: UserCheck,
-      color: "bg-green-100 text-green-600",
+      well: dashboardCard.iconWell.secondary,
+      iconColor: "text-secondary",
     },
     {
       title: "System Managers",
       value: statsData?.systemManagers || 0,
       icon: UserCheck,
-      color: "bg-purple-100 text-purple-600",
+      well: dashboardCard.iconWell.warning,
+      iconColor: "text-warning",
     },
   ];
 
   return (
     <ProtectedRoute requiredPermissions={['view_caregivers', 'view_patients', 'view_accountants', 'view_regional_managers', 'view_system_managers']}>
       <DashboardLayout userRole={mapUserRole(user?.role || 'system_manager')}>
-        <div className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-4 md:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="font-display text-2xl md:text-3xl font-bold">User Management</h1>
-            <p className="text-muted-foreground mt-1">
-              Manage and monitor all system users
-            </p>
+            <h1 className={responsive.pageTitle}>User Management</h1>
+            <p className={responsive.pageSubtitle}>Manage and monitor all system users</p>
           </div>
           {hasPermission('create_users') && (
             <Button onClick={() => setCreateUserDialog(true)} className="gap-2">
@@ -408,16 +414,16 @@ const UserManagement = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
           {stats.map((stat) => (
-            <Card key={stat.title} className="p-2">
-              <CardContent className="p-2">
+            <Card key={stat.title} className={dashboardCard.base}>
+              <CardContent className="p-2 sm:p-3">
                 <div className="text-center">
-                  <div className={`h-6 w-6 rounded ${stat.color} flex items-center justify-center mx-auto mb-1`}>
-                    <stat.icon className="h-3 w-3" />
+                  <div className={`${stat.well} !h-7 !w-7 sm:!h-9 sm:!w-9 mx-auto mb-1`}>
+                    <stat.icon className={`h-3 w-3 sm:h-4 sm:w-4 ${stat.iconColor}`} />
                   </div>
-                  <p className="text-xs text-muted-foreground mb-1">{stat.title}</p>
-                  <p className="text-lg font-bold">{stat.value}</p>
+                  <p className={`${responsive.bodyMuted} leading-tight mb-0.5`}>{stat.title}</p>
+                  <p className="text-sm sm:text-base md:text-lg font-bold">{stat.value}</p>
                 </div>
               </CardContent>
             </Card>
@@ -425,12 +431,12 @@ const UserManagement = () => {
         </div>
 
         {/* Search and Filters */}
-        <Card>
-          <CardHeader className="p-4">
-            <CardTitle className="text-base">Search & Filters</CardTitle>
-            <CardDescription className="text-xs">Find users by name, email, role, specialty, or status</CardDescription>
+        <Card className={dashboardCard.base}>
+          <CardHeader className="p-3 sm:p-5">
+            <CardTitle className={responsive.cardTitle}>Search & Filters</CardTitle>
+            <CardDescription className={responsive.cardDesc}>Find users by name, email, role, specialty, or status</CardDescription>
           </CardHeader>
-          <CardContent className="p-4 pt-0">
+          <CardContent className="p-3 pt-0 sm:p-5 sm:pt-0">
             <div className="grid md:grid-cols-4 gap-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -492,26 +498,23 @@ const UserManagement = () => {
         </Card>
 
         {/* Users Table */}
-        <Card>
-          <CardHeader className="p-4">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Users ({totalUsers})</CardTitle>
-              <div className="text-xs text-muted-foreground">
-                Page {currentPage} of {totalPages} • Showing {users.length} users
-              </div>
-            </div>
+        <Card className={`${dashboardCard.base} min-w-0`}>
+          <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-5">
+            <CardTitle className={responsive.cardTitle}>Users ({totalUsers})</CardTitle>
+            <p className={responsive.bodyMuted}>Page {currentPage}/{totalPages} • {users.length} shown</p>
           </CardHeader>
           <CardContent className="p-0">
+            <div className={dashboardCard.tableWrapper}>
             <Table>
-              <TableHeader>
+                <TableHeader>
                 <TableRow>
-                  <TableHead className="h-9">User</TableHead>
-                  <TableHead className="h-9">Role</TableHead>
-                  <TableHead className="h-9">Contact</TableHead>
-                  <TableHead className="h-9">Account Status</TableHead>
-                  <TableHead className="h-9">Verification</TableHead>
-                  <TableHead className="h-9">Joined</TableHead>
-                  <TableHead className="h-9 text-right">Actions</TableHead>
+                  <TableHead className={dashboardCard.th}>User</TableHead>
+                  <TableHead className={dashboardCard.th}>Role</TableHead>
+                  <TableHead className={dashboardCard.th}>Contact</TableHead>
+                  <TableHead className={dashboardCard.th}>Account Status</TableHead>
+                  <TableHead className={dashboardCard.th}>Verification</TableHead>
+                  <TableHead className={dashboardCard.th}>Joined</TableHead>
+                  <TableHead className={`${dashboardCard.th} text-right`}>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -535,50 +538,50 @@ const UserManagement = () => {
                     if (roleName === 'system_manager' && !hasPermission('view_system_managers')) return false;
                     return true;
                   }).map((user: any) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="py-2">
+                    <TableRow key={user.id} className={dashboardCard.tr}>
+                      <TableCell>
                         <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
+                          <div className={`${dashboardTokens.avatar} flex-shrink-0`}>
                             {user.firstName?.charAt(0)}
                           </div>
-                          <div>
-                            <p className="font-medium text-sm">{user.firstName} {user.lastName}</p>
-                            <p className="text-xs text-muted-foreground">{user.email}</p>
+                          <div className="min-w-0">
+                            <p className={`font-medium whitespace-nowrap ${responsive.body}`}>{user.firstName} {user.lastName}</p>
+                            <p className={`${responsive.bodyMuted} truncate max-w-[120px] sm:max-w-[160px]`}>{user.email}</p>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="py-2">
-                        <Badge variant="outline" className="text-xs capitalize">
+                      <TableCell>
+                        <Badge variant="outline" className="capitalize whitespace-nowrap">
                           {user.Role?.name?.replace('_', ' ')}
                         </Badge>
                       </TableCell>
-                      <TableCell className="py-2 text-xs text-muted-foreground">
+                      <TableCell className="text-muted-foreground whitespace-nowrap">
                         {user.phone || '-'}
                       </TableCell>
-                      <TableCell className="py-2">
-                        <Badge variant={user.isActive ? "default" : "secondary"} className="text-xs">
+                      <TableCell>
+                        <Badge variant={user.isActive ? "default" : "secondary"} className="whitespace-nowrap">
                           {user.isActive ? "Active" : "Inactive"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="py-2">
+                      <TableCell>
                         {user.role === 'caregiver' && user.Caregiver ? (
-                          <Badge 
+                          <Badge
                             variant={
                               user.Caregiver.verificationStatus === 'APPROVED' ? "default" :
                               user.Caregiver.verificationStatus === 'REJECTED' ? "destructive" : "secondary"
-                            } 
-                            className="text-xs"
+                            }
+                            className="whitespace-nowrap"
                           >
-                            {user.Caregiver.verificationStatus === 'PENDING' ? 'Awaiting Verification' : user.Caregiver.verificationStatus}
+                            {user.Caregiver.verificationStatus === 'PENDING' ? 'Awaiting' : user.Caregiver.verificationStatus}
                           </Badge>
                         ) : (
-                          <span className="text-xs text-muted-foreground">N/A</span>
+                          <span className={responsive.bodyMuted}>N/A</span>
                         )}
                       </TableCell>
-                      <TableCell className="py-2 text-xs text-muted-foreground">
+                      <TableCell className="text-muted-foreground whitespace-nowrap">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </TableCell>
-                      <TableCell className="py-2 text-right">
+                      <TableCell className="text-right">
                         {user.Role?.name !== 'system_manager' ? (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -692,6 +695,7 @@ const UserManagement = () => {
                 )}
               </TableBody>
             </Table>
+            </div>
             
             {/* Pagination */}
             {totalPages > 1 && (
@@ -770,8 +774,8 @@ const UserManagement = () => {
         }}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>{confirmDialog.title}</AlertDialogTitle>
-              <AlertDialogDescription>{confirmDialog.description}</AlertDialogDescription>
+              <AlertDialogTitle className={responsive.dialogTitle}>{confirmDialog.title}</AlertDialogTitle>
+              <AlertDialogDescription className={responsive.dialogDesc}>{confirmDialog.description}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel disabled={toggleUserMutation.isPending}>
@@ -790,10 +794,8 @@ const UserManagement = () => {
         <Dialog open={createUserDialog} onOpenChange={setCreateUserDialog}>
           <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Create New User</DialogTitle>
-              <DialogDescription>
-                Create a new user account with role assignment
-              </DialogDescription>
+              <DialogTitle className={responsive.dialogTitle}>Create New User</DialogTitle>
+              <DialogDescription className={responsive.dialogDesc}>Create a new user account with role assignment</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div className="grid grid-cols-2 gap-3">
@@ -909,10 +911,8 @@ const UserManagement = () => {
         }}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Reject Caregiver Application</DialogTitle>
-              <DialogDescription>
-                Please provide a reason for rejecting this caregiver application
-              </DialogDescription>
+              <DialogTitle className={responsive.dialogTitle}>Reject Caregiver Application</DialogTitle>
+              <DialogDescription className={responsive.dialogDesc}>Please provide a reason for rejecting this caregiver application</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
@@ -952,18 +952,16 @@ const UserManagement = () => {
         }}>
           <AlertDialogContent className="border-destructive/50">
             <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center gap-2 text-destructive">
-                <Trash2 className="h-5 w-5" />
+              <AlertDialogTitle className={`flex items-center gap-2 text-destructive ${responsive.dialogTitle}`}>
+                <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                 Permanently Delete User
               </AlertDialogTitle>
-              <AlertDialogDescription className="space-y-3">
-                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 text-destructive text-sm font-medium">
+              <AlertDialogDescription className={`space-y-3 ${responsive.dialogDesc}`}>
+                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 text-destructive font-medium">
                   Warning: This action is irreversible and cannot be undone.
                 </div>
-                <p>
-                  You are about to permanently delete <strong className="text-foreground">{deleteDialog.userName}</strong> and all their associated data from the system, including:
-                </p>
-                <ul className="list-disc pl-5 space-y-1 text-sm">
+                <p>You are about to permanently delete <strong className="text-foreground">{deleteDialog.userName}</strong> and all their associated data, including:</p>
+                <ul className="list-disc pl-5 space-y-1">
                   <li>User account and profile information</li>
                   <li>All associated records (appointments, reports, etc.)</li>
                   <li>Any linked caregiver/patient data</li>
