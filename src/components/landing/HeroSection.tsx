@@ -1,122 +1,90 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Play, Shield, Clock, Users, Star } from "lucide-react";
+import { CLOUDINARY_IMAGES } from "@/config/images";
+import { ArrowRight, Shield, Clock, Users, Star, CheckCircle, Activity } from "lucide-react";
+import { usePublicStats } from "@/hooks/usePublicStats";
 
 const HeroSection = () => {
+  const { data } = usePublicStats();
+
+  const metrics = [
+    { value: data ? `${data.patients.toLocaleString()}+` : "500+", label: "Families Served", icon: Users },
+    { value: data ? `${data.averageRating}/5` : "4.9/5", label: "Patient Rating", icon: Star },
+    { value: "24/7", label: "Support Available", icon: Clock },
+    { value: data ? `${data.caregivers}+` : "0+", label: "Verified Caregivers", icon: Shield },
+  ];
+
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50 lg:py-18">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-green-200/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-teal-200/20 rounded-full blur-3xl" />
-      </div>
+    <section className="bg-white border-b border-border">
+      <div className="container">
+        <div className="grid lg:grid-cols-2 min-h-[520px]">
 
-      <div className="container relative">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <div className="space-y-8 animate-fade-in">
-            <Badge variant="secondary" className="gap-2 px-4 py-2 bg-blue-100 text-blue-800 border-blue-200">
-              <Shield className="h-4 w-4" />
-              Trusted by 10,000+ Families
-            </Badge>
+          {/* Left — Content Panel */}
+          <div className="flex flex-col justify-center py-12 pr-0 lg:pr-12 border-r-0 lg:border-r border-border">
+            <div className="flex items-center gap-2 mb-6">
+              <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-secondary border border-secondary/30 bg-secondary/5 px-3 py-1 rounded-sm">
+                <Activity className="h-3 w-3" /> Platform Active
+              </span>
+              <span className="text-xs text-muted-foreground">Malawi's #1 Home Care Network</span>
+            </div>
 
-            <h1 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold leading-tight">
-              Welcome to <span className="text-gradient">CareConnect</span> - Quality Home Care,{" "}
-              <span className="text-gradient">Right at Your Doorstep</span>
+            <h1 className="font-display text-3xl md:text-4xl lg:text-[2.6rem] font-bold leading-tight text-foreground mb-4">
+              Professional Home Healthcare,{" "}
+              <span className="text-primary">Delivered to Your Door</span>
             </h1>
 
-            <p className="text-base text-muted-foreground max-w-xl">
-              Connect with trained, compassionate caregivers who provide personalized 
-              home based care services in the comfort of your home. From nursing care to 
-              physiotherapy, we've got you covered. Please note that we are not a hospital 
-              but a platform to connect homebased caregivers and patients who need homebased 
-              care services.
+            <p className="text-sm text-muted-foreground max-w-lg leading-relaxed mb-8 border-l-2 border-primary/30 pl-4">
+              CareConnect is a licensed platform connecting patients with verified home-based
+              caregivers across all regions of Malawi. We provide supportive care services —
+              not medical treatment. All patients must have a physician for diagnosis and prescriptions.
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-3 mb-10">
               <Link to="/register">
-                <Button size="lg" className="gap-2 bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white shadow-lg shadow-blue-500/25">
-                  Get Started Free
-                  <ArrowRight className="h-4 w-4" />
+                <Button size="default" className="gap-2 bg-primary text-white hover:bg-primary/90 rounded-sm font-semibold">
+                  Register as Patient <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-         
+              <Link to="/caregivers">
+                <Button size="default" variant="outline" className="gap-2 rounded-sm font-semibold border-border">
+                  Browse Caregivers
+                </Button>
+              </Link>
             </div>
 
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap gap-8 pt-8 border-t border-border/50">
-              <div className="flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-sm"
-                    >
-                      {String.fromCharCode(64 + i)}
-                    </div>
-                  ))}
-                </div>
-                <div className="text-sm">
-                  <p className="font-semibold">500+</p>
-                  <p className="text-muted-foreground">Verified Caregivers</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 text-accent">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="h-4 w-4 fill-current" />
-                  ))}
-                </div>
-                <div className="text-sm">
-                  <p className="font-semibold">4.9/5</p>
-                  <p className="text-muted-foreground">Patient Rating</p>
-                </div>
-              </div>
+            <div className="flex flex-wrap gap-4 pt-6 border-t border-border">
+              {["Licensed & Regulated", "Verified Professionals", "Secure Payments"].map((item) => (
+                <span key={item} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <CheckCircle className="h-3.5 w-3.5 text-secondary" />
+                  {item}
+                </span>
+              ))}
             </div>
           </div>
 
-          {/* Hero Image/Illustration */}
-          <div className="relative hidden lg:block">
-            <div className="relative ">
-              {/* Main Card */}
-              <div className="bg-card rounded-3xl shadow-xl p-8 border">
-                <div className="aspect-square rounded-2xl overflow-hidden">
-                  <img 
-                    src="landing2.png" 
-                    alt="CareConnect Healthcare" 
-                    className="w-full h-full object-fit"
-                  />
+          {/* Right — Metrics + Image Panel */}
+          <div className="hidden lg:flex flex-col">
+            <div className="grid grid-cols-2 border-b border-border">
+              {metrics.map((m, i) => (
+                <div
+                  key={m.label}
+                  className={`p-6 flex flex-col gap-1 ${i % 2 === 0 ? "border-r border-border" : ""} ${i < 2 ? "border-b border-border" : ""}`}
+                >
+                  <m.icon className="h-4 w-4 text-primary mb-1" />
+                  <span className="text-2xl font-bold text-foreground font-display">{m.value}</span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-wide font-medium">{m.label}</span>
                 </div>
-              </div>
-
-              {/* Floating Cards */}
-              <div className="absolute top-6 -left-12 bg-white rounded-2xl shadow-xl p-4 border border-green-100">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm text-gray-800">Verified & Licensed</p>
-                    <p className="text-xs text-gray-600">100% Background Checked</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl p-4 border border-blue-100">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-                    <Clock className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm text-gray-800">24/7 Available</p>
-                    <p className="text-xs text-gray-600">Round-the-clock care</p>
-                  </div>
-                </div>
-              </div>
+              ))}
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <img
+                src={CLOUDINARY_IMAGES.landing2}
+                alt="CareConnect Healthcare Professional"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
+
         </div>
       </div>
     </section>

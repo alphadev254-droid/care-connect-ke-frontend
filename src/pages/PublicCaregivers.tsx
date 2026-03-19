@@ -183,20 +183,20 @@ const PublicCaregivers = () => {
       
       {/* Hero Section */}
       <section 
-        className="py-4 lg:py-6 relative bg-cover bg-no-repeat rounded-b-3xl overflow-hidden"
+        className="py-6 lg:py-8 relative bg-cover bg-no-repeat rounded-b-3xl overflow-hidden"
         style={{ 
-          backgroundImage: `url(${CLOUDINARY_IMAGES.caregivers})`, 
+          backgroundImage: `url(caregivers.png)`, 
           backgroundPosition: '0 45%',
           backgroundSize: 'cover'
         }}
       >
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-black/60"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-8 items-center mb-6">
             <div className="text-center lg:text-left">
               <div className="flex justify-center lg:justify-start mb-4">
-                <div className="h-12 w-12 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                  <Heart className="h-6 w-6 text-primary-foreground" />
+                <div className="h-9 w-9 rounded-md bg-primary/10 flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-primary" />
                 </div>
               </div>
               <h1 className="font-display text-2xl md:text-3xl font-bold mb-3 text-white">
@@ -428,7 +428,7 @@ const PublicCaregivers = () => {
                 ].filter(Boolean).join(', ') || 'Location not specified';
 
                 return (
-                  <Card key={caregiver.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <Card key={caregiver.id} className="overflow-hidden border-t-2 border-primary/40 hover:shadow-md hover:border-primary/60 transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3 mb-3">
                         <Avatar className="h-12 w-12">
@@ -437,7 +437,7 @@ const PublicCaregivers = () => {
                             loading="lazy"
                             className="object-cover"
                           />
-                          <AvatarFallback className="bg-gradient-primary text-primary-foreground text-lg font-bold">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-lg font-bold">
                             {name.charAt(0) || 'C'}
                           </AvatarFallback>
                         </Avatar>
@@ -483,34 +483,18 @@ const PublicCaregivers = () => {
                         />
                       </div>
 
-                      {/* Specialties with Fees */}
+                      {/* Specialties */}
                       {caregiverData.Specialties && caregiverData.Specialties.length > 0 && (
-                        <div className="mb-3 space-y-2">
-                          {caregiverData.Specialties.slice(0, 2).map((specialty: any) => (
-                            <div key={specialty.id} className="p-2 rounded-md border bg-muted/30">
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs font-medium">{specialty.name}</span>
-                              </div>
-                              <div className="grid grid-cols-2 gap-2 text-xs">
-                                <div>
-                                  <span className="text-muted-foreground">Session:</span>
-                                  <span className="font-semibold text-primary ml-1">
-                                    MWK {specialty.sessionFee ? Number(specialty.sessionFee).toFixed(0) : '0'}
-                                  </span>
-                                </div>
-                                <div>
-                                  <span className="text-muted-foreground">Booking:</span>
-                                  <span className="font-semibold text-secondary ml-1">
-                                    MWK {specialty.bookingFee ? Number(specialty.bookingFee).toFixed(0) : '0'}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
+                        <div className="mb-3 flex flex-wrap gap-1">
+                          {caregiverData.Specialties.slice(0, 3).map((specialty: any) => (
+                            <Badge key={specialty.id} variant="outline" className="text-xs">
+                              {specialty.name}
+                            </Badge>
                           ))}
-                          {caregiverData.Specialties.length > 2 && (
-                            <p className="text-xs text-muted-foreground text-center">
-                              +{caregiverData.Specialties.length - 2} more specialt{caregiverData.Specialties.length - 2 === 1 ? 'y' : 'ies'}
-                            </p>
+                          {caregiverData.Specialties.length > 3 && (
+                            <Badge variant="outline" className="text-xs text-muted-foreground">
+                              +{caregiverData.Specialties.length - 3} more
+                            </Badge>
                           )}
                         </div>
                       )}
@@ -576,42 +560,32 @@ const PublicCaregivers = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16">
+      <section className="py-10 lg:py-12">
         <div className="container mx-auto px-4">
-          <Card className="p-8 lg:p-12 bg-white border border-slate-200 shadow-lg">
-            <CardContent className="p-0">
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-8">
-                <h3 className="font-display text-xl font-bold text-amber-800 mb-2">
-                  Important Notice
-                </h3>
-                <p className="text-amber-700">
-                  Our caregivers provide supportive care services and assistance - not medical treatment. 
-                  All patients must have a physician for medical diagnosis, treatment, and prescriptions. 
-                  CareConnect complements your doctor's care with supportive home services.
+          <div className="border border-border rounded-sm px-10 py-10">
+            <div className="bg-amber-50 border border-amber-200 rounded-sm p-4 mb-8">
+              <h3 className="font-semibold text-sm text-amber-800 mb-1">Important Notice</h3>
+              <p className="text-sm text-amber-700">
+                Our caregivers provide supportive care services and assistance - not medical treatment. 
+                All patients must have a physician for medical diagnosis, treatment, and prescriptions. 
+                CareConnect complements your doctor's care with supportive home services.
+              </p>
+            </div>
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <h2 className="font-display text-2xl font-bold mb-3">Ready to Get Started?</h2>
+                <p className="text-base text-muted-foreground max-w-lg">
+                  Join thousands of patients who trust CareConnect for their supportive healthcare needs.
                 </p>
               </div>
-              <div className="grid lg:grid-cols-2 gap-8 items-center">
-                <div className="text-left">
-                  <h2 className="font-display text-3xl font-bold mb-4 text-gray-900">
-                    Ready to Get Started?
-                  </h2>
-                  <p className="text-lg text-gray-600 mb-6">
-                    Join thousands of patients who trust CareConnect for their supportive healthcare needs
-                  </p>
-                </div>
-                <div className="text-center lg:text-right">
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-end">
-                    <Button size="lg" className="bg-primary text-white hover:bg-primary/90">
-                      Find Your Caregiver
-                    </Button>
-                    <Button size="lg" variant="outline">
-                      Learn More
-                    </Button>
-                  </div>
-                </div>
+              <div className="flex flex-col sm:flex-row gap-3 lg:justify-end">
+                <Button size="lg" className="bg-primary text-white hover:bg-primary/90">
+                  Find Your Caregiver
+                </Button>
+                <Button size="lg" variant="outline">Learn More</Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -637,7 +611,7 @@ const PublicCaregivers = () => {
                     loading="lazy"
                     className="object-cover"
                   />
-                  <AvatarFallback className="text-2xl bg-gradient-primary text-primary-foreground">
+                  <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
                     {profileDialog.caregiver.firstName?.charAt(0)}{profileDialog.caregiver.lastName?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>

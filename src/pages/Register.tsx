@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { api } from "@/lib/api";
+import { CLOUDINARY_IMAGES } from "@/config/images";
 
 const AVAILABILITY_DAYS = [
   { value: 1, label: 'Monday' },
@@ -669,7 +670,7 @@ const Register = () => {
           <Card className="border-0 shadow-xl overflow-hidden">
             <div className="grid lg:grid-cols-2">
               {/* Left Side - Image */}
-              <div className="hidden lg:block bg-cover bg-[center_20%] bg-no-repeat" style={{ backgroundImage: 'url(/mission.png)' }}>
+              <div className="hidden lg:block bg-cover bg-[center_20%] bg-no-repeat" style={{ backgroundImage: `url(${CLOUDINARY_IMAGES.mission})` }}>
                 <div className="w-full h-full bg-black/20"></div>
               </div>
               
@@ -677,7 +678,7 @@ const Register = () => {
               <div className="p-6">
                 <CardHeader className="text-center pb-1 p-0">
                   <div className="flex justify-center mb-3">
-                    <div className="h-12 w-12 rounded-xl bg-gradient-primary flex items-center justify-center">
+                    <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center">
                       <Heart className="h-6 w-6 text-primary-foreground" />
                     </div>
                   </div>
@@ -1560,7 +1561,7 @@ const Register = () => {
                   )}
                   <Button
                     type="submit"
-                    className="flex-1 bg-gradient-primary hover:opacity-90 gap-2 h-9"
+                    className="flex-1 bg-primary text-white hover:bg-primary/90 gap-2 h-9"
                     disabled={isLoading}
                   >
                     {step < (formData.userType === 'caregiver' ? 4 : 3) ? (

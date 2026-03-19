@@ -1,10 +1,10 @@
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
+import { usePublicStats } from "@/hooks/usePublicStats";
 
 const testimonials = [
   {
     name: "Sarah Johnson",
     role: "Patient",
-    image: null,
     rating: 5,
     content:
       "CareConnect has been a blessing for our family. The caregiver assigned to my mother is incredibly professional and caring. The detailed reports keep us informed every step of the way.",
@@ -12,7 +12,6 @@ const testimonials = [
   {
     name: "Grace Okonkwo",
     role: "Caregiver",
-    image: null,
     rating: 5,
     content:
       "Being a caregiver on CareConnect has been rewarding. The platform is user-friendly, payments are prompt, and I can manage my schedule flexibly while helping patients.",
@@ -20,7 +19,6 @@ const testimonials = [
   {
     name: "James Muthoni",
     role: "Patient",
-    image: null,
     rating: 5,
     content:
       "After my surgery, I needed physiotherapy at home. CareConnect matched me with an excellent therapist. The teleconference feature made follow-ups so convenient.",
@@ -28,7 +26,6 @@ const testimonials = [
   {
     name: "Mary Banda",
     role: "Caregiver",
-    image: null,
     rating: 5,
     content:
       "Working through CareConnect has allowed me to help families in my community while earning a good income. The support from the platform team is excellent.",
@@ -36,43 +33,46 @@ const testimonials = [
 ];
 
 const TestimonialsSection = () => {
+  const { data } = usePublicStats();
+  const averageRating = data?.averageRating || "4.9";
   return (
-    <section className="py-16 bg-white">
+    <section className="bg-muted/30 border-b border-border py-14">
       <div className="container">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-            What Our Users Say
-          </h2>
-          <p className="text-gray-600">
-            Real feedback from families, caregivers, and healthcare professionals.
-          </p>
+        <div className="flex items-end justify-between mb-8 pb-4 border-b border-border">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">Reviews</p>
+            <h2 className="text-2xl font-bold text-foreground font-display">Patient & Caregiver Feedback</h2>
+          </div>
+          <span className="text-xs text-muted-foreground hidden md:block">{averageRating}/5 average · {testimonials.length} verified reviews</span>
         </div>
 
-        {/* Testimonials Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={testimonial.name}
-              className="bg-gray-50 rounded-lg p-6 border-l-4 border-blue-500"
-            >
-              {/* Content */}
-              <p className="text-gray-700 mb-4 italic">
-                "{testimonial.content}"
+        <div className="grid md:grid-cols-2 gap-px bg-border border border-border">
+          {testimonials.map((t) => (
+            <div key={t.name} className="bg-white p-6 flex flex-col gap-4">
+              {/* Rating row */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-0.5">
+                  {Array.from({ length: t.rating }).map((_, i) => (
+                    <Star key={i} className="h-3.5 w-3.5 fill-accent text-accent" />
+                  ))}
+                </div>
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground border border-border px-2 py-0.5 rounded-sm">
+                  {t.role}
+                </span>
+              </div>
+
+              {/* Quote */}
+              <p className="text-sm text-foreground leading-relaxed flex-grow">
+                "{t.content}"
               </p>
 
-              {/* Footer */}
-              <div className="flex items-center gap-3">
-                {/* Avatar */}
-                <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-sm">
-                  {testimonial.name.charAt(0)}
+              {/* Author */}
+              <div className="flex items-center gap-3 pt-3 border-t border-border">
+                <div className="h-8 w-8 rounded-sm bg-primary flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                  {t.name.charAt(0)}
                 </div>
-                <div>
-                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-600">
-                    {testimonial.role}
-                  </p>
-                </div>
+                <span className="text-sm font-semibold text-foreground">{t.name}</span>
               </div>
             </div>
           ))}

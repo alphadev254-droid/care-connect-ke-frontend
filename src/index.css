@@ -6,6 +6,7 @@
 
 @layer base {
   :root {
+    /* ── Core ── */
     --background: 210 40% 98%;
     --foreground: 222 47% 11%;
 
@@ -15,64 +16,62 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 199 89% 48%;
+    /* Primary  – Soft Blue (Trust / Healthcare) */
+    --primary: 210 70% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 172 66% 50%;
+    /* Secondary – Green (Care / Safety) */
+    --secondary: 145 60% 40%;
     --secondary-foreground: 0 0% 100%;
+
+    /* Accent – Light Orange / Warm Beige (Human touch) */
+    --accent: 30 80% 60%;
+    --accent-foreground: 0 0% 100%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 38 92% 50%;
-    --accent-foreground: 0 0% 100%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 76% 36%;
+    --success: 145 60% 36%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
+    --warning: 30 80% 60%;
     --warning-foreground: 0 0% 100%;
 
-    --info: 199 89% 48%;
+    --info: 210 70% 50%;
     --info-foreground: 0 0% 100%;
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 199 89% 48%;
+    --ring: 210 70% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.25rem;
 
-    /* Healthcare specific */
-    --healthcare-light: 199 89% 96%;
-    --healthcare-dark: 199 89% 20%;
-    --trust-badge: 142 76% 36%;
-    --verified: 142 76% 36%;
-    --pending: 38 92% 50%;
+    /* Healthcare extras */
+    --healthcare-light: 210 70% 96%;
+    --healthcare-dark: 210 70% 20%;
+    --trust-badge: 145 60% 36%;
+    --verified: 145 60% 36%;
+    --pending: 30 80% 60%;
     --critical: 0 84% 60%;
-
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(199 89% 48%) 0%, hsl(172 66% 50%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(199 89% 96%) 0%, hsl(172 66% 95%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
 
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
     --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.1), 0 2px 4px -2px hsl(222 47% 11% / 0.1);
     --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.1), 0 4px 6px -4px hsl(222 47% 11% / 0.1);
     --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1), 0 8px 10px -6px hsl(222 47% 11% / 0.1);
-    --shadow-glow: 0 0 40px hsl(199 89% 48% / 0.3);
 
+    /* Sidebar */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary: 210 70% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 199 89% 96%;
-    --sidebar-accent-foreground: 199 89% 20%;
+    --sidebar-accent: 210 70% 96%;
+    --sidebar-accent-foreground: 210 70% 20%;
     --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 199 89% 48%;
+    --sidebar-ring: 210 70% 50%;
   }
 
   .dark {
@@ -85,39 +84,39 @@
     --popover: 222 47% 8%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 199 89% 48%;
+    --primary: 210 70% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 172 66% 40%;
+    --secondary: 145 60% 35%;
     --secondary-foreground: 0 0% 100%;
+
+    --accent: 30 80% 60%;
+    --accent-foreground: 0 0% 100%;
 
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 38 92% 50%;
-    --accent-foreground: 0 0% 100%;
-
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
 
-    --success: 142 76% 36%;
+    --success: 145 60% 36%;
     --success-foreground: 0 0% 100%;
 
     --border: 217 33% 17%;
     --input: 217 33% 17%;
-    --ring: 199 89% 48%;
+    --ring: 210 70% 50%;
 
-    --healthcare-light: 199 89% 15%;
-    --healthcare-dark: 199 89% 80%;
+    --healthcare-light: 210 70% 15%;
+    --healthcare-dark: 210 70% 80%;
 
     --sidebar-background: 222 47% 8%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary: 210 70% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 217 33% 17%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 199 89% 48%;
+    --sidebar-ring: 210 70% 50%;
   }
 }
 
@@ -137,23 +136,6 @@
 }
 
 @layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-primary);
-  }
-
-  .bg-gradient-primary {
-    background-image: var(--gradient-primary);
-  }
-
-  .bg-gradient-hero {
-    background-image: var(--gradient-hero);
-  }
-
-  .shadow-glow {
-    box-shadow: var(--shadow-glow);
-  }
-
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }

@@ -82,8 +82,8 @@ const ResetPassword = () => {
                 <p className="text-sm text-muted-foreground mb-6">
                   You can now sign in with your new password.
                 </p>
-                <Link to="/login">
-                  <Button className="w-full bg-gradient-primary hover:opacity-90">
+                  <Link to="/login">
+                  <Button className="w-full bg-primary text-white hover:bg-primary/90">
                     Continue to Login
                   </Button>
                 </Link>
@@ -104,7 +104,7 @@ const ResetPassword = () => {
           <Card className="border-0 shadow-xl">
             <CardHeader className="text-center pb-2">
               <div className="flex justify-center mb-4">
-                <div className="h-14 w-14 rounded-2xl bg-gradient-primary flex items-center justify-center">
+                <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center">
                   <Heart className="h-7 w-7 text-primary-foreground" />
                 </div>
               </div>
@@ -173,7 +173,7 @@ const ResetPassword = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-primary hover:opacity-90"
+                  className="w-full bg-primary text-white hover:bg-primary/90"
                   disabled={isLoading}
                 >
                   {isLoading ? "Updating..." : "Update Password"}

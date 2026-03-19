@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,9 +14,9 @@ import {
   Clock,
   Send,
   MessageCircle,
-  HeadphonesIcon,
   Globe
 } from "lucide-react";
+import { CLOUDINARY_IMAGES } from "@/config/images";
 
 const Contact = () => {
   const contactMethods = [
@@ -103,54 +103,71 @@ const Contact = () => {
       <main>
         {/* Hero Section */}
         <section 
-          className="py-8 lg:py-12 relative bg-cover bg-no-repeat rounded-b-3xl overflow-hidden"
-          style={{ backgroundImage: 'url(/contact.png)', backgroundPosition: '0 45%' }}
+          className="py-6 lg:py-8 relative bg-cover bg-no-repeat rounded-b-3xl overflow-hidden"
+          style={{ backgroundImage: `url(${CLOUDINARY_IMAGES.contact})`, backgroundPosition: '0 45%' }}
         >
-          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-black/60"></div>
           <div className="container relative z-10">
-            <div className="text-center max-w-3xl mx-auto">
-              <h1 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white">
-                Get in <span className="text-primary">Touch</span>
-              </h1>
-              <p className="text-lg text-white/90 mb-6">
-                We're here to help! Whether you have questions about our services, 
-                need technical support, or want to provide feedback, our team is ready to assist you.
-              </p>
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <h1 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white">
+                  Get in <span className="text-primary">Touch</span>
+                </h1>
+                <p className="text-lg text-white/90 mb-6">
+                  We're here to help! Whether you have questions about our services, 
+                  need technical support, or want to provide feedback, our team is ready to assist you.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button size="lg" className="gap-2 bg-primary text-white hover:bg-primary/90">
+                    <Phone className="h-5 w-5" />
+                    Call Us Now
+                  </Button>
+                  <Button size="lg" variant="outline" className="border-white/40 text-white bg-white/10 gap-2">
+                    <Mail className="h-5 w-5" />
+                    Email Us
+                  </Button>
+                </div>
+              </div>
+              <div className="hidden lg:grid grid-cols-2 gap-3">
+                {[
+                  { icon: Phone, label: "Phone", value: "+265 986 227 240" },
+                  { icon: Mail, label: "Email", value: "support@careconnectmalawi.com" },
+                  { icon: MessageCircle, label: "WhatsApp", value: "+265 991 234 567" },
+                  { icon: Clock, label: "Support", value: "24/7 Available" },
+                ].map((item, i) => (
+                  <div key={i} className="border border-white/20 rounded-sm p-4 bg-white/10 backdrop-blur-sm">
+                    <div className="h-8 w-8 rounded-md bg-white/20 flex items-center justify-center mb-2">
+                      <item.icon className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="text-xs font-bold text-white">{item.value}</div>
+                    <div className="text-xs text-white/70">{item.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
         {/* Contact Methods */}
-        <section className="py-12 lg:py-16">
+        <section className="py-10 lg:py-12">
           <div className="container">
-            <div className="text-center mb-12">
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-                Multiple Ways to Reach Us
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Choose the contact method that works best for you. We're committed to 
-                providing quick and helpful responses.
+            <div className="mb-8">
+              <h2 className="font-display text-2xl md:text-3xl font-bold mb-2">Multiple Ways to Reach Us</h2>
+              <p className="text-muted-foreground max-w-2xl">
+                Choose the contact method that works best for you.
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {contactMethods.map((method, index) => (
-                <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
-                  <CardContent className="p-0">
-                    <div className="h-16 w-16 rounded-2xl bg-gradient-primary flex items-center justify-center mx-auto mb-4">
-                      <method.icon className="h-8 w-8 text-primary-foreground" />
+                <Card key={index} className="border-l-[3px] border-primary/60 hover:shadow-md hover:border-primary/80 transition-shadow">
+                  <CardContent className="p-5">
+                    <div className="h-9 w-9 rounded-md bg-primary/10 flex items-center justify-center mb-4">
+                      <method.icon className="h-5 w-5 text-primary" />
                     </div>
-                    <h3 className="font-display text-lg font-bold mb-2">
-                      {method.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {method.description}
-                    </p>
-                    <div className="text-primary font-medium text-sm mb-2">
-                      {method.contact}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {method.availability}
-                    </div>
+                    <h3 className="font-semibold text-sm mb-1">{method.title}</h3>
+                    <p className="text-xs text-muted-foreground mb-3">{method.description}</p>
+                    <div className="text-primary font-medium text-xs mb-1">{method.contact}</div>
+                    <div className="text-xs text-muted-foreground">{method.availability}</div>
                   </CardContent>
                 </Card>
               ))}
@@ -159,50 +176,42 @@ const Contact = () => {
         </section>
 
         {/* Contact Form & Office Locations */}
-        <section className="py-12 lg:py-16 bg-muted/30">
+        <section className="py-10 lg:py-12 bg-muted/30">
           <div className="container">
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
+            <div className="grid lg:grid-cols-2 gap-8 items-start">
               {/* Contact Form */}
-              <Card className="p-8">
-                <CardHeader className="p-0 mb-6">
-                  <CardTitle className="font-display text-2xl">Send us a Message</CardTitle>
-                  <p className="text-muted-foreground">
-                    Fill out the form below and we'll get back to you as soon as possible.
-                  </p>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <form className="space-y-6">
+              <Card className="border-t-2 border-primary/40">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-base mb-1">Send us a Message</h3>
+                  <p className="text-xs text-muted-foreground mb-5">Fill out the form and we'll get back to you as soon as possible.</p>
+                  <form className="space-y-4">
                     <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name</Label>
-                        <Input id="firstName" placeholder="Your first name" />
+                      <div className="space-y-1.5">
+                        <Label htmlFor="firstName" className="text-xs">First Name</Label>
+                        <Input id="firstName" placeholder="Your first name" className="h-9" />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name</Label>
-                        <Input id="lastName" placeholder="Your last name" />
+                      <div className="space-y-1.5">
+                        <Label htmlFor="lastName" className="text-xs">Last Name</Label>
+                        <Input id="lastName" placeholder="Your last name" className="h-9" />
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" placeholder="your.email@example.com" />
+                    <div className="space-y-1.5">
+                      <Label htmlFor="email" className="text-xs">Email</Label>
+                      <Input id="email" type="email" placeholder="your.email@example.com" className="h-9" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input id="phone" placeholder="+265 991 234 567" />
+                    <div className="space-y-1.5">
+                      <Label htmlFor="phone" className="text-xs">Phone Number</Label>
+                      <Input id="phone" placeholder="+265 991 234 567" className="h-9" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="subject">Subject</Label>
-                      <Input id="subject" placeholder="How can we help you?" />
+                    <div className="space-y-1.5">
+                      <Label htmlFor="subject" className="text-xs">Subject</Label>
+                      <Input id="subject" placeholder="How can we help you?" className="h-9" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Message</Label>
-                      <Textarea 
-                        id="message" 
-                        placeholder="Please describe your question or concern in detail..."
-                        rows={5}
-                      />
+                    <div className="space-y-1.5">
+                      <Label htmlFor="message" className="text-xs">Message</Label>
+                      <Textarea id="message" placeholder="Please describe your question or concern..." rows={4} />
                     </div>
-                    <Button className="w-full gap-2 bg-gradient-primary">
+                    <Button className="w-full gap-2 bg-primary text-white hover:bg-primary/90">
                       <Send className="h-4 w-4" />
                       Send Message
                     </Button>
@@ -211,36 +220,27 @@ const Contact = () => {
               </Card>
 
               {/* Office Locations */}
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-display text-2xl font-bold mb-4">Our Offices</h3>
-                  <p className="text-muted-foreground mb-6">
-                    Visit us at any of our locations across Malawi for in-person support and consultations.
-                  </p>
+              <div className="space-y-4">
+                <div className="mb-2">
+                  <h3 className="font-semibold text-base mb-1">Our Offices</h3>
+                  <p className="text-xs text-muted-foreground">Visit us at any of our locations across Malawi.</p>
                 </div>
                 {offices.map((office, index) => (
-                  <Card key={index} className="p-6">
-                    <CardContent className="p-0">
-                      <div className="flex items-start gap-4">
-                        <div className="h-12 w-12 rounded-xl bg-gradient-primary flex items-center justify-center flex-shrink-0">
-                          <MapPin className="h-6 w-6 text-primary-foreground" />
+                  <Card key={index} className="border-l-[3px] border-primary/60 hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <h4 className="font-semibold text-sm mb-2">{office.city}</h4>
+                      <div className="space-y-1.5 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-3 w-3 flex-shrink-0" />
+                          <span>{office.address}</span>
                         </div>
-                        <div className="flex-1">
-                          <h4 className="font-display text-lg font-bold mb-2">{office.city}</h4>
-                          <div className="space-y-2 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                              <MapPin className="h-4 w-4" />
-                              <span>{office.address}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Phone className="h-4 w-4" />
-                              <span>{office.phone}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Mail className="h-4 w-4" />
-                              <span>{office.email}</span>
-                            </div>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-3 w-3 flex-shrink-0" />
+                          <span>{office.phone}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-3 w-3 flex-shrink-0" />
+                          <span>{office.email}</span>
                         </div>
                       </div>
                     </CardContent>
@@ -252,70 +252,48 @@ const Contact = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-12 lg:py-16">
+        <section className="py-10 lg:py-12">
           <div className="container">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* FAQ Questions */}
-              <div className="space-y-6">
-                {faqs.map((faq, index) => (
-                  <Card key={index} className="p-6">
-                    <CardContent className="p-0">
-                      <h3 className="font-display text-lg font-bold mb-3 text-primary">
-                        {faq.question}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {faq.answer}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              
-              {/* FAQ Header */}
-              <div className="text-center">
-                <div className="text-9xl text-blue-500/40 mb-4">?</div>
-                <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-                  Frequently Asked Questions
-                </h2>
-                <p className="text-xl text-muted-foreground">
-                  Quick answers to common questions. Can't find what you're looking for? 
-                  Contact us directly.
-                </p>
-              </div>
+            <div className="mb-8">
+              <h2 className="font-display text-2xl md:text-3xl font-bold mb-2">Frequently Asked Questions</h2>
+              <p className="text-muted-foreground max-w-2xl">Quick answers to common questions. Can't find what you're looking for? Contact us directly.</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              {faqs.map((faq, index) => (
+                <Card key={index} className="border-l-[3px] border-primary/60 hover:shadow-md transition-shadow">
+                  <CardContent className="p-5">
+                    <h3 className="font-semibold text-sm mb-2">{faq.question}</h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{faq.answer}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
 
         {/* Emergency Contact */}
-        <section className="py-12 lg:py-16 bg-muted/30">
+        <section className="py-10 lg:py-12 bg-muted/30">
           <div className="container">
-            <Card className="p-8 lg:p-12 bg-white border border-slate-200 shadow-2xl rounded-lg">
-              <CardContent className="p-0">
-                <div className="grid lg:grid-cols-2 gap-8 items-center">
-                  <div className="text-left">
-                    <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-                      Emergency Support
-                    </h2>
-                    <p className="text-lg text-gray-600 mb-6">
-                      For urgent medical situations, call our 24/7 emergency hotline. 
-                      Our team will help coordinate immediate care or direct you to appropriate emergency services.
-                    </p>
-                  </div>
-                  <div className="text-center lg:text-right">
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-end">
-                      <Button size="lg" className="gap-2 bg-red-600 text-white hover:bg-red-700">
-                        <Phone className="h-5 w-5" />
-                        Call +265 986 227 240
-                      </Button>
-                      <Button size="lg" variant="outline" className="gap-2">
-                        <MessageCircle className="h-5 w-5" />
-                        WhatsApp Emergency
-                      </Button>
-                    </div>
-                  </div>
+            <div className="border border-border rounded-sm px-10 py-10">
+              <div className="grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h2 className="font-display text-2xl font-bold mb-3">Emergency Support</h2>
+                  <p className="text-base text-muted-foreground max-w-lg">
+                    For urgent situations, call our 24/7 emergency hotline. Our team will help coordinate immediate care or direct you to appropriate emergency services.
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex flex-col sm:flex-row gap-3 lg:justify-end">
+                  <Button size="lg" className="gap-2 bg-red-600 text-white hover:bg-red-700">
+                    <Phone className="h-5 w-5" />
+                    Call +265 986 227 240
+                  </Button>
+                  <Button size="lg" variant="outline" className="gap-2">
+                    <MessageCircle className="h-5 w-5" />
+                    WhatsApp Emergency
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>

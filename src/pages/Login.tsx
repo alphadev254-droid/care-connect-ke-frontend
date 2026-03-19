@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { CLOUDINARY_IMAGES } from "@/config/images";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const Login = () => {
           <Card className="border-0 shadow-xl overflow-hidden">
             <div className="grid lg:grid-cols-2 min-h-[600px]">
               {/* Left Side - Image */}
-              <div className="hidden lg:block bg-cover bg-[center_30%] bg-no-repeat" style={{ backgroundImage: 'url(/mission.png)' }}>
+              <div className="hidden lg:block bg-cover bg-[center_30%] bg-no-repeat" style={{ backgroundImage: `url(${CLOUDINARY_IMAGES.mission})` }}>
                 <div className="w-full h-full bg-black/20"></div>
               </div>
               
@@ -55,7 +56,7 @@ const Login = () => {
               <div className="p-8">
                 <CardHeader className="text-center pb-2 p-0">
                   <div className="flex justify-center mb-4">
-                    <div className="h-14 w-14 rounded-2xl bg-gradient-primary flex items-center justify-center">
+                    <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center">
                       <Heart className="h-7 w-7 text-primary-foreground" />
                     </div>
                   </div>
@@ -131,7 +132,7 @@ const Login = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-primary hover:opacity-90 gap-2"
+                  className="w-full bg-primary text-white hover:bg-primary/90 gap-2"
                   disabled={isLoading}
                 >
                   {isLoading ? "Signing in..." : "Sign In"}

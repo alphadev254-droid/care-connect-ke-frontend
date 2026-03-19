@@ -1,72 +1,73 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Users, Heart } from "lucide-react";
+import { ArrowRight, Users, Heart, ChevronRight } from "lucide-react";
 
 const CTASection = () => {
   return (
-    <section className="py-20 lg:py-32 bg-background">
+    <section className="bg-white border-b border-border py-14">
       <div className="container">
-        <div className="relative overflow-hidden rounded-3xl bg-slate-50 border border-slate-200 p-12 lg:p-16">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-slate-300 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-300 rounded-full blur-3xl" />
-          </div>
+        <div className="border border-border">
+          <div className="grid lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border">
 
-          <div className="relative grid lg:grid-cols-2 gap-12 items-center">
-            {/* Content */}
-            <div className="text-slate-800 space-y-6">
-              <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold">
-                Ready to Experience Better Home Care?
-              </h2>
-              <p className="text-slate-600 text-lg max-w-lg">
-                Join thousands of families who trust CareConnect for their home 
-                healthcare needs. Get started today and connect with verified 
-                caregivers in your area.
+            {/* Left — For Patients */}
+            <div className="p-10 flex flex-col gap-6">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-sm bg-primary/10 flex items-center justify-center">
+                  <Users className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">For Patients</p>
+                  <h3 className="text-lg font-bold text-foreground font-display">Find a Caregiver Today</h3>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Browse verified healthcare professionals in your area. Filter by specialty,
+                location, and availability. Book appointments instantly and receive care at home.
               </p>
-              <div className="flex flex-wrap gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 mt-auto">
                 <Link to="/register">
-                  <Button
-                    size="lg"
-                    className="gap-2 bg-primary text-white hover:bg-primary/90"
-                  >
-                    Get Started Free
-                    <ArrowRight className="h-4 w-4" />
+                  <Button size="sm" className="gap-2 bg-primary text-white hover:bg-primary/90 rounded-sm font-semibold">
+                    Register as Patient <ArrowRight className="h-3.5 w-3.5" />
                   </Button>
                 </Link>
                 <Link to="/caregivers">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="gap-2 border-slate-300 text-slate-700 hover:bg-slate-100"
-                  >
-                    Browse Caregivers
+                  <Button size="sm" variant="outline" className="gap-2 rounded-sm font-semibold">
+                    Browse Caregivers <ChevronRight className="h-3.5 w-3.5" />
                   </Button>
                 </Link>
               </div>
             </div>
 
-            {/* Cards */}
-            <div className="hidden lg:flex justify-end gap-4">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 shadow-sm">
-                <Users className="h-12 w-12 text-primary mb-4" />
-                <h3 className="font-display text-xl font-bold text-slate-800 mb-2">
-                  For Patients
-                </h3>
-                <p className="text-slate-600 text-sm">
-                  Find verified caregivers and book appointments easily.
-                </p>
+            {/* Right — For Caregivers */}
+            <div className="p-10 flex flex-col gap-6 bg-muted/20">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-sm bg-secondary/10 flex items-center justify-center">
+                  <Heart className="h-5 w-5 text-secondary" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">For Caregivers</p>
+                  <h3 className="text-lg font-bold text-foreground font-display">Join Our Network</h3>
+                </div>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-200 shadow-sm mt-8">
-                <Heart className="h-12 w-12 text-primary mb-4" />
-                <h3 className="font-display text-xl font-bold text-slate-800 mb-2">
-                  For Caregivers
-                </h3>
-                <p className="text-slate-600 text-sm">
-                  Join our network and connect with patients who need your care.
-                </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Are you a licensed healthcare professional? Join CareConnect to connect with
+                patients who need your expertise. Manage your schedule, earn securely, and
+                make a difference in your community.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 mt-auto">
+                <Link to="/register">
+                  <Button size="sm" className="gap-2 bg-secondary text-white hover:bg-secondary/90 rounded-sm font-semibold">
+                    Register as Caregiver <ArrowRight className="h-3.5 w-3.5" />
+                  </Button>
+                </Link>
+                <Link to="/how-it-works">
+                  <Button size="sm" variant="outline" className="gap-2 rounded-sm font-semibold">
+                    How It Works <ChevronRight className="h-3.5 w-3.5" />
+                  </Button>
+                </Link>
               </div>
             </div>
+
           </div>
         </div>
       </div>
