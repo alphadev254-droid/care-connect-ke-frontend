@@ -14,6 +14,7 @@ import { BookingModal } from "@/components/booking/BookingModal";
 import { RatingDisplay } from "@/components/RatingDisplay";
 import { useAuth } from "@/contexts/AuthContext";
 import { mapUserRole } from "@/lib/roleMapper";
+import { dashboardCard, responsive } from "@/theme";
 import { caregiverService } from "@/services/caregiverService";
 import { specialtyService } from "@/services/specialtyService";
 import { locationService } from "@/services/locationService";
@@ -177,15 +178,11 @@ const Caregivers = () => {
 
   return (
     <DashboardLayout userRole={mapUserRole(user?.role || 'patient')}>
-      <div className="space-y-6">
-        {/* Header - Compact */}
+      <div className="space-y-4 md:space-y-6">
+        {/* Header */}
         <div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold">
-            Find Caregivers
-          </h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Browse verified healthcare professionals
-          </p>
+          <h1 className={responsive.pageTitle}>Find Caregivers</h1>
+          <p className={responsive.pageSubtitle}>Browse verified healthcare professionals</p>
         </div>
 
         {/* Search and Filters - Compact */}
@@ -227,8 +224,8 @@ const Caregivers = () => {
         <div className="grid lg:grid-cols-4 gap-4">
           {/* Filters Dropdown - Shows when button clicked */}
           {showFilters && (
-            <Card className="lg:col-span-4">
-              <CardContent className="p-4">
+            <Card className={`lg:col-span-4 ${dashboardCard.base}`}>
+              <CardContent className={dashboardCard.compactBody}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   <div>
                     <Label className="text-xs font-semibold mb-2 block">Specialty</Label>
@@ -361,10 +358,10 @@ const Caregivers = () => {
             </div>
 
             {isFetching && currentPage === 1 ? (
-              <div className="grid sm:grid-cols-2 gap-3">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {[...Array(6)].map((_, i) => (
-                  <Card key={i} className="animate-pulse">
-                    <CardContent className="p-4">
+                  <Card key={i} className={`${dashboardCard.base} animate-pulse`}>
+                    <CardContent className={dashboardCard.statContent}>
                       <div className="flex items-start gap-3 mb-3">
                         <div className="h-12 w-12 bg-muted rounded-full" />
                         <div className="flex-1">
@@ -382,7 +379,7 @@ const Caregivers = () => {
                 ))}
               </div>
             ) : (
-              <div className="grid sm:grid-cols-2 gap-3">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
               {filteredCaregivers.map((caregiver: any) => {
                 const caregiverData = caregiver.Caregiver || {};
                 const name = `${caregiver.firstName || ''} ${caregiver.lastName || ''}`.trim();
@@ -394,23 +391,23 @@ const Caregivers = () => {
                 ].filter(Boolean).join(', ') || 'Location not specified';
 
                 return (
-                  <Card key={caregiver.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <CardContent className="p-4">
+                  <Card key={caregiver.id} className={`${dashboardCard.base} overflow-hidden hover:shadow-md hover:border-primary/30 transition-all`}>
+                    <CardContent className={dashboardCard.statContent}>
                       <div className="flex items-start gap-3 mb-3">
                         <Avatar className="h-12 w-12 flex-shrink-0">
                           <AvatarImage src={caregiverData.profileImage} alt={name} />
-                          <AvatarFallback className="bg-gradient-primary text-primary-foreground text-lg font-bold">
+                          <AvatarFallback className="bg-primary text-primary-foreground text-lg font-bold">
                             {name.charAt(0) || 'C'}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-sm truncate">{name}</h3>
+                            <h3 className={`font-semibold truncate ${responsive.body}`}>{name}</h3>
                             {caregiverData.verificationStatus === 'APPROVED' && (
                               <Shield className="h-3 w-3 text-success flex-shrink-0" />
                             )}
                           </div>
-                          <p className="text-xs text-muted-foreground truncate">
+                          <p className={`truncate ${responsive.bodyMuted}`}>
                             {caregiverData.qualifications || 'Healthcare Professional'}
                           </p>
                           <Badge
@@ -430,11 +427,11 @@ const Caregivers = () => {
                       </div>
 
                       <div className="space-y-1.5 mb-3">
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
                           <Clock className="h-3 w-3 flex-shrink-0" />
                           <span>{caregiverData.experience || '0'} years experience</span>
                         </div>
-                        <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <div className={`flex items-start gap-2 ${responsive.bodyMuted}`}>
                           <MapPin className="h-3 w-3 flex-shrink-0 mt-0.5" />
                           <span className="line-clamp-1">{location}</span>
                         </div>
@@ -449,7 +446,7 @@ const Caregivers = () => {
                       {caregiverData.Specialties && caregiverData.Specialties.length > 0 && (
                         <div className="mb-3 space-y-2">
                           {caregiverData.Specialties.slice(0, 2).map((specialty: any) => (
-                            <div key={specialty.id} className="p-2 rounded-md border bg-muted/30">
+                            <div key={specialty.id} className={dashboardCard.miniCard}>
                               <div className="flex items-center justify-between mb-1">
                                 <span className="text-xs font-medium">{specialty.name}</span>
                               </div>
@@ -501,15 +498,11 @@ const Caregivers = () => {
               })}
 
               {filteredCaregivers.length === 0 && !isLoading && !isFetching && (
-                <div className="col-span-2 text-center py-12">
+                <div className="col-span-2 sm:col-span-3 xl:col-span-4 text-center py-12">
                   <Heart className="h-12 w-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-                  <h3 className="font-semibold mb-1">No caregivers found</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Try adjusting your filters to see more results
-                  </p>
-                  <Button variant="outline" onClick={clearFilters}>
-                    Clear All Filters
-                  </Button>
+                  <h3 className={`font-semibold mb-1 ${responsive.cardTitle}`}>No caregivers found</h3>
+                  <p className={`${responsive.bodyMuted} mb-4`}>Try adjusting your filters to see more results</p>
+                  <Button variant="outline" onClick={clearFilters}>Clear All Filters</Button>
                 </div>
               )}
             </div>
@@ -555,8 +548,8 @@ const Caregivers = () => {
         <Dialog open={profileDialog.open} onOpenChange={(open) => setProfileDialog({ open, caregiver: open ? profileDialog.caregiver : null })}>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl">Caregiver Profile</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className={responsive.dialogTitle}>Caregiver Profile</DialogTitle>
+              <DialogDescription className={responsive.dialogDesc}>
                 Detailed information about this healthcare professional
               </DialogDescription>
             </DialogHeader>
@@ -566,7 +559,7 @@ const Caregivers = () => {
               <div className="flex items-start gap-4">
                 <Avatar className="h-24 w-24">
                   <AvatarImage src={profileDialog.caregiver.Caregiver?.profileImage} />
-                  <AvatarFallback className="text-2xl bg-gradient-primary text-primary-foreground">
+                  <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
                     {profileDialog.caregiver.firstName?.charAt(0)}{profileDialog.caregiver.lastName?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
@@ -611,13 +604,13 @@ const Caregivers = () => {
 
               {/* Bio */}
               {profileDialog.caregiver.Caregiver?.bio && (
-                <Card>
-                  <CardContent className="pt-6">
+                <Card className={dashboardCard.base}>
+                  <CardContent className={`${dashboardCard.compactBody} pt-4`}>
                     <div className="flex items-center gap-2 mb-3">
                       <User className="h-5 w-5 text-primary" />
-                      <h4 className="font-semibold">About</h4>
+                      <h4 className={responsive.cardTitle}>About</h4>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className={`leading-relaxed ${responsive.bodyMuted}`}>
                       {profileDialog.caregiver.Caregiver.bio}
                     </p>
                   </CardContent>
@@ -625,11 +618,11 @@ const Caregivers = () => {
               )}
 
               {/* Qualifications */}
-              <Card>
-                <CardContent className="pt-6">
+              <Card className={dashboardCard.base}>
+                <CardContent className={`${dashboardCard.compactBody} pt-4`}>
                   <div className="flex items-center gap-2 mb-3">
                     <Award className="h-5 w-5 text-primary" />
-                    <h4 className="font-semibold">Qualifications & Licensing</h4>
+                    <h4 className={responsive.cardTitle}>Qualifications & Licensing</h4>
                   </div>
                   <div className="space-y-3">
                     <div>
@@ -656,59 +649,59 @@ const Caregivers = () => {
                     </div>
                     <div>
                       <Label className="text-xs text-muted-foreground">Qualifications</Label>
-                      <p className="text-sm mt-1">{profileDialog.caregiver.Caregiver?.qualifications || 'Not specified'}</p>
+                      <p className={`mt-1 ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.qualifications || 'Not specified'}</p>
                     </div>
                     <div>
                       <Label className="text-xs text-muted-foreground">Licensing Institution</Label>
-                      <p className="text-sm mt-1">{profileDialog.caregiver.Caregiver?.licensingInstitution || 'Not specified'}</p>
+                      <p className={`mt-1 ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.licensingInstitution || 'Not specified'}</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Location */}
-              <Card>
-                <CardContent className="pt-6">
+              <Card className={dashboardCard.base}>
+                <CardContent className={`${dashboardCard.compactBody} pt-4`}>
                   <div className="flex items-center gap-2 mb-3">
                     <MapPin className="h-5 w-5 text-primary" />
-                    <h4 className="font-semibold">Service Location</h4>
+                    <h4 className={responsive.cardTitle}>Service Location</h4>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <Label className="text-xs text-muted-foreground">Region</Label>
-                      <p className="text-sm mt-1 capitalize">{profileDialog.caregiver.Caregiver?.region || 'Not specified'}</p>
+                      <p className={`mt-1 capitalize ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.region || 'Not specified'}</p>
                     </div>
                     <div>
                       <Label className="text-xs text-muted-foreground">District</Label>
-                      <p className="text-sm mt-1 uppercase">{profileDialog.caregiver.Caregiver?.district || 'Not specified'}</p>
+                      <p className={`mt-1 uppercase ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.district || 'Not specified'}</p>
                     </div>
                     <div>
                       <Label className="text-xs text-muted-foreground">Traditional Authority</Label>
-                      <p className="text-sm mt-1 uppercase">{profileDialog.caregiver.Caregiver?.traditionalAuthority || 'Not specified'}</p>
+                      <p className={`mt-1 uppercase ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.traditionalAuthority || 'Not specified'}</p>
                     </div>
                     <div>
                       <Label className="text-xs text-muted-foreground">Village</Label>
-                      <p className="text-sm mt-1 uppercase">{profileDialog.caregiver.Caregiver?.village || 'Not specified'}</p>
+                      <p className={`mt-1 uppercase ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.village || 'Not specified'}</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Appointment Details */}
-              <Card>
-                <CardContent className="pt-6">
+              <Card className={dashboardCard.base}>
+                <CardContent className={`${dashboardCard.compactBody} pt-4`}>
                   <div className="flex items-center gap-2 mb-3">
                     <Clock className="h-5 w-5 text-primary" />
-                    <h4 className="font-semibold">Appointment Information</h4>
+                    <h4 className={responsive.cardTitle}>Appointment Information</h4>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <Label className="text-xs text-muted-foreground">Default Duration</Label>
-                      <p className="text-sm mt-1">{profileDialog.caregiver.Caregiver?.appointmentDuration || 60} minutes</p>
+                      <p className={`mt-1 ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.appointmentDuration || 60} minutes</p>
                     </div>
                     <div>
                       <Label className="text-xs text-muted-foreground">Auto-Confirm</Label>
-                      <p className="text-sm mt-1">
+                      <p className={`mt-1 ${responsive.body}`}>
                         {profileDialog.caregiver.Caregiver?.autoConfirm ? 'Yes' : 'No'}
                       </p>
                     </div>

@@ -34,7 +34,7 @@ export const SecurityCard = ({ onPasswordChange, isPending, onDeleteAccount, isD
 
   return (
     <Card className={dashboardCard.base}>
-      <div className={`${dashboardCard.compactHeader} border-b flex items-center gap-2`}>
+      <div className={`${dashboardCard.compactHeader} border-b border-border/60 flex items-center gap-2`}>
         <div className={dashboardCard.iconWell.warning}><Lock className="h-3.5 w-3.5 text-warning" /></div>
         <h2 className={responsive.cardTitle}>Security Settings</h2>
       </div>

@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
 import { mapUserRole } from "@/lib/roleMapper";
 import { toast } from "sonner";
+import { dashboardCard, dashboardTokens, responsive } from "@/theme";
 import {
   Calendar,
   Clock,
@@ -184,7 +185,7 @@ const Appointments = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "session_waiting":
-        return "bg-blue-100 text-blue-800";
+        return "bg-primary/10 text-primary";
       case "pending":
         return "bg-warning text-warning-foreground";
       case "session_attended":
@@ -192,7 +193,7 @@ const Appointments = () => {
       case "session_cancelled":
         return "bg-destructive text-destructive-foreground";
       case "session_rescheduled":
-        return "bg-orange-100 text-orange-800";
+        return "bg-warning/20 text-warning-foreground";
       default:
         return "";
     }
@@ -214,32 +215,32 @@ const Appointments = () => {
   };
 
   const PatientCard = ({ appointment }: { appointment: typeof appointments[0] }) => (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-5">
+    <Card className={`${dashboardCard.base} hover:shadow-md transition-shadow`}>
+      <CardContent className={dashboardCard.statContent}>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground text-base font-bold">
+            <div className="h-11 w-11 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-base font-bold">
               {(appointment.caregiver || appointment.Caregiver?.User?.firstName || 'C').charAt(0)}
             </div>
             <div>
-              <h3 className="font-semibold text-base">{appointment.caregiver || `${appointment.Caregiver?.User?.firstName || ''} ${appointment.Caregiver?.User?.lastName || ''}`.trim() || 'Caregiver'}</h3>
-              <p className="text-sm text-muted-foreground">{appointment.Specialty?.name || appointment.specialty || 'General Care'}</p>
+              <h3 className={`font-semibold ${responsive.body}`}>{appointment.caregiver || `${appointment.Caregiver?.User?.firstName || ''} ${appointment.Caregiver?.User?.lastName || ''}`.trim() || 'Caregiver'}</h3>
+              <p className={responsive.bodyMuted}>{appointment.Specialty?.name || appointment.specialty || 'General Care'}</p>
               <div className="flex gap-1.5 mt-2 flex-wrap">
                 <Badge className={`${getStatusColor(appointment.status)} text-xs px-2.5 py-1 h-6`}>
                   {getStatusLabel(appointment.status)}
                 </Badge>
                 {appointment.bookingFeeStatus === 'completed' && (
-                  <Badge variant="outline" className="bg-green-50 text-green-700 text-[11px] px-1.5 py-0.5 h-5">
+                  <Badge variant="outline" className="bg-success/10 text-success text-[11px] px-1.5 py-0.5 h-5">
                     Booking ✓
                   </Badge>
                 )}
                 {appointment.sessionFeeStatus === 'completed' && (
-                  <Badge variant="outline" className="bg-blue-50 text-blue-700 text-[11px] px-1.5 py-0.5 h-5">
+                  <Badge variant="outline" className="bg-primary/10 text-primary text-[11px] px-1.5 py-0.5 h-5">
                     Session ✓
                   </Badge>
                 )}
                 {appointment.rescheduleCount > 0 && (
-                  <Badge variant="outline" className="bg-orange-50 text-orange-700 text-[11px] px-1.5 py-0.5 h-5">
+                  <Badge variant="outline" className="bg-warning/10 text-warning-foreground text-[11px] px-1.5 py-0.5 h-5">
                     Rescheduled {appointment.rescheduleCount}x
                   </Badge>
                 )}
@@ -275,18 +276,18 @@ const Appointments = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-2.5 mt-4">
-          <div className="flex items-center gap-2 text-[13px]">
+          <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
             <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <span className="truncate">{new Date(appointment.scheduledDate || appointment.date).toLocaleDateString()}</span>
           </div>
-          <div className="flex items-center gap-2 text-[13px]">
+          <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
             <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <span className="truncate">{appointment.TimeSlot ?
               `${appointment.TimeSlot.startTime} - ${appointment.TimeSlot.endTime}` :
               new Date(appointment.scheduledDate || appointment.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
             }</span>
           </div>
-          <div className="flex items-center gap-2 text-[13px]">
+          <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
             {appointment.sessionType === "teleconference" || appointment.type === "video" ? (
               <Video className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             ) : (
@@ -294,30 +295,30 @@ const Appointments = () => {
             )}
             <span className="truncate">{appointment.sessionType === "teleconference" || appointment.type === "video" ? "Video" : "In-Person"}</span>
           </div>
-          <div className="flex items-center gap-2 text-[13px]">
+          <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
             <DollarSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <span className="font-medium truncate">MWK {appointment.totalCost || appointment.TimeSlot?.price || 'N/A'}</span>
           </div>
         </div>
 
         {(appointment.jitsiRoomName || appointment.patientMeetingToken) && appointment.sessionType === "teleconference" && (
-          <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-900">
+          <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
             <div className="space-y-2">
               {appointment.jitsiRoomName && (
-                <div className="flex items-center gap-2 text-[13px]">
-                  <Video className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
+                  <Video className="h-4 w-4 text-primary flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-blue-900 dark:text-blue-100">Meeting Room</p>
-                    <p className="text-xs text-blue-700 dark:text-blue-300 truncate">{appointment.jitsiRoomName}</p>
+                    <p className={`font-medium ${responsive.bodyMuted}`}>Meeting Room</p>
+                    <p className={`truncate ${responsive.bodyMuted}`}>{appointment.jitsiRoomName}</p>
                   </div>
                 </div>
               )}
               {appointment.patientMeetingToken && (
-                <div className={appointment.jitsiRoomName ? "pt-2 border-t border-blue-200 dark:border-blue-900" : ""}>
+                <div className={appointment.jitsiRoomName ? "pt-2 border-t border-primary/20" : ""}>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="w-full text-xs h-8 bg-white dark:bg-blue-950"
+                    className="w-full text-xs h-8"
                     onClick={() => {
                       const meetingUrl = `${window.location.origin}/meeting/join/${appointment.patientMeetingToken}`;
                       navigator.clipboard.writeText(meetingUrl);
@@ -334,14 +335,14 @@ const Appointments = () => {
         )}
 
         {appointment.sessionType === "in_person" && appointment.Location && (
-          <div className="mt-3 p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-900">
-            <div className="flex items-center gap-2 text-[13px]">
-              <MapPin className="h-4 w-4 text-green-600 flex-shrink-0" />
+          <div className="mt-3 p-3 bg-success/5 rounded-lg border border-success/20">
+            <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
+              <MapPin className="h-4 w-4 text-success flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-green-900 dark:text-green-100">Location</p>
-                <p className="text-xs text-green-700 dark:text-green-300">{appointment.Location.name}</p>
+                <p className={`font-medium ${responsive.bodyMuted}`}>Location</p>
+                <p className={responsive.bodyMuted}>{appointment.Location.name}</p>
                 {appointment.Location.address && (
-                  <p className="text-xs text-green-600 dark:text-green-400">{appointment.Location.address}</p>
+                  <p className={responsive.bodyMuted}>{appointment.Location.address}</p>
                 )}
               </div>
             </div>
@@ -350,8 +351,8 @@ const Appointments = () => {
 
         {appointment.notes && (
           <div className="mt-3 p-3 bg-muted/50 rounded">
-            <p className="text-xs font-medium mb-1">Notes:</p>
-            <p className="text-xs text-muted-foreground">{appointment.notes}</p>
+            <p className={`font-medium mb-1 ${responsive.bodyMuted}`}>Notes:</p>
+            <p className={responsive.bodyMuted}>{appointment.notes}</p>
           </div>
         )}
 
@@ -389,20 +390,20 @@ const Appointments = () => {
 
         {appointment.status === "session_waiting" && appointment.sessionFeeStatus === "pending" && (
           <div className="mt-3 pt-3 border-t">
-            <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded mb-2 space-y-1">
-              <div className="flex justify-between text-xs">
+            <div className="bg-muted/40 p-3 rounded mb-2 space-y-1">
+              <div className={`flex justify-between ${responsive.bodyMuted}`}>
                 <span>Base fee:</span>
                 <span>MWK {Number(appointment.sessionFee || 0).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between text-xs">
+              <div className={`flex justify-between ${responsive.bodyMuted}`}>
                 <span>Tax ({appointment.Specialty?.taxRate || 17.5}%):</span>
                 <span>MWK {Math.round(Number(appointment.sessionFee || 0) * ((appointment.Specialty?.taxRate || 17.5) / 100)).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between text-xs">
+              <div className={`flex justify-between ${responsive.bodyMuted}`}>
                 <span>Processing ({appointment.Specialty?.convenienceFeePercentage || 2}%):</span>
                 <span>MWK {Math.round(Number(appointment.sessionFee || 0) * ((appointment.Specialty?.convenienceFeePercentage || 2) / 100)).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between text-sm font-semibold border-t pt-1">
+              <div className={`flex justify-between font-semibold border-t pt-1 ${responsive.body}`}>
                 <span>Total:</span>
                 <span>MWK {(
                   Number(appointment.sessionFee || 0) +
@@ -412,7 +413,7 @@ const Appointments = () => {
               </div>
             </div>
             <Button
-              className="w-full gap-2 bg-blue-600 hover:bg-blue-700 h-8 text-xs"
+              className="w-full gap-2 bg-primary hover:bg-primary/90 h-8 text-xs"
               onClick={() => {
                 console.log('Button clicked for appointment:', appointment.id);
                 handlePaySessionFee(appointment);
@@ -431,20 +432,20 @@ const Appointments = () => {
 
         {appointment.status === "session_attended" && appointment.sessionFeeStatus === "pending" && (
           <div className="mt-3 pt-3 border-t">
-            <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded mb-2 space-y-1">
-              <div className="flex justify-between text-xs">
+            <div className="bg-muted/40 p-3 rounded mb-2 space-y-1">
+              <div className={`flex justify-between ${responsive.bodyMuted}`}>
                 <span>Base fee:</span>
                 <span>MWK {Number(appointment.sessionFee || 0).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between text-xs">
+              <div className={`flex justify-between ${responsive.bodyMuted}`}>
                 <span>Tax ({appointment.Specialty?.taxRate || 17.5}%):</span>
                 <span>MWK {Math.round(Number(appointment.sessionFee || 0) * ((appointment.Specialty?.taxRate || 17.5) / 100)).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between text-xs">
+              <div className={`flex justify-between ${responsive.bodyMuted}`}>
                 <span>Processing ({appointment.Specialty?.convenienceFeePercentage || 2}%):</span>
                 <span>MWK {Math.round(Number(appointment.sessionFee || 0) * ((appointment.Specialty?.convenienceFeePercentage || 2) / 100)).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between text-sm font-semibold border-t pt-1">
+              <div className={`flex justify-between font-semibold border-t pt-1 ${responsive.body}`}>
                 <span>Total:</span>
                 <span>MWK {(
                   Number(appointment.sessionFee || 0) +
@@ -454,7 +455,7 @@ const Appointments = () => {
               </div>
             </div>
             <Button
-              className="w-full gap-2 bg-blue-600 hover:bg-blue-700 h-8 text-xs"
+              className="w-full gap-2 bg-primary hover:bg-primary/90 h-8 text-xs"
               onClick={() => handlePaySessionFee(appointment)}
               disabled={paySessionFeeMutation.isPending}
             >
@@ -472,18 +473,18 @@ const Appointments = () => {
   );
 
   const CaregiverCard = ({ appointment }: { appointment: typeof appointments[0] }) => (
-    <Card className="mb-3">
-      <CardContent className="p-5">
+    <Card className={`${dashboardCard.base} mb-3`}>
+      <CardContent className={dashboardCard.statContent}>
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
-              <User className="w-6 h-6 text-primary" />
+            <div className={dashboardCard.iconWell.primary}>
+              <User className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h4 className="font-semibold text-base">
+              <h4 className={`font-semibold ${responsive.body}`}>
                 {appointment.Patient?.User?.firstName} {appointment.Patient?.User?.lastName}
               </h4>
-              <p className="text-sm text-muted-foreground">{appointment.Specialty?.name}</p>
+              <p className={responsive.bodyMuted}>{appointment.Specialty?.name}</p>
             </div>
           </div>
           <Badge className={`${getStatusColor(appointment.status)} text-xs px-2.5 py-1`}>
@@ -491,16 +492,16 @@ const Appointments = () => {
           </Badge>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2">
+        <div className="grid grid-cols-2 gap-3">
+          <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
             <Calendar className="w-4 h-4 text-muted-foreground" />
             <span>{new Date(appointment.scheduledDate).toLocaleDateString()}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
             <Clock className="w-4 h-4 text-muted-foreground" />
             <span>{appointment.TimeSlot?.startTime} - {appointment.TimeSlot?.endTime}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
             {appointment.sessionType === "teleconference" ? (
               <Video className="w-4 h-4 text-muted-foreground" />
             ) : (
@@ -508,30 +509,30 @@ const Appointments = () => {
             )}
             <span>{appointment.sessionType === "teleconference" ? "Video Call" : "In-Person"}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
             <DollarSign className="w-4 h-4 text-muted-foreground" />
             <span>MWK {appointment.totalCost}</span>
           </div>
         </div>
 
         {(appointment.jitsiRoomName || appointment.caregiverMeetingToken) && appointment.sessionType === "teleconference" && (
-          <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-900">
+          <div className="mt-3 p-3 bg-primary/5 rounded-lg border border-primary/20">
             <div className="space-y-2">
               {appointment.jitsiRoomName && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Video className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
+                  <Video className="h-4 w-4 text-primary flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-blue-900 dark:text-blue-100">Meeting Room</p>
-                    <p className="text-xs text-blue-700 dark:text-blue-300 truncate">{appointment.jitsiRoomName}</p>
+                    <p className={`font-medium ${responsive.bodyMuted}`}>Meeting Room</p>
+                    <p className={`truncate ${responsive.bodyMuted}`}>{appointment.jitsiRoomName}</p>
                   </div>
                 </div>
               )}
               {appointment.caregiverMeetingToken && (
-                <div className={appointment.jitsiRoomName ? "pt-2 border-t border-blue-200 dark:border-blue-900" : ""}>
+                <div className={appointment.jitsiRoomName ? "pt-2 border-t border-primary/20" : ""}>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="w-full text-xs h-8 bg-white dark:bg-blue-950"
+                    className="w-full text-xs h-8"
                     onClick={() => {
                       const meetingUrl = `${window.location.origin}/meeting/join/${appointment.caregiverMeetingToken}`;
                       navigator.clipboard.writeText(meetingUrl);
@@ -548,14 +549,14 @@ const Appointments = () => {
         )}
 
         {appointment.sessionType === "in_person" && appointment.Location && (
-          <div className="mt-3 p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-900">
-            <div className="flex items-center gap-2 text-sm">
-              <MapPin className="h-4 w-4 text-green-600 flex-shrink-0" />
+          <div className="mt-3 p-3 bg-success/5 rounded-lg border border-success/20">
+            <div className={`flex items-center gap-2 ${responsive.bodyMuted}`}>
+              <MapPin className="h-4 w-4 text-success flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-green-900 dark:text-green-100">Location</p>
-                <p className="text-xs text-green-700 dark:text-green-300">{appointment.Location.name}</p>
+                <p className={`font-medium ${responsive.bodyMuted}`}>Location</p>
+                <p className={responsive.bodyMuted}>{appointment.Location.name}</p>
                 {appointment.Location.address && (
-                  <p className="text-xs text-green-600 dark:text-green-400">{appointment.Location.address}</p>
+                  <p className={responsive.bodyMuted}>{appointment.Location.address}</p>
                 )}
               </div>
             </div>
@@ -563,8 +564,9 @@ const Appointments = () => {
         )}
 
         {appointment.notes && (
-          <div className="mt-3 p-3 bg-muted/50 rounded text-sm">
-            <strong>Notes:</strong> {appointment.notes}
+          <div className="mt-3 p-3 bg-muted/50 rounded">
+            <span className={`font-medium ${responsive.bodyMuted}`}>Notes: </span>
+            <span className={responsive.bodyMuted}>{appointment.notes}</span>
           </div>
         )}
 
@@ -585,60 +587,56 @@ const Appointments = () => {
 
   return (
     <DashboardLayout userRole={mapUserRole(user?.role || 'patient')}>
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {/* Header */}
         <div>
-          <h1 className="font-display text-xl md:text-2xl font-bold">
+          <h1 className={responsive.pageTitle}>
             {isCaregiver ? "My Appointments" : "Appointments"}
           </h1>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className={responsive.pageSubtitle}>
             {isCaregiver ? "Manage your patient appointments" : "Manage your healthcare appointments"}
           </p>
         </div>
 
         {/* Summary Cards */}
         <div className="grid md:grid-cols-3 gap-3">
-          <Card>
-            <CardContent className="p-3">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-blue-100 rounded">
-                  <Calendar className="h-4 w-4 text-blue-600" />
-                </div>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.statContent}>
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-lg font-bold">{upcomingAppointments.length}</p>
-                  <p className="text-[10px] text-muted-foreground">
-                    {isCaregiver ? 'Confirmed' : 'Upcoming'}
-                  </p>
+                  <p className={responsive.bodyMuted}>{isCaregiver ? 'Confirmed' : 'Upcoming'}</p>
+                  <p className={responsive.statValue}>{upcomingAppointments.length}</p>
+                </div>
+                <div className={dashboardCard.iconWell.primary}>
+                  <Calendar className="h-4 w-4 text-primary" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-3">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-green-100 rounded">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                </div>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.statContent}>
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-lg font-bold">{pastAppointments.length}</p>
-                  <p className="text-[10px] text-muted-foreground">
-                    {isCaregiver ? 'Completed' : 'Past'}
-                  </p>
+                  <p className={responsive.bodyMuted}>{isCaregiver ? 'Completed' : 'Past'}</p>
+                  <p className={responsive.statValue}>{pastAppointments.length}</p>
+                </div>
+                <div className={dashboardCard.iconWell.success}>
+                  <CheckCircle className="h-4 w-4 text-success" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-3">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-orange-100 rounded">
-                  <AlertCircle className="h-4 w-4 text-orange-600" />
-                </div>
+          <Card className={dashboardCard.base}>
+            <CardContent className={dashboardCard.statContent}>
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-lg font-bold">{appointments.length}</p>
-                  <p className="text-[10px] text-muted-foreground">Total Appointments</p>
+                  <p className={responsive.bodyMuted}>Total Appointments</p>
+                  <p className={responsive.statValue}>{appointments.length}</p>
+                </div>
+                <div className={dashboardCard.iconWell.accent}>
+                  <AlertCircle className="h-4 w-4 text-accent" />
                 </div>
               </div>
             </CardContent>
@@ -684,12 +682,12 @@ const Appointments = () => {
           {isCaregiver ? (
             <>
               <TabsContent value="confirmed" className="mt-4">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
+                <Card className={dashboardCard.base}>
+                  <CardHeader className={dashboardCard.header}>
+                    <div className="flex items-center justify-between w-full">
                       <div>
-                        <CardTitle className="text-base">Confirmed Appointments</CardTitle>
-                        <CardDescription className="text-xs">
+                        <CardTitle className={responsive.cardTitle}>Confirmed Appointments</CardTitle>
+                        <CardDescription className={responsive.cardDesc}>
                           {confirmedAppointments.length} confirmed appointment(s)
                         </CardDescription>
                       </div>
@@ -761,7 +759,7 @@ const Appointments = () => {
                             <TableRow key={appointment.id} className="hover:bg-muted/30">
                               <TableCell className="p-3">
                                 <div className="flex items-center gap-2">
-                                  <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-semibold">
+                                  <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-semibold" aria-hidden="true">
                                     {appointment.Patient?.User?.firstName?.charAt(0) || 'P'}
                                   </div>
                                   <div>
@@ -822,12 +820,12 @@ const Appointments = () => {
               </TabsContent>
 
               <TabsContent value="completed" className="mt-4">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
+                <Card className={dashboardCard.base}>
+                  <CardHeader className={dashboardCard.header}>
+                    <div className="flex items-center justify-between w-full">
                       <div>
-                        <CardTitle className="text-base">Completed Appointments</CardTitle>
-                        <CardDescription className="text-xs">
+                        <CardTitle className={responsive.cardTitle}>Completed Appointments</CardTitle>
+                        <CardDescription className={responsive.cardDesc}>
                           {completedAppointments.length} completed appointment(s)
                         </CardDescription>
                       </div>
@@ -899,7 +897,7 @@ const Appointments = () => {
                             <TableRow key={appointment.id} className="hover:bg-muted/30">
                               <TableCell className="p-3">
                                 <div className="flex items-center gap-2">
-                                  <div className="h-7 w-7 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-xs font-semibold">
+                                  <div className="h-7 w-7 rounded-full bg-success/10 flex items-center justify-center text-success text-xs font-semibold">
                                     {appointment.Patient?.User?.firstName?.charAt(0) || 'P'}
                                   </div>
                                   <div>
@@ -941,7 +939,7 @@ const Appointments = () => {
                                 <p className="text-sm font-medium">MWK {appointment.totalCost || 0}</p>
                               </TableCell>
                               <TableCell className="p-3 text-right">
-                                <Badge variant="default" className="text-xs bg-green-600">
+                                <Badge variant="default" className="text-xs bg-success">
                                   <CheckCircle className="h-3 w-3 mr-1" />
                                   Completed
                                 </Badge>
@@ -959,7 +957,7 @@ const Appointments = () => {
             <>
               <TabsContent value="upcoming" className="space-y-4">
                 {isLoading ? (
-                  <Card>
+                  <Card className={dashboardCard.base}>
                     <CardContent className="py-12">
                       <div className="flex flex-col items-center justify-center gap-3">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -974,11 +972,11 @@ const Appointments = () => {
                     ))}
                   </div>
                 ) : (
-                  <Card>
+                  <Card className={dashboardCard.base}>
                     <CardContent className="py-12 text-center">
-                      <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="font-semibold mb-2">No upcoming appointments</h3>
-                      <p className="text-muted-foreground">
+                      <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4 opacity-50" />
+                      <h3 className={`font-semibold mb-2 ${responsive.cardTitle}`}>No upcoming appointments</h3>
+                      <p className={responsive.bodyMuted}>
                         Your confirmed appointments will appear here
                       </p>
                     </CardContent>
@@ -988,7 +986,7 @@ const Appointments = () => {
 
               <TabsContent value="past" className="space-y-4">
                 {isLoading ? (
-                  <Card>
+                  <Card className={dashboardCard.base}>
                     <CardContent className="py-12">
                       <div className="flex flex-col items-center justify-center gap-3">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -1003,11 +1001,11 @@ const Appointments = () => {
                     ))}
                   </div>
                 ) : (
-                  <Card>
+                  <Card className={dashboardCard.base}>
                     <CardContent className="py-12 text-center">
-                      <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="font-semibold mb-2">No past appointments</h3>
-                      <p className="text-muted-foreground">
+                      <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4 opacity-50" />
+                      <h3 className={`font-semibold mb-2 ${responsive.cardTitle}`}>No past appointments</h3>
+                      <p className={responsive.bodyMuted}>
                         Your completed appointments will appear here
                       </p>
                     </CardContent>
@@ -1018,11 +1016,11 @@ const Appointments = () => {
               {rescheduledAppointments.length > 0 && (
                 <TabsContent value="rescheduled" className="space-y-4">
                   {isLoading ? (
-                    <Card>
+                    <Card className={dashboardCard.base}>
                       <CardContent className="py-12">
                         <div className="flex flex-col items-center justify-center gap-3">
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                          <p className="text-sm text-muted-foreground">Loading appointments...</p>
+                          <p className={responsive.bodyMuted}>Loading appointments...</p>
                         </div>
                       </CardContent>
                     </Card>
