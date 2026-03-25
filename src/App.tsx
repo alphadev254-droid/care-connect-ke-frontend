@@ -28,7 +28,7 @@ import Patients from "./pages/Patients";
 import Earnings from "./pages/Earnings";
 import WithdrawalsPage from "./pages/WithdrawalsPage";
 import AdminWithdrawalsPage from "./pages/AdminWithdrawalsPage";
-import AdminWithdrawalDetailPage from "./pages/AdminWithdrawalDetailPage";
+// import AdminWithdrawalDetailPage from "./pages/AdminWithdrawalDetailPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserManagement from "./pages/UserManagement";
 import AdminReports from "./pages/AdminReports";
@@ -178,14 +178,14 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/dashboard/admin/withdrawals/:caregiverId"
               element={
                 <ProtectedRoute requiredPermission="view_withdrawal_requests">
                   <AdminWithdrawalDetailPage />
                 </ProtectedRoute>
               }
-            />
+            /> */}
             <Route
               path="/dashboard/admin/teleconference"
               element={
