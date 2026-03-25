@@ -186,12 +186,12 @@ const Caregivers = () => {
         </div>
 
         {/* Search and Filters - Compact */}
-        <div className="flex gap-2">
-          <div className="flex-1 relative">
+        <div className="flex flex-wrap gap-2">
+          <div className="flex-1 min-w-[160px] relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search by name, specialty, or location..."
-              className="pl-10 h-9"
+              className="pl-10 h-9 w-full border-border/60 bg-card text-xs sm:text-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && applyFilters()}
@@ -201,23 +201,23 @@ const Caregivers = () => {
             variant="outline"
             size="sm"
             type="button"
-            className="gap-2 h-9"
+            className="gap-2 shrink-0 border-border/60"
             onClick={() => setShowFilters(!showFilters)}
           >
             <Filter className="h-4 w-4" />
-            Filters
+            <span className={responsive.body}>Filters</span>
             <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
           </Button>
           <Button
             variant="default"
             size="sm"
             type="button"
-            className="gap-2 h-9 px-4"
+            className="gap-2 px-4 shrink-0"
             onClick={applyFilters}
             disabled={isFetching}
           >
             <Search className="h-4 w-4" />
-            Search
+            <span className={responsive.body}>Search</span>
           </Button>
         </div>
 
@@ -226,11 +226,11 @@ const Caregivers = () => {
           {showFilters && (
             <Card className={`lg:col-span-4 ${dashboardCard.base}`}>
               <CardContent className={dashboardCard.compactBody}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                   <div>
-                    <Label className="text-xs font-semibold mb-2 block">Specialty</Label>
+                    <Label className={`${responsive.label} mb-2 block`}>Specialty</Label>
                     <Select value={selectedSpecialty} onValueChange={setSelectedSpecialty}>
-                      <SelectTrigger className="h-9 text-xs">
+                      <SelectTrigger className="h-9 text-xs border-border/60 bg-card">
                         <SelectValue placeholder="All Specialties" />
                       </SelectTrigger>
                       <SelectContent>
@@ -245,13 +245,13 @@ const Caregivers = () => {
                   </div>
 
                   <div>
-                    <Label className="text-xs font-semibold mb-2 block">Region</Label>
+                    <Label className={`${responsive.label} mb-2 block`}>County</Label>
                     <Select value={selectedRegion} onValueChange={handleRegionChange}>
-                      <SelectTrigger className="h-9 text-xs">
-                        <SelectValue placeholder="All Regions" />
+                      <SelectTrigger className="h-9 text-xs border-border/60 bg-card">
+                        <SelectValue placeholder="All Counties" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Regions</SelectItem>
+                        <SelectItem value="all">All Counties</SelectItem>
                         {regions?.map((region: string) => (
                           <SelectItem key={region} value={region}>
                             {region}
@@ -262,13 +262,13 @@ const Caregivers = () => {
                   </div>
 
                   <div>
-                    <Label className="text-xs font-semibold mb-2 block">District</Label>
+                    <Label className={`${responsive.label} mb-2 block`}>Constituency</Label>
                     <Select value={selectedDistrict} onValueChange={handleDistrictChange}>
-                      <SelectTrigger className="h-9 text-xs">
-                        <SelectValue placeholder="All Districts" />
+                      <SelectTrigger className="h-9 text-xs border-border/60 bg-card">
+                        <SelectValue placeholder="All Constituencies" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Districts</SelectItem>
+                        <SelectItem value="all">All Constituencies</SelectItem>
                         {districts?.map((district: string) => (
                           <SelectItem key={district} value={district}>
                             {district}
@@ -279,13 +279,13 @@ const Caregivers = () => {
                   </div>
 
                   <div>
-                    <Label className="text-xs font-semibold mb-2 block">Traditional Authority</Label>
+                    <Label className={`${responsive.label} mb-2 block`}>Ward</Label>
                     <Select value={selectedTA} onValueChange={handleTAChange}>
-                      <SelectTrigger className="h-9 text-xs">
-                        <SelectValue placeholder="All TAs" />
+                      <SelectTrigger className="h-9 text-xs border-border/60 bg-card">
+                        <SelectValue placeholder="All Wards" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All TAs</SelectItem>
+                        <SelectItem value="all">All Wards</SelectItem>
                         {traditionalAuthorities?.map((ta: string) => (
                           <SelectItem key={ta} value={ta}>
                             {ta}
@@ -296,13 +296,13 @@ const Caregivers = () => {
                   </div>
 
                   <div>
-                    <Label className="text-xs font-semibold mb-2 block">Village</Label>
+                    <Label className={`${responsive.label} mb-2 block`}>Sub-location</Label>
                     <Select value={selectedVillage} onValueChange={setSelectedVillage}>
-                      <SelectTrigger className="h-9 text-xs">
-                        <SelectValue placeholder="All Villages" />
+                      <SelectTrigger className="h-9 text-xs border-border/60 bg-card">
+                        <SelectValue placeholder="All Sub-locations" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Villages</SelectItem>
+                        <SelectItem value="all">All Sub-locations</SelectItem>
                         {villages?.map((village: string) => (
                           <SelectItem key={village} value={village}>
                             {village}
@@ -316,7 +316,7 @@ const Caregivers = () => {
                   <Button
                     variant="default"
                     size="sm"
-                    className="h-9 text-xs"
+                    className="text-xs"
                     onClick={() => {
                       applyFilters();
                       setShowFilters(false);
@@ -328,7 +328,7 @@ const Caregivers = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="gap-2 h-9 text-xs"
+                    className="gap-2 text-xs border-border/60"
                     onClick={() => {
                       clearFilters();
                       setShowFilters(false);
@@ -403,7 +403,7 @@ const Caregivers = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <h3 className={`font-semibold truncate ${responsive.body}`}>{name}</h3>
-                            {caregiverData.verificationStatus === 'APPROVED' && (
+                            {caregiverData.verificationStatus === 'verified' && (
                               <Shield className="h-3 w-3 text-success flex-shrink-0" />
                             )}
                           </div>
@@ -412,15 +412,15 @@ const Caregivers = () => {
                           </p>
                           <Badge
                             variant={
-                              caregiverData.verificationStatus === 'APPROVED' ? 'default' :
-                              caregiverData.verificationStatus === 'REJECTED' ? 'destructive' :
+                              caregiverData.verificationStatus === 'verified' ? 'default' :
+                              caregiverData.verificationStatus === 'rejected' ? 'destructive' :
                               'secondary'
                             }
                             className="mt-1 text-xs h-5"
                           >
-                            {caregiverData.verificationStatus === 'APPROVED' && 'Verified'}
-                            {caregiverData.verificationStatus === 'PENDING' && 'Pending Verification'}
-                            {caregiverData.verificationStatus === 'REJECTED' && 'Rejected'}
+                            {caregiverData.verificationStatus === 'verified' && 'Verified'}
+                            {caregiverData.verificationStatus === 'pending' && 'Pending Verification'}
+                            {caregiverData.verificationStatus === 'rejected' && 'Rejected'}
                             {!caregiverData.verificationStatus && 'Pending'}
                           </Badge>
                         </div>
@@ -454,13 +454,13 @@ const Caregivers = () => {
                                 <div>
                                   <span className="text-muted-foreground">Session:</span>
                                   <span className="font-semibold text-primary ml-1">
-                                    MWK {specialty.sessionFee ? Number(specialty.sessionFee).toFixed(0) : '0'}
+                                    KES {specialty.sessionFee ? Number(specialty.sessionFee).toFixed(0) : '0'}
                                   </span>
                                 </div>
                                 <div>
                                   <span className="text-muted-foreground">Booking:</span>
                                   <span className="font-semibold text-secondary ml-1">
-                                    MWK {specialty.bookingFee ? Number(specialty.bookingFee).toFixed(0) : '0'}
+                                    KES {specialty.bookingFee ? Number(specialty.bookingFee).toFixed(0) : '0'}
                                   </span>
                                 </div>
                               </div>
@@ -570,20 +570,20 @@ const Caregivers = () => {
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
                     <Badge
                       variant={
-                        profileDialog.caregiver.Caregiver?.verificationStatus === 'APPROVED' ? 'default' :
-                        profileDialog.caregiver.Caregiver?.verificationStatus === 'REJECTED' ? 'destructive' :
+                        profileDialog.caregiver.Caregiver?.verificationStatus === 'verified' ? 'default' :
+                        profileDialog.caregiver.Caregiver?.verificationStatus === 'rejected' ? 'destructive' :
                         'secondary'
                       }
                       className="gap-1"
                     >
-                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'APPROVED' && (
+                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'verified' && (
                         <>
                           <Shield className="h-3 w-3" />
                           Verified Professional
                         </>
                       )}
-                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'PENDING' && 'Pending Verification'}
-                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'REJECTED' && 'Verification Rejected'}
+                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'pending' && 'Pending Verification'}
+                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'rejected' && 'Verification Rejected'}
                       {!profileDialog.caregiver.Caregiver?.verificationStatus && 'Pending Verification'}
                     </Badge>
                     {profileDialog.caregiver.Caregiver?.Specialties?.map((specialty: any) => (
@@ -630,19 +630,19 @@ const Caregivers = () => {
                       <div className="flex items-center gap-2 mt-1">
                         <Badge
                           variant={
-                            profileDialog.caregiver.Caregiver?.verificationStatus === 'APPROVED' ? 'default' :
-                            profileDialog.caregiver.Caregiver?.verificationStatus === 'REJECTED' ? 'destructive' :
+                            profileDialog.caregiver.Caregiver?.verificationStatus === 'verified' ? 'default' :
+                            profileDialog.caregiver.Caregiver?.verificationStatus === 'rejected' ? 'destructive' :
                             'secondary'
                           }
                         >
-                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'APPROVED' && (
+                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'verified' && (
                             <>
                               <Shield className="h-3 w-3 mr-1" />
                               Verified
                             </>
                           )}
-                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'PENDING' && 'Pending'}
-                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'REJECTED' && 'Rejected'}
+                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'pending' && 'Pending'}
+                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'rejected' && 'Rejected'}
                           {!profileDialog.caregiver.Caregiver?.verificationStatus && 'Pending'}
                         </Badge>
                       </div>
@@ -668,19 +668,19 @@ const Caregivers = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label className="text-xs text-muted-foreground">Region</Label>
+                      <Label className="text-xs text-muted-foreground">County</Label>
                       <p className={`mt-1 capitalize ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.region || 'Not specified'}</p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground">District</Label>
+                      <Label className="text-xs text-muted-foreground">Constituency</Label>
                       <p className={`mt-1 uppercase ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.district || 'Not specified'}</p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground">Traditional Authority</Label>
+                      <Label className="text-xs text-muted-foreground">Ward</Label>
                       <p className={`mt-1 uppercase ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.traditionalAuthority || 'Not specified'}</p>
                     </div>
                     <div>
-                      <Label className="text-xs text-muted-foreground">Village</Label>
+                      <Label className="text-xs text-muted-foreground">Sub-location</Label>
                       <p className={`mt-1 uppercase ${responsive.body}`}>{profileDialog.caregiver.Caregiver?.village || 'Not specified'}</p>
                     </div>
                   </div>

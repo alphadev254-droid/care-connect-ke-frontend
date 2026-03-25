@@ -26,12 +26,12 @@ const CTASection = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mt-auto">
                 <Link to="/register">
-                  <Button size="sm" className="gap-2 bg-primary text-white hover:bg-primary/90 rounded-sm font-semibold">
+                  <Button size="sm" className="gap-2 bg-primary text-white hover:bg-primary/90 rounded-md font-semibold">
                     Register as Patient <ArrowRight className="h-3.5 w-3.5" />
                   </Button>
                 </Link>
                 <Link to="/caregivers">
-                  <Button size="sm" variant="outline" className="gap-2 rounded-sm font-semibold">
+                  <Button size="sm" variant="outline" className="gap-2 rounded-md font-semibold">
                     Browse Caregivers <ChevronRight className="h-3.5 w-3.5" />
                   </Button>
                 </Link>
@@ -56,12 +56,12 @@ const CTASection = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mt-auto">
                 <Link to="/register">
-                  <Button size="sm" className="gap-2 bg-secondary text-white hover:bg-secondary/90 rounded-sm font-semibold">
+                  <Button size="sm" className="gap-2 bg-secondary text-white hover:bg-secondary/90 rounded-md font-semibold">
                     Register as Caregiver <ArrowRight className="h-3.5 w-3.5" />
                   </Button>
                 </Link>
                 <Link to="/how-it-works">
-                  <Button size="sm" variant="outline" className="gap-2 rounded-sm font-semibold">
+                  <Button size="sm" variant="outline" className="gap-2 rounded-md font-semibold">
                     How It Works <ChevronRight className="h-3.5 w-3.5" />
                   </Button>
                 </Link>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,417 +7,293 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Wallet, ArrowDownToLine, Clock, CheckCircle, XCircle, AlertCircle, Lock } from 'lucide-react';
+import { Wallet, RefreshCw, CheckCircle, Clock, AlertCircle, Building2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
-import { withdrawalService } from '@/services/withdrawalService';
+import { settlementsService } from '@/services/settlementsService';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { dashboardCard, responsive } from '@/theme';
 
 const WithdrawalsPage = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [withdrawalAmount, setWithdrawalAmount] = useState('');
-  const [recipientType, setRecipientType] = useState('mobile_money');
-  const [recipientNumber, setRecipientNumber] = useState('');
-  const [withdrawalToken, setWithdrawalToken] = useState('');
-  const [tokenSent, setTokenSent] = useState(false);
-  const [tokenExpiry, setTokenExpiry] = useState<Date | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // Fetch balance using React Query
-  const { data: balance, isLoading: balanceLoading } = useQuery({
+  const [businessName, setBusinessName] = useState('');
+  const [settlementBank, setSettlementBank] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [settlementsPage, setSettlementsPage] = useState(1);
+
+  const { data: balanceData, isLoading: balanceLoading } = useQuery({
     queryKey: ['caregiver-balance', user?.id],
-    queryFn: () => withdrawalService.getBalance(),
+    queryFn: () => settlementsService.getBalance(),
     enabled: !!user?.id
   });
 
-  // Fetch withdrawal history using React Query
-  const { data: withdrawalsData, isLoading: withdrawalsLoading } = useQuery({
-    queryKey: ['withdrawal-history', user?.id],
-    queryFn: () => withdrawalService.getHistory(),
+  const { data: subaccountData, isLoading: subaccountLoading } = useQuery({
+    queryKey: ['my-subaccount', user?.id],
+    queryFn: () => settlementsService.getMySubaccount(),
     enabled: !!user?.id
   });
 
-  // Token request mutation
-  const tokenMutation = useMutation({
-    mutationFn: withdrawalService.requestWithdrawalToken,
-    onSuccess: () => {
-      setTokenSent(true);
-      setTokenExpiry(new Date(Date.now() + 3 * 60 * 1000)); // 3 minutes
-      toast.success('Withdrawal token sent to your email');
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Failed to send token');
-    }
+  const { data: banksData } = useQuery({
+    queryKey: ['paystack-banks'],
+    queryFn: () => settlementsService.getBanks(),
   });
 
-  // Withdrawal request mutation
-  const withdrawalMutation = useMutation({
-    mutationFn: withdrawalService.requestWithdrawal,
+  const { data: settlementsData, isLoading: settlementsLoading } = useQuery({
+    queryKey: ['my-settlements', user?.id, settlementsPage],
+    queryFn: () => settlementsService.getSettlements(settlementsPage),
+    enabled: !!user?.id
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: settlementsService.saveSubaccount,
     onSuccess: (data) => {
-      toast.success(
-        <div className="space-y-2">
-          <div className="font-semibold">Withdrawal Successful!</div>
-          <div className="text-sm space-y-1">
-            <div>Amount: {data.currency} {data.requestedAmount}</div>
-            <div>Fee: {data.currency} {data.withdrawalFee}</div>
-            <div>Net Payout: {data.currency} {data.netPayout}</div>
-            <div>Reference: {data.paymentReference}</div>
-            <div>Recipient: {data.recipientNumber}</div>
-          </div>
-        </div>,
-        { duration: 8000 }
-      );
-      setIsDialogOpen(false);
-      setWithdrawalAmount('');
-      setRecipientNumber('');
-      setWithdrawalToken('');
-      setTokenSent(false);
-      setTokenExpiry(null);
-      // Invalidate and refetch data
-      queryClient.invalidateQueries({ queryKey: ['caregiver-balance'] });
-      queryClient.invalidateQueries({ queryKey: ['withdrawal-history'] });
+      toast.success(data.message || 'Bank details saved successfully');
+      queryClient.invalidateQueries({ queryKey: ['my-subaccount'] });
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Failed to submit withdrawal request');
+      toast.error(error.response?.data?.error || 'Failed to save bank details');
     }
   });
 
-  // Check if token is expired
-  const isTokenExpired = tokenExpiry && new Date() > tokenExpiry;
-
-  // Reset token state when dialog closes
-  const handleDialogClose = (open: boolean) => {
-    setIsDialogOpen(open);
-    if (!open) {
-      setTokenSent(false);
-      setTokenExpiry(null);
-      setWithdrawalToken('');
+  const syncMutation = useMutation({
+    mutationFn: settlementsService.syncSettlements,
+    onSuccess: (data) => {
+      toast.success(data.message || 'Settlements synced');
+      queryClient.invalidateQueries({ queryKey: ['my-settlements'] });
+      queryClient.invalidateQueries({ queryKey: ['caregiver-balance'] });
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.error || 'Failed to sync settlements');
     }
+  });
+
+  const subaccount = subaccountData?.subaccount;
+  const balance = balanceData;
+  const settlements = settlementsData?.settlements || [];
+  const pagination = settlementsData?.pagination || {};
+  const banks = banksData?.banks || [];
+
+  const handleSaveSubaccount = () => {
+    if (!businessName || !settlementBank || !accountNumber) {
+      toast.error('Business name, bank, and account number are required');
+      return;
+    }
+    saveMutation.mutate({ businessName, settlementBank, accountNumber, accountName });
   };
 
-  const withdrawals = withdrawalsData?.withdrawals || [];
-  const loading = balanceLoading || withdrawalsLoading;
-
-  const getStatusIcon = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'failed':
-        return <XCircle className="h-4 w-4 text-red-600" />;
-      case 'processing':
-        return <Clock className="h-4 w-4 text-blue-600" />;
-      default:
-        return <AlertCircle className="h-4 w-4 text-yellow-600" />;
+      case 'settled': return 'bg-green-100 text-green-800';
+      case 'processing': return 'bg-blue-100 text-blue-800';
+      case 'failed': return 'bg-red-100 text-red-800';
+      default: return 'bg-yellow-100 text-yellow-800';
     }
   };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'failed':
-        return 'bg-red-100 text-red-800';
-      case 'processing':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-yellow-100 text-yellow-800';
-    }
-  };
-
-  if (loading) {
-    return (
-      <DashboardLayout userRole="caregiver">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        </div>
-      </DashboardLayout>
-    );
-  }
 
   return (
     <DashboardLayout userRole="caregiver">
       <div className="space-y-3 md:space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className={responsive.pageTitle}>Withdrawals</h1>
-            <p className={responsive.pageSubtitle}>Manage your earnings and withdrawal requests</p>
+            <h1 className={responsive.pageTitle}>Settlements & Bank Details</h1>
+            <p className={responsive.pageSubtitle}>Manage your bank account and view Paystack settlements</p>
           </div>
         </div>
 
-      {/* Balance Card */}
-      <Card className={dashboardCard.base}>
-        <CardHeader className={dashboardCard.header}>
-          <div>
+        {/* Balance Card */}
+        <Card className={dashboardCard.base}>
+          <CardHeader className={dashboardCard.header}>
             <CardTitle className={`flex items-center gap-2 ${responsive.cardTitle}`}>
               <Wallet className="h-5 w-5 text-primary" />
               Wallet Balance
             </CardTitle>
-            <CardDescription className={responsive.cardDesc}>Your current earnings and available balance</CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className={dashboardCard.body}>
-          <div className={dashboardCard.compactStatGrid}>
-            <div className={dashboardCard.balanceBlockPrimary}>
-              <p className={responsive.bodyMuted}>Total Earnings</p>
-              <p className={`${dashboardCard.compactBalanceValue} text-primary`}>
-                {balance?.currency} {balance?.totalEarnings || '0.00'}
-              </p>
-            </div>
-            <div className={dashboardCard.balanceBlockSuccess}>
-              <p className={responsive.bodyMuted}>Available Balance</p>
-              <p className={`${dashboardCard.compactBalanceValue} text-success`}>
-                {balance?.currency} {balance?.availableBalance || '0.00'}
-              </p>
-            </div>
-            <div className={dashboardCard.balanceBlockWarning}>
-              <div className="flex items-center justify-center gap-1">
-                <Lock className="h-3 w-3 text-warning" />
-                <p className={responsive.bodyMuted}>Locked</p>
+            <CardDescription className={responsive.cardDesc}>Your earnings tracked on platform</CardDescription>
+          </CardHeader>
+          <CardContent className={dashboardCard.body}>
+            {balanceLoading ? (
+              <div className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /><span className="text-sm">Loading...</span></div>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className={dashboardCard.balanceBlockPrimary}>
+                  <p className={responsive.bodyMuted}>Total Earnings</p>
+                  <p className={`${dashboardCard.compactBalanceValue} text-primary`}>
+                    KES {balance?.totalEarnings || '0.00'}
+                  </p>
+                </div>
+                <div className={dashboardCard.balanceBlockSuccess}>
+                  <p className={responsive.bodyMuted}>Wallet Balance</p>
+                  <p className={`${dashboardCard.compactBalanceValue} text-success`}>
+                    KES {balance?.availableBalance || '0.00'}
+                  </p>
+                  <p className={responsive.bodyMuted}>Paystack settles directly to your bank</p>
+                </div>
               </div>
-              <p className={`${dashboardCard.compactBalanceValue} text-warning`}>
-                {balance?.currency} {balance?.lockedBalance || '0.00'}
-              </p>
-              <p className={responsive.bodyMuted}>Submit reports to unlock</p>
-            </div>
-            <div className="flex items-center justify-center">
-              <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
-                <DialogTrigger asChild>
-                  <Button 
-                    className="w-full"
-                    disabled={!balance || parseFloat(balance.availableBalance) <= 0}
-                  >
-                    <ArrowDownToLine className="h-4 w-4 mr-2" />
-                    Request Withdrawal
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle className={responsive.dialogTitle}>Request Withdrawal</DialogTitle>
-                    <DialogDescription className={responsive.dialogDesc}>
-                      Withdraw your earnings to your mobile money or bank account
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    {!tokenSent ? (
-                      <>
-                        <div>
-                          <Label htmlFor="amount">Amount ({balance?.currency})</Label>
-                          <Input
-                            id="amount"
-                            type="number"
-                            placeholder="Enter amount"
-                            value={withdrawalAmount}
-                            onChange={(e) => setWithdrawalAmount(e.target.value)}
-                            max={balance?.availableBalance}
-                          />
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Available: {balance?.currency} {balance?.availableBalance}
-                          </p>
-                        </div>
-                        <div>
-                          <Label htmlFor="recipientType">Recipient Type</Label>
-                          <Select value={recipientType} onValueChange={setRecipientType}>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="mobile_money">Mobile Money</SelectItem>
-                              <SelectItem value="bank">Bank Account</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label htmlFor="recipientNumber">
-                            {recipientType === 'mobile_money' ? 'Phone Number' : 'Account Number'}
-                          </Label>
-                          <Input
-                            id="recipientNumber"
-                            placeholder={recipientType === 'mobile_money' ? 'e.g., 265998123456' : 'Account number'}
-                            value={recipientNumber}
-                            onChange={(e) => setRecipientNumber(e.target.value)}
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="text-center py-4">
-                          <div className="text-green-600 mb-2">
-                            ✓ Token sent to your email
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Check your email and enter the 6-digit token below
-                          </p>
-                          {tokenExpiry && (
-                            <p className="text-xs text-orange-600 mt-1">
-                              Token expires in {Math.max(0, Math.ceil((tokenExpiry.getTime() - Date.now()) / 1000))} seconds
-                            </p>
-                          )}
-                        </div>
-                        <div>
-                          <Label htmlFor="token">Withdrawal Token</Label>
-                          <Input
-                            id="token"
-                            placeholder="Enter 6-digit token"
-                            value={withdrawalToken}
-                            onChange={(e) => setWithdrawalToken(e.target.value)}
-                            maxLength={6}
-                            className="text-center text-lg tracking-widest"
-                          />
-                        </div>
-                        {isTokenExpired && (
-                          <div className="text-center">
-                            <p className="text-sm text-red-600 mb-2">Token expired</p>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => {
-                                setTokenSent(false);
-                                setTokenExpiry(null);
-                                setWithdrawalToken('');
-                              }}
-                            >
-                              Request New Token
-                            </Button>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => handleDialogClose(false)}>
-                      Cancel
-                    </Button>
-                    {!tokenSent ? (
-                      <Button 
-                        onClick={() => {
-                          const amount = parseFloat(withdrawalAmount);
-                          if (!amount || amount <= 0) {
-                            toast.error('Please enter a valid amount');
-                            return;
-                          }
-                          if (amount > parseFloat(balance?.availableBalance || '0')) {
-                            toast.error('Amount exceeds available balance');
-                            return;
-                          }
-                          if (!recipientNumber) {
-                            toast.error('Please enter recipient details');
-                            return;
-                          }
-                          tokenMutation.mutate();
-                        }}
-                        disabled={tokenMutation.isPending}
-                      >
-                        {tokenMutation.isPending ? 'Sending...' : 'Send Token'}
-                      </Button>
-                    ) : (
-                      <Button 
-                        onClick={() => {
-                          if (!withdrawalToken || withdrawalToken.length !== 6) {
-                            toast.error('Please enter the 6-digit token');
-                            return;
-                          }
-                          if (isTokenExpired) {
-                            toast.error('Token has expired. Please request a new one.');
-                            return;
-                          }
-                          
-                          // First verify token with amount
-                          withdrawalService.verifyWithdrawalToken(withdrawalToken, parseFloat(withdrawalAmount))
-                            .then(() => {
-                              // If verification succeeds, proceed with withdrawal
-                              withdrawalMutation.mutate({
-                                amount: parseFloat(withdrawalAmount),
-                                recipientType: recipientType as 'mobile_money' | 'bank',
-                                recipientNumber,
-                                token: withdrawalToken
-                              });
-                            })
-                            .catch((error) => {
-                              toast.error(error.response?.data?.error || 'Token verification failed');
-                            });
-                        }}
-                        disabled={withdrawalMutation.isPending || isTokenExpired}
-                      >
-                        {withdrawalMutation.isPending ? 'Processing...' : 'Confirm Withdrawal'}
-                      </Button>
-                    )}
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            )}
+          </CardContent>
+        </Card>
 
-      {/* Withdrawal History */}
-      <Card className={dashboardCard.base}>
-        <CardHeader className={dashboardCard.header}>
-          <div>
-            <CardTitle className={responsive.cardTitle}>Withdrawal History</CardTitle>
-            <CardDescription className={responsive.cardDesc}>Your recent withdrawal requests and their status</CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0 overflow-hidden">
-          {withdrawals.length === 0 ? (
-            <div className="text-center py-8">
-              <ArrowDownToLine className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className={`${responsive.cardTitle} mb-2`}>No withdrawals yet</h3>
-              <p className={responsive.bodyMuted}>Your withdrawal requests will appear here</p>
+        {/* Bank Setup */}
+        <Card className={dashboardCard.base}>
+          <CardHeader className={dashboardCard.header}>
+            <CardTitle className={`flex items-center gap-2 ${responsive.cardTitle}`}>
+              <Building2 className="h-5 w-5 text-primary" />
+              {subaccount ? 'Bank Account (Registered)' : 'Set Up Bank Account'}
+            </CardTitle>
+            <CardDescription className={responsive.cardDesc}>
+              {subaccount
+                ? `Subaccount: ${subaccount.subaccountCode} · ${subaccount.businessName}`
+                : 'Register your bank account to receive Paystack settlements'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className={dashboardCard.body}>
+            {subaccountLoading ? (
+              <div className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /><span className="text-sm">Loading...</span></div>
+            ) : (
+              <div className="space-y-4 max-w-md">
+                {subaccount && (
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-md text-sm space-y-1">
+                    <p><strong>Bank:</strong> {subaccount.settlementBank}</p>
+                    <p><strong>Account:</strong> {subaccount.accountNumber}</p>
+                    {subaccount.accountName && <p><strong>Name:</strong> {subaccount.accountName}</p>}
+                    <p><strong>Split:</strong> {subaccount.percentageCharge}% to your account</p>
+                  </div>
+                )}
+                <div className="space-y-3">
+                  <div>
+                    <Label>Business / Account Name</Label>
+                    <Input
+                      placeholder="e.g. Jane Doe Healthcare"
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Bank</Label>
+                    <Select value={settlementBank} onValueChange={setSettlementBank}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select bank" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {banks.map((b) => (
+                          <SelectItem key={b.code} value={b.code}>{b.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Account Number</Label>
+                    <Input
+                      placeholder="Enter account number"
+                      value={accountNumber}
+                      onChange={(e) => setAccountNumber(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Account Holder Name (optional)</Label>
+                    <Input
+                      placeholder="As it appears on the account"
+                      value={accountName}
+                      onChange={(e) => setAccountName(e.target.value)}
+                    />
+                  </div>
+                  <Button onClick={handleSaveSubaccount} disabled={saveMutation.isPending}>
+                    {saveMutation.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Saving...</> : subaccount ? 'Update Bank Details' : 'Save Bank Details'}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Settlements History */}
+        <Card className={dashboardCard.base}>
+          <CardHeader className={dashboardCard.header}>
+            <div className="flex items-center justify-between w-full">
+              <div>
+                <CardTitle className={responsive.cardTitle}>Settlement History</CardTitle>
+                <CardDescription className={responsive.cardDesc}>Paystack settlements to your bank account</CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => syncMutation.mutate()}
+                disabled={syncMutation.isPending}
+              >
+                {syncMutation.isPending
+                  ? <><Loader2 className="h-3 w-3 mr-1 animate-spin" />Syncing...</>
+                  : <><RefreshCw className="h-3 w-3 mr-1" />Sync</>}
+              </Button>
             </div>
-          ) : (
-            <div className={dashboardCard.tableWrapper}>
-              <Table className={dashboardCard.tableMinWidth}>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className={dashboardCard.th}>Date</TableHead>
-                    <TableHead className={dashboardCard.th}>Amount</TableHead>
-                    <TableHead className={dashboardCard.th}>Fee</TableHead>
-                    <TableHead className={dashboardCard.th}>Net Payout</TableHead>
-                    <TableHead className={dashboardCard.th}>Recipient</TableHead>
-                    <TableHead className={dashboardCard.th}>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {withdrawals.map((withdrawal) => (
-                    <TableRow key={withdrawal.id} className={dashboardCard.tr}>
-                      <TableCell className={dashboardCard.td}>
-                        {new Date(withdrawal.requestedAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell className={dashboardCard.td}>
-                        {balance?.currency} {parseFloat(withdrawal.requestedAmount).toFixed(2)}
-                      </TableCell>
-                      <TableCell className={dashboardCard.td}>
-                        {balance?.currency} {parseFloat(withdrawal.withdrawalFee).toFixed(2)}
-                      </TableCell>
-                      <TableCell className={`${dashboardCard.td} font-medium`}>
-                        {balance?.currency} {parseFloat(withdrawal.netPayout).toFixed(2)}
-                      </TableCell>
-                      <TableCell className={dashboardCard.td}>
-                        <div>
-                          <p className={`${responsive.body} capitalize`}>{withdrawal.recipientType.replace('_', ' ')}</p>
-                          <p className={responsive.bodyMuted}>{withdrawal.recipientNumber}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell className={dashboardCard.td}>
-                        <Badge className={getStatusColor(withdrawal.status)}>
-                          <div className="flex items-center gap-1">
-                            {getStatusIcon(withdrawal.status)}
-                            <span className="capitalize">{withdrawal.status}</span>
-                          </div>
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+          </CardHeader>
+          <CardContent className="p-0 overflow-hidden">
+            {settlementsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : settlements.length === 0 ? (
+              <div className="text-center py-12">
+                <AlertCircle className="h-10 w-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+                <h3 className="font-semibold text-sm mb-1">No settlements yet</h3>
+                <p className="text-xs text-muted-foreground">Paystack settlements will appear here once processed</p>
+              </div>
+            ) : (
+              <>
+                <div className={dashboardCard.tableWrapper}>
+                  <Table className={dashboardCard.tableMinWidth}>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className={dashboardCard.th}>Settlement ID</TableHead>
+                        <TableHead className={dashboardCard.th}>Settled At</TableHead>
+                        <TableHead className={`${dashboardCard.th} text-right`}>Amount</TableHead>
+                        <TableHead className={`${dashboardCard.th} text-right`}>Fees</TableHead>
+                        <TableHead className={dashboardCard.th}>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {settlements.map((s: any) => (
+                        <TableRow key={s.id} className={dashboardCard.tr}>
+                          <TableCell className="text-xs font-mono">{s.paystackSettlementId}</TableCell>
+                          <TableCell className="text-xs">
+                            {s.settledAt ? new Date(s.settledAt).toLocaleDateString() : '—'}
+                          </TableCell>
+                          <TableCell className="text-right text-xs font-semibold">
+                            KES {Number(s.amount).toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-right text-xs text-muted-foreground">
+                            KES {Number(s.totalFees || 0).toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={getStatusColor(s.status)}>
+                              <span className="flex items-center gap-1 text-xs">
+                                {s.status === 'settled' ? <CheckCircle className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
+                                {s.status}
+                              </span>
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                {pagination.totalPages > 1 && (
+                  <div className="flex items-center justify-between px-4 py-3 border-t">
+                    <p className="text-sm text-muted-foreground">
+                      Page {pagination.currentPage} of {pagination.totalPages}
+                    </p>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => setSettlementsPage(p => p - 1)} disabled={settlementsPage <= 1}>Previous</Button>
+                      <Button variant="outline" size="sm" onClick={() => setSettlementsPage(p => p + 1)} disabled={settlementsPage >= pagination.totalPages}>Next</Button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </DashboardLayout>
   );
 };

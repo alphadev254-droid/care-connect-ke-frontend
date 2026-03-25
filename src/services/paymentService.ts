@@ -1,8 +1,8 @@
 import { api } from '@/lib/api';
 
 export interface PaymentTransaction {
-  id: number;
-  appointmentId: number;
+  id: string;
+  appointmentId: string;
   amount: number;
   currency: string;
   paymentMethod: string;
@@ -12,20 +12,38 @@ export interface PaymentTransaction {
   Appointment?: any;
 }
 
+export interface FeePreview {
+  baseFee: number;
+  channel: string;
+  convenienceFee: number;
+  platformCommissionRate: number;
+  platformCommission: number;
+  caregiverEarnings: number;
+  totalAmount: number;
+  transactionCharge: number;
+}
+
 export const paymentService = {
-  // Verify payment status
+  getFeePreview: async (params: {
+    paymentMethod: 'card' | 'mobile_money';
+    specialtyId?: string;
+    feeType?: 'booking_fee' | 'session_fee';
+    appointmentId?: string;
+  }): Promise<FeePreview> => {
+    const response = await api.get('/payments/fee-preview', { params });
+    return response.data;
+  },
+
   verifyPayment: async (tx_ref: string) => {
     const response = await api.get(`/payments/verify/${tx_ref}`);
     return response.data;
   },
 
-  // Get appointment payments
-  getAppointmentPayments: async (appointmentId: number) => {
+  getAppointmentPayments: async (appointmentId: string) => {
     const response = await api.get(`/payments/appointment/${appointmentId}`);
     return response.data;
   },
 
-  // Get payment history
   getPaymentHistory: async () => {
     const response = await api.get('/payments/history');
     return response.data;

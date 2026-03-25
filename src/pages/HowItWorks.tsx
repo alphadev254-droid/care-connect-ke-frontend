@@ -134,7 +134,7 @@ const HowItWorks = () => {
       <main>
         {/* ── Hero ── */}
         <section
-          className="py-6 lg:py-8 relative bg-cover bg-center overflow-hidden rounded-b-3xl"
+          className="py-6 lg:py-8 relative bg-cover bg-center overflow-hidden"
           style={{ backgroundImage: `url(${CLOUDINARY_IMAGES.howItWorks})` }}
         >
           <div className="absolute inset-0 bg-black/60" />

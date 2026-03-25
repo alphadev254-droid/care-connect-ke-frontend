@@ -41,12 +41,12 @@ const HeroSection = () => {
 
             <div className="flex flex-wrap gap-3 mb-10">
               <Link to="/register">
-                <Button size="default" className="gap-2 bg-primary text-white hover:bg-primary/90 rounded-sm font-semibold">
+                <Button size="default" className="gap-2 bg-primary text-white hover:bg-primary/90 rounded-md font-semibold">
                   Register as Patient <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
               <Link to="/caregivers">
-                <Button size="default" variant="outline" className="gap-2 rounded-sm font-semibold border-border">
+                <Button size="default" variant="outline" className="gap-2 rounded-md font-semibold border-border">
                   Browse Caregivers
                 </Button>
               </Link>

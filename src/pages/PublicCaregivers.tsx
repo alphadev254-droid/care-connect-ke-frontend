@@ -183,7 +183,7 @@ const PublicCaregivers = () => {
       
       {/* Hero Section */}
       <section 
-        className="py-6 lg:py-8 relative bg-cover bg-no-repeat rounded-b-3xl overflow-hidden"
+        className="py-6 lg:py-8 relative bg-cover bg-no-repeat overflow-hidden"
         style={{ 
           backgroundImage: `url(caregivers.png)`, 
           backgroundPosition: '0 45%',
@@ -444,7 +444,7 @@ const PublicCaregivers = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold text-sm truncate">{name}</h3>
-                            {caregiverData.verificationStatus === 'APPROVED' && (
+                            {caregiverData.verificationStatus === 'verified' && (
                               <Shield className="h-3 w-3 text-success flex-shrink-0" />
                             )}
                           </div>
@@ -453,15 +453,15 @@ const PublicCaregivers = () => {
                           </p>
                           <Badge
                             variant={
-                              caregiverData.verificationStatus === 'APPROVED' ? 'default' :
-                              caregiverData.verificationStatus === 'REJECTED' ? 'destructive' :
+                              caregiverData.verificationStatus === 'verified' ? 'default' :
+                              caregiverData.verificationStatus === 'rejected' ? 'destructive' :
                               'secondary'
                             }
                             className="mt-1 text-xs h-5"
                           >
-                            {caregiverData.verificationStatus === 'APPROVED' && 'Verified'}
-                            {caregiverData.verificationStatus === 'PENDING' && 'Pending Verification'}
-                            {caregiverData.verificationStatus === 'REJECTED' && 'Rejected'}
+                            {caregiverData.verificationStatus === 'verified' && 'Verified'}
+                            {caregiverData.verificationStatus === 'pending' && 'Pending Verification'}
+                            {caregiverData.verificationStatus === 'rejected' && 'Rejected'}
                             {!caregiverData.verificationStatus && 'Pending'}
                           </Badge>
                         </div>
@@ -622,20 +622,20 @@ const PublicCaregivers = () => {
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
                     <Badge
                       variant={
-                        profileDialog.caregiver.Caregiver?.verificationStatus === 'APPROVED' ? 'default' :
-                        profileDialog.caregiver.Caregiver?.verificationStatus === 'REJECTED' ? 'destructive' :
+                        profileDialog.caregiver.Caregiver?.verificationStatus === 'verified' ? 'default' :
+                        profileDialog.caregiver.Caregiver?.verificationStatus === 'rejected' ? 'destructive' :
                         'secondary'
                       }
                       className="gap-1"
                     >
-                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'APPROVED' && (
+                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'verified' && (
                         <>
                           <Shield className="h-3 w-3" />
                           Verified Professional
                         </>
                       )}
-                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'PENDING' && 'Pending Verification'}
-                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'REJECTED' && 'Verification Rejected'}
+                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'pending' && 'Pending Verification'}
+                      {profileDialog.caregiver.Caregiver?.verificationStatus === 'rejected' && 'Verification Rejected'}
                       {!profileDialog.caregiver.Caregiver?.verificationStatus && 'Pending Verification'}
                     </Badge>
                     {profileDialog.caregiver.Caregiver?.Specialties?.map((specialty: any) => (
@@ -719,19 +719,19 @@ const PublicCaregivers = () => {
                       <div className="flex items-center gap-2 mt-1">
                         <Badge
                           variant={
-                            profileDialog.caregiver.Caregiver?.verificationStatus === 'APPROVED' ? 'default' :
-                            profileDialog.caregiver.Caregiver?.verificationStatus === 'REJECTED' ? 'destructive' :
+                            profileDialog.caregiver.Caregiver?.verificationStatus === 'verified' ? 'default' :
+                            profileDialog.caregiver.Caregiver?.verificationStatus === 'rejected' ? 'destructive' :
                             'secondary'
                           }
                         >
-                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'APPROVED' && (
+                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'verified' && (
                             <>
                               <Shield className="h-3 w-3 mr-1" />
                               Verified
                             </>
                           )}
-                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'PENDING' && 'Pending'}
-                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'REJECTED' && 'Rejected'}
+                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'pending' && 'Pending'}
+                          {profileDialog.caregiver.Caregiver?.verificationStatus === 'rejected' && 'Rejected'}
                           {!profileDialog.caregiver.Caregiver?.verificationStatus && 'Pending'}
                         </Badge>
                       </div>

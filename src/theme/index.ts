@@ -217,6 +217,23 @@ export const dashboardCard = {
   balanceBlockWarning: "text-center p-1.5 sm:p-2 md:p-3 rounded-lg bg-warning/10",
 } as const;
 
+// ─── Button tokens ───────────────────────────────────────────────────────────
+export const btn = {
+  /** Shared base — text, gap, icon scale across all sizes */
+  base: "inline-flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  /** Icon size inside buttons */
+  icon: "[&_svg]:size-3.5 sm:[&_svg]:size-4",
+  /** Text scale */
+  text: "text-xs sm:text-sm",
+  /** Size variants */
+  size: {
+    default: "h-8 sm:h-9 md:h-10 px-3 sm:px-4 py-1.5 sm:py-2",
+    sm:      "h-7 sm:h-8 md:h-9 rounded-md px-2.5 sm:px-3",
+    lg:      "h-9 sm:h-10 md:h-11 rounded-md px-5 sm:px-6 md:px-8",
+    icon:    "h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10",
+  },
+} as const;
+
 // ─── Responsive layout & typography tokens ───────────────────────────────────
 // Single source of truth for containment and fluid text across all pages.
 export const responsive = {

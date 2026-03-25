@@ -2,41 +2,57 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Shield, Phone, Calendar, MapPin, Edit } from "lucide-react";
+import { Shield, Phone, Calendar, MapPin, Edit, X } from "lucide-react";
 import { dashboardCard, responsive } from "@/theme";
+import { useSecureFile } from "@/hooks/useSecureFile";
 
 interface Props {
   profileData: any;
   isEditing: boolean;
   imagePreview: string | null;
+  removeImage: boolean;
   onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onRemoveImage: () => void;
 }
 
-export const ProfileSidebar = ({ profileData, isEditing, imagePreview, onImageChange }: Props) => {
+export const ProfileSidebar = ({ profileData, isEditing, imagePreview, removeImage, onImageChange, onRemoveImage }: Props) => {
   const initials = `${profileData?.firstName?.charAt(0) ?? ""}${profileData?.lastName?.charAt(0) ?? ""}`;
+  const storedImageUrl = profileData?.profileImage ?? profileData?.Caregiver?.profileImage ?? null;
+  const secureImageUrl = useSecureFile(storedImageUrl);
+  // While editing: if removeImage is flagged or a new preview exists, don't show the stored image
+  const displayUrl = imagePreview ?? (removeImage ? null : secureImageUrl);
 
   return (
     <Card className={dashboardCard.base}>
       <CardContent className={`${dashboardCard.compactBody} flex flex-col items-center text-center gap-3 pt-5`}>
         <div className="relative">
-          {imagePreview ? (
-            <img src={imagePreview} alt="Preview" className="h-20 w-20 rounded-full object-cover border-2 border-primary/20" />
-          ) : profileData?.Caregiver?.profileImage ? (
-            <img src={profileData.Caregiver.profileImage} alt={profileData.firstName} className="h-20 w-20 rounded-full object-cover border-2 border-primary/20" />
+          {displayUrl ? (
+            <img src={displayUrl} alt="Profile" className="h-20 w-20 rounded-full object-cover border-2 border-primary/20" />
           ) : (
             <div className="h-20 w-20 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-2xl">
               {initials}
             </div>
           )}
-          {isEditing && profileData?.role === "caregiver" && (
-            <div className="absolute bottom-0 right-0">
-              <Label htmlFor="profileImageInput" className="cursor-pointer">
-                <div className="bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90">
-                  <Edit className="h-3 w-3" />
-                </div>
-              </Label>
-              <Input id="profileImageInput" type="file" accept="image/*" onChange={onImageChange} className="hidden" />
-            </div>
+          {isEditing && (
+            <>
+              <div className="absolute bottom-0 right-0">
+                <Label htmlFor="profileImageInput" className="cursor-pointer">
+                  <div className="bg-primary text-primary-foreground rounded-full p-1.5 hover:bg-primary/90">
+                    <Edit className="h-3 w-3" />
+                  </div>
+                </Label>
+                <Input id="profileImageInput" type="file" accept="image/*" onChange={onImageChange} className="hidden" />
+              </div>
+              {displayUrl && (
+                <button
+                  type="button"
+                  onClick={onRemoveImage}
+                  className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full p-0.5 hover:bg-destructive/90"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </>
           )}
         </div>
         <div>

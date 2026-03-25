@@ -13,7 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
 import { mapUserRole } from "@/lib/roleMapper";
 import { toast } from "sonner";
-import { dashboardCard, responsive } from "@/theme";
+import { dashboardCard, responsive, btn } from "@/theme";
 import {
   Calendar,
   Clock,
@@ -95,48 +95,49 @@ const Schedule = () => {
           <p className={responsive.pageSubtitle}>Manage your appointments and availability</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-2 sm:gap-3">
-          <Card className={dashboardCard.base}>
-            <CardContent className={dashboardCard.compactStatContent}>
-              <div>
-                <p className={responsive.bodyMuted}>Confirmed Appointments</p>
-                <p className={dashboardCard.compactStatValue}>{confirmedAppointments.length}</p>
+        <Card className={dashboardCard.base}>
+          <CardContent className={dashboardCard.compactBody}>
+            {/* Stat row */}
+            <div className="grid sm:grid-cols-2 gap-2 sm:gap-3 mb-3">
+              <div className={dashboardCard.compactStatContent + " rounded-lg bg-muted/40"}>
+                <div>
+                  <p className={responsive.bodyMuted}>Confirmed Appointments</p>
+                  <p className={dashboardCard.compactStatValue}>{confirmedAppointments.length}</p>
+                </div>
+                <div className={dashboardCard.iconWell.primary}>
+                  <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                </div>
               </div>
-              <div className={dashboardCard.iconWell.primary}>
-                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+              <div className={dashboardCard.compactStatContent + " rounded-lg bg-muted/40"}>
+                <div>
+                  <p className={responsive.bodyMuted}>Completed Appointments</p>
+                  <p className={dashboardCard.compactStatValue}>{completedAppointments.length}</p>
+                </div>
+                <div className={dashboardCard.iconWell.success}>
+                  <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
+                </div>
               </div>
-            </CardContent>
-          </Card>
-          <Card className={dashboardCard.base}>
-            <CardContent className={dashboardCard.compactStatContent}>
-              <div>
-                <p className={responsive.bodyMuted}>Completed Appointments</p>
-                <p className={dashboardCard.compactStatValue}>{completedAppointments.length}</p>
-              </div>
-              <div className={dashboardCard.iconWell.success}>
-                <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
 
-        <Tabs defaultValue="confirmed" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="confirmed" className="gap-2">
-              Confirmed
-              <Badge variant="secondary">{confirmedAppointments.length}</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="completed" className="gap-2">
-              Completed
-              <Badge variant="secondary">{completedAppointments.length}</Badge>
-            </TabsTrigger>
-            <TabsTrigger value="availability">
-              Availability
-            </TabsTrigger>
-            <TabsTrigger value="timeslots">
-              Time Slots
-            </TabsTrigger>
-          </TabsList>
+            {/* Tabs */}
+            <Tabs defaultValue="confirmed" className="flex gap-3">
+              <TabsList className="flex flex-col h-auto w-32 shrink-0 items-stretch gap-0.5 bg-muted/50 p-1 rounded-lg self-start">
+                <TabsTrigger value="confirmed" className="justify-start text-xs px-2 py-1.5 gap-1.5">
+                  Confirmed
+                  <Badge variant="secondary" className="ml-auto text-xs px-1">{confirmedAppointments.length}</Badge>
+                </TabsTrigger>
+                <TabsTrigger value="completed" className="justify-start text-xs px-2 py-1.5 gap-1.5">
+                  Completed
+                  <Badge variant="secondary" className="ml-auto text-xs px-1">{completedAppointments.length}</Badge>
+                </TabsTrigger>
+                <TabsTrigger value="availability" className="justify-start text-xs px-2 py-1.5">
+                  Availability
+                </TabsTrigger>
+                <TabsTrigger value="timeslots" className="justify-start text-xs px-2 py-1.5">
+                  Time Slots
+                </TabsTrigger>
+              </TabsList>
+              <div className="flex-1 min-w-0">
 
           <TabsContent value="confirmed" className="space-y-4">
             <Card className={dashboardCard.base}>
@@ -216,7 +217,7 @@ const Schedule = () => {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => navigate(`/appointment/${appointment.id}`)}
-                                  className="h-7 text-xs"
+                                  className={btn.size.sm + " " + btn.text}
                                 >
                                   <Eye className="h-3 w-3 mr-1" />
                                   View
@@ -226,7 +227,7 @@ const Schedule = () => {
                                   size="sm"
                                   onClick={() => handleReschedule(appointment)}
                                   disabled={!canReschedule(appointment)}
-                                  className="h-7 text-xs"
+                                  className={btn.size.sm + " " + btn.text}
                                 >
                                   <RotateCcw className="h-3 w-3 mr-1" />
                                   Reschedule
@@ -236,7 +237,7 @@ const Schedule = () => {
                                   size="sm"
                                   onClick={() => navigate(`/dashboard/reports?appointment=${appointment.id}`)}
                                   disabled={!sessionFeePaid}
-                                  className="h-7 text-xs bg-green-600 hover:bg-green-700"
+                                  className={btn.size.sm + " " + btn.text + " bg-green-600 hover:bg-green-700"}
                                   title={!sessionFeePaid ? "Session fee must be paid before completing" : "Complete session and create report"}
                                 >
                                   <Check className="h-3 w-3 mr-1" />
@@ -338,7 +339,7 @@ const Schedule = () => {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => navigate(`/appointment/${appointment.id}`)}
-                                className="h-7 text-xs"
+                                className={btn.size.sm + " " + btn.text}
                               >
                                 <Eye className="h-3 w-3 mr-1" />
                                 View
@@ -368,7 +369,10 @@ const Schedule = () => {
           <TabsContent value="timeslots">
             <TimeSlotViewer />
           </TabsContent>
-        </Tabs>
+              </div>
+            </Tabs>
+          </CardContent>
+        </Card>
 
         {/* Reschedule Modal */}
         <RescheduleModal

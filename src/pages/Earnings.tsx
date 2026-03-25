@@ -80,12 +80,10 @@ interface Transaction {
   status: string;
   paymentType: string;
   paymentMethod: string;
-  transactionId?: string;
+  paystackReference?: string;
   createdAt: string;
-  // New tax and commission tracking fields
+  // Fee breakdown fields
   baseFee?: number;
-  taxRate?: number;
-  taxAmount?: number;
   convenienceFeeRate?: number;
   convenienceFeeAmount?: number;
   platformCommissionRate?: number;
@@ -440,7 +438,6 @@ const Earnings = () => {
     if (isAdmin) {
       const completedTransactions = transactions.filter((t: Transaction) => t.status === 'completed');
       const totalEarnings = completedTransactions.reduce((sum: number, t: Transaction) => sum + Number(t.amount || 0), 0);
-      const totalTax = completedTransactions.reduce((sum: number, t: Transaction) => sum + Number(t.taxAmount || 0), 0);
       const totalCommission = completedTransactions.reduce((sum: number, t: Transaction) => sum + Number(t.platformCommissionAmount || 0), 0);
       const totalConvenienceFees = completedTransactions.reduce((sum: number, t: Transaction) => sum + Number(t.convenienceFeeAmount || 0), 0);
       const totalCaregiverEarnings = completedTransactions.reduce((sum: number, t: Transaction) => sum + Number(t.caregiverEarnings || 0), 0);
@@ -450,31 +447,25 @@ const Earnings = () => {
       return [
         {
           title: "Total Collections",
-          value: `MWK ${Math.round(totalEarnings).toLocaleString()}`,
+          value: `KES ${Math.round(totalEarnings).toLocaleString()}`,
           icon: DollarSign,
           trendUp: true,
         },
         {
-          title: "Tax Collected",
-          value: `MWK ${Math.round(totalTax).toLocaleString()}`,
-          icon: TrendingUp,
-          trendUp: true,
-        },
-        {
           title: "Platform Commission",
-          value: `MWK ${Math.round(totalCommission).toLocaleString()}`,
+          value: `KES ${Math.round(totalCommission).toLocaleString()}`,
           icon: CreditCard,
           trendUp: true,
         },
         {
           title: "Processing Fees",
-          value: `MWK ${Math.round(totalConvenienceFees).toLocaleString()}`,
+          value: `KES ${Math.round(totalConvenienceFees).toLocaleString()}`,
           icon: DollarSign,
           trendUp: true,
         },
         {
           title: "Caregiver Earnings",
-          value: `MWK ${Math.round(totalCaregiverEarnings).toLocaleString()}`,
+          value: `KES ${Math.round(totalCaregiverEarnings).toLocaleString()}`,
           icon: User,
           trendUp: true,
         },
@@ -501,24 +492,17 @@ const Earnings = () => {
       const completedTransactions = transactions.filter((t: Transaction) => t.status === 'completed' && t.paymentType === 'session_fee');
       const netEarnings = completedTransactions.reduce((sum: number, t: Transaction) => sum + Number(t.caregiverEarnings || 0), 0);
       const commissionDeducted = completedTransactions.reduce((sum: number, t: Transaction) => sum + Number(t.platformCommissionAmount || 0), 0);
-      const totalTax = completedTransactions.reduce((sum: number, t: Transaction) => sum + Number(t.taxAmount || 0), 0);
 
       return [
         {
           title: "Net Earnings",
-          value: `MWK ${Math.round(netEarnings).toLocaleString()}`,
+          value: `KES ${Math.round(netEarnings).toLocaleString()}`,
           icon: DollarSign,
           trendUp: true,
         },
         {
-          title: "Tax on Sessions",
-          value: `MWK ${Math.round(totalTax).toLocaleString()}`,
-          icon: TrendingUp,
-          trendUp: true,
-        },
-        {
           title: "Commission Deducted",
-          value: `MWK ${Math.round(commissionDeducted).toLocaleString()}`,
+          value: `KES ${Math.round(commissionDeducted).toLocaleString()}`,
           icon: TrendingUp,
           trendUp: false,
         },
@@ -530,7 +514,7 @@ const Earnings = () => {
         },
         {
           title: "Avg Earnings/Session",
-          value: `MWK ${completedTransactions.length > 0 ? Math.round(netEarnings / completedTransactions.length).toLocaleString() : 0}`,
+          value: `KES ${completedTransactions.length > 0 ? Math.round(netEarnings / completedTransactions.length).toLocaleString() : 0}`,
           icon: CreditCard,
           trendUp: true,
         },
@@ -540,13 +524,13 @@ const Earnings = () => {
       return [
         {
           title: "Total Spent",
-          value: `MWK ${totalSpent.toFixed(0)}`,
+          value: `KES ${totalSpent.toFixed(0)}`,
           icon: DollarSign,
           trendUp: false,
         },
         {
           title: "This Month",
-          value: `MWK ${(earnings.thisMonth || 0).toLocaleString()}`,
+          value: `KES ${(earnings.thisMonth || 0).toLocaleString()}`,
           icon: TrendingUp,
           trendUp: false,
         },
@@ -666,23 +650,13 @@ const Earnings = () => {
               {
                 header: "Base Fee",
                 accessor: (row: Transaction) => row.baseFee || 0,
-                format: (value: number) => `MWK ${value.toLocaleString()}`,
+                format: (value: number) => `KES ${value.toLocaleString()}`,
               },
               ...(isAdmin ? [
                 {
-                  header: "Tax Amount",
-                  accessor: (row: Transaction) => row.taxAmount || 0,
-                  format: (value: number) => `MWK ${value.toLocaleString()}`,
-                },
-                {
-                  header: "Tax Rate",
-                  accessor: (row: Transaction) => row.taxRate || 0,
-                  format: (value: number) => `${value}%`,
-                },
-                {
                   header: "Platform Commission",
                   accessor: (row: Transaction) => row.platformCommissionAmount || 0,
-                  format: (value: number) => `MWK ${value.toLocaleString()}`,
+                  format: (value: number) => `KES ${value.toLocaleString()}`,
                 },
                 {
                   header: "Commission Rate",
@@ -694,18 +668,18 @@ const Earnings = () => {
                 {
                   header: "Commission Deducted",
                   accessor: (row: Transaction) => row.platformCommissionAmount || 0,
-                  format: (value: number) => `MWK ${value.toLocaleString()}`,
+                  format: (value: number) => `KES ${value.toLocaleString()}`,
                 },
                 {
                   header: "Net Earnings",
                   accessor: (row: Transaction) => row.caregiverEarnings || 0,
-                  format: (value: number) => `MWK ${value.toLocaleString()}`,
+                  format: (value: number) => `KES ${value.toLocaleString()}`,
                 },
               ] : []),
               {
                 header: "Processing Fee",
                 accessor: (row: Transaction) => row.convenienceFeeAmount || 0,
-                format: (value: number) => `MWK ${value.toLocaleString()}`,
+                format: (value: number) => `KES ${value.toLocaleString()}`,
               },
               {
                 header: "Status",
@@ -714,15 +688,15 @@ const Earnings = () => {
               {
                 header: "Total Amount",
                 accessor: (row: Transaction) => parseFloat(row.amount || '0'),
-                format: (value: number) => `MWK ${value.toLocaleString()}`,
+                format: (value: number) => `KES ${value.toLocaleString()}`,
               },
               {
                 header: "Currency",
-                accessor: (row: Transaction) => row.currency || 'MWK',
+                accessor: (row: Transaction) => row.currency || 'KES',
               },
               {
                 header: "Transaction ID",
-                accessor: (row: Transaction) => row.transactionId || `TXN-${row.id}`,
+                accessor: (row: Transaction) => row.paystackReference || `TXN-${row.id}`,
               },
             ]}
             filename={`${isAdmin ? 'platform-earnings' : user?.role === 'caregiver' ? 'earnings' : 'payment-history'}-${new Date().toISOString().split('T')[0]}`}
@@ -1019,11 +993,9 @@ const Earnings = () => {
               <Card className={dashboardCard.base}>
                 <CardContent className="p-3">
                   <div className="text-center">
-                    <p className={responsive.bodyMuted}>
-                      {isAdmin ? 'Total Paid' : user?.role === 'caregiver' ? 'Total Earned' : 'Total Paid'}
-                    </p>
+                    <p className={responsive.bodyMuted}>Total Paid</p>
                     <p className={responsive.statValue}>
-                      MWK {transactions
+                      KES {transactions
                         .filter((t: Transaction) => t.status === 'completed')
                         .reduce((sum: number, t: Transaction) => sum + parseFloat(t.amount || '0'), 0)
                         .toLocaleString()}
@@ -1122,7 +1094,7 @@ const Earnings = () => {
                             <p className="text-xs text-muted-foreground">
                               {isAdmin || user?.role === 'caregiver'
                                 ? transaction.Appointment?.Patient?.User?.email
-                                : `ID: ${transaction.transactionId || `TXN-${transaction.id}`}`
+                                : `ID: ${transaction.paystackReference || `TXN-${transaction.id}`}`
                               }
                             </p>
                           </div>
@@ -1137,32 +1109,32 @@ const Earnings = () => {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right text-xs">
-                        MWK {(transaction.baseFee || 0).toLocaleString()}
+                        KES {(transaction.baseFee || 0).toLocaleString()}
                       </TableCell>
                       <TableCell className="text-right text-xs">
-                        MWK {(transaction.taxAmount || 0).toLocaleString()}
+                        —
                       </TableCell>
                       <TableCell className="text-right text-xs">
-                        MWK {(transaction.convenienceFeeAmount || 0).toLocaleString()}
+                        KES {(transaction.convenienceFeeAmount || 0).toLocaleString()}
                       </TableCell>
                       {isAdmin && (
                         <TableCell className="text-right text-xs">
-                          MWK {(transaction.platformCommissionAmount || 0).toLocaleString()}
+                          KES {(transaction.platformCommissionAmount || 0).toLocaleString()}
                         </TableCell>
                       )}
                       {user?.role === 'caregiver' && (
                         <TableCell className="text-right text-xs text-red-600">
-                          -MWK {(transaction.platformCommissionAmount || 0).toLocaleString()}
+                          -KES {(transaction.platformCommissionAmount || 0).toLocaleString()}
                         </TableCell>
                       )}
                       {user?.role === 'caregiver' && (
                         <TableCell className="text-right text-xs font-semibold text-green-600">
-                          MWK {(transaction.caregiverEarnings || 0).toLocaleString()}
+                          KES {(transaction.caregiverEarnings || 0).toLocaleString()}
                         </TableCell>
                       )}
                       <TableCell className="text-right">
                         <p className="font-semibold text-xs">
-                          MWK {parseFloat(transaction.amount || 0).toLocaleString()}
+                          KES {parseFloat(transaction.amount || 0).toLocaleString()}
                         </p>
                       </TableCell>
                       <TableCell>
@@ -1190,8 +1162,8 @@ const Earnings = () => {
                                   <div>
                                     <h4 className="font-medium mb-2">Transaction Info</h4>
                                     <div className="space-y-1 text-sm">
-                                      <p><strong>ID:</strong> {transaction.transactionId || `TXN-${transaction.id}`}</p>
-                                      <p><strong>Total Amount:</strong> MWK {parseFloat(transaction.amount || '0').toLocaleString()}</p>
+                                      <p><strong>ID:</strong> {transaction.paystackReference || `TXN-${transaction.id}`}</p>
+                                      <p><strong>Total Amount:</strong> KES {parseFloat(transaction.amount || '0').toLocaleString()}</p>
                                       <p><strong>Status:</strong> {transaction.status}</p>
                                       <p><strong>Method:</strong> {transaction.paymentMethod || 'N/A'}</p>
                                       <p><strong>Type:</strong> {transaction.paymentType === 'booking_fee' ? 'Booking Fee' : 'Session Fee'}</p>
@@ -1202,19 +1174,16 @@ const Earnings = () => {
                                     <h4 className="font-medium mb-2">Fee Breakdown</h4>
                                     <div className="space-y-1 text-sm">
                                       {transaction.baseFee !== undefined && (
-                                        <p><strong>Base Fee:</strong> MWK {(transaction.baseFee || 0).toLocaleString()}</p>
-                                      )}
-                                      {transaction.taxAmount !== undefined && transaction.taxAmount > 0 && (
-                                        <p><strong>Tax ({transaction.taxRate}%):</strong> MWK {(transaction.taxAmount || 0).toLocaleString()}</p>
+                                        <p><strong>Base Fee:</strong> KES {(transaction.baseFee || 0).toLocaleString()}</p>
                                       )}
                                       {transaction.convenienceFeeAmount !== undefined && (
-                                        <p><strong>Processing ({transaction.convenienceFeeRate}%):</strong> MWK {(transaction.convenienceFeeAmount || 0).toLocaleString()}</p>
+                                        <p><strong>Processing ({transaction.convenienceFeeRate}%):</strong> KES {(transaction.convenienceFeeAmount || 0).toLocaleString()}</p>
                                       )}
                                       {transaction.platformCommissionAmount !== undefined && transaction.platformCommissionAmount > 0 && (
-                                        <p><strong>Platform Commission ({transaction.platformCommissionRate}%):</strong> MWK {(transaction.platformCommissionAmount || 0).toLocaleString()}</p>
+                                        <p><strong>Platform Commission ({transaction.platformCommissionRate}%):</strong> KES {(transaction.platformCommissionAmount || 0).toLocaleString()}</p>
                                       )}
                                       {transaction.caregiverEarnings !== undefined && transaction.caregiverEarnings > 0 && (
-                                        <p className="text-green-600"><strong>Caregiver Earnings:</strong> MWK {(transaction.caregiverEarnings || 0).toLocaleString()}</p>
+                                        <p className="text-green-600"><strong>Caregiver Earnings:</strong> KES {(transaction.caregiverEarnings || 0).toLocaleString()}</p>
                                       )}
                                     </div>
                                   </div>

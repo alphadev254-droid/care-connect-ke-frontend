@@ -227,7 +227,7 @@ const SpecialtyManagement = () => {
           <Card className={dashboardCard.base}>
             <CardContent className={dashboardCard.compactStatContent}>
               <div>
-                <p className={responsive.bodyMuted}>Total Income (MWK)</p>
+                <p className={responsive.bodyMuted}>Total Income (KES)</p>
                 <p className={`${dashboardCard.compactStatValue} text-success`}>
                   {activeSpecialties.reduce((sum, s) => sum + parseFloat(s.totalIncome?.toString() || '0'), 0).toLocaleString()}
                 </p>
@@ -268,9 +268,9 @@ const SpecialtyManagement = () => {
                     <TableHead className={dashboardCard.th}>Description</TableHead>
                     <TableHead className={dashboardCard.th}>Caregivers</TableHead>
                     <TableHead className={dashboardCard.th}>Patients Booked</TableHead>
-                    <TableHead className={dashboardCard.th}>Total Income (MWK)</TableHead>
-                    <TableHead className={dashboardCard.th}>Session Fee (MWK)</TableHead>
-                    <TableHead className={dashboardCard.th}>Booking Fee (MWK)</TableHead>
+                    <TableHead className={dashboardCard.th}>Total Income (KES)</TableHead>
+                    <TableHead className={dashboardCard.th}>Session Fee (KES)</TableHead>
+                    <TableHead className={dashboardCard.th}>Booking Fee (KES)</TableHead>
                     <TableHead className={dashboardCard.th}>Status</TableHead>
                     <TableHead className={dashboardCard.th}>Actions</TableHead>
                   </TableRow>
@@ -371,8 +371,8 @@ const SpecialtyManagement = () => {
                         <TableCell className={`${dashboardCard.td} max-w-xs truncate opacity-60`}>
                           {specialty.description || "-"}
                         </TableCell>
-                        <TableCell className={`${dashboardCard.td} opacity-60`}>MWK {specialty.sessionFee || 0}</TableCell>
-                        <TableCell className={`${dashboardCard.td} opacity-60`}>MWK {specialty.bookingFee || 0}</TableCell>
+                        <TableCell className={`${dashboardCard.td} opacity-60`}>KES {specialty.sessionFee || 0}</TableCell>
+                        <TableCell className={`${dashboardCard.td} opacity-60`}>KES {specialty.bookingFee || 0}</TableCell>
                         <TableCell className={dashboardCard.td}>
                           <Badge variant="secondary">Inactive</Badge>
                         </TableCell>
@@ -413,12 +413,12 @@ const SpecialtyManagement = () => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="sessionFee">Session Fee (MWK)</Label>
+                <Label htmlFor="sessionFee">Session Fee (KES)</Label>
                 <Input id="sessionFee" type="number" placeholder="0.00" value={formData.sessionFee}
                   onChange={(e) => setFormData({ ...formData, sessionFee: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="bookingFee">Booking Fee (MWK)</Label>
+                <Label htmlFor="bookingFee">Booking Fee (KES)</Label>
                 <Input id="bookingFee" type="number" placeholder="0.00" value={formData.bookingFee}
                   onChange={(e) => setFormData({ ...formData, bookingFee: e.target.value })} />
               </div>
@@ -454,12 +454,12 @@ const SpecialtyManagement = () => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-sessionFee">Session Fee (MWK)</Label>
+                <Label htmlFor="edit-sessionFee">Session Fee (KES)</Label>
                 <Input id="edit-sessionFee" type="number" value={formData.sessionFee}
                   onChange={(e) => setFormData({ ...formData, sessionFee: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-bookingFee">Booking Fee (MWK)</Label>
+                <Label htmlFor="edit-bookingFee">Booking Fee (KES)</Label>
                 <Input id="edit-bookingFee" type="number" value={formData.bookingFee}
                   onChange={(e) => setFormData({ ...formData, bookingFee: e.target.value })} />
               </div>

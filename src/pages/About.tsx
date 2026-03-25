@@ -85,10 +85,10 @@ const About = () => {
       <main>
         {/* Hero Section */}
         <section 
-          className="py-6 lg:py-8 relative bg-cover bg-top bg-no-repeat rounded-b-3xl overflow-hidden"
+          className="py-6 lg:py-8 relative bg-cover bg-top bg-no-repeat overflow-hidden"
           style={{ backgroundImage: `url(${CLOUDINARY_IMAGES.aboutUs})` }}
         >
-          <div className="absolute inset-0 bg-black/60 rounded-b-3xl"></div>
+          <div className="absolute inset-0 bg-black/60"></div>
           <div className="container relative z-10">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               <div>

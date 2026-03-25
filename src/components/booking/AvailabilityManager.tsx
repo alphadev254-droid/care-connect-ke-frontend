@@ -170,7 +170,7 @@ export const AvailabilityManager = () => {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <h4 className={responsive.cardTitle}>Current Schedule</h4>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button variant="outline" size="sm" onClick={startEditing} disabled={mutating}>
                   Edit Schedule
                 </Button>
@@ -182,8 +182,8 @@ export const AvailabilityManager = () => {
             </div>
             <div className="grid gap-2">
               {savedAvailability.map((slot, index) => (
-                <div key={index} className={`${dashboardCard.listRow}`}>
-                  <div className="flex items-center gap-3 flex-1">
+                 <div key={index} className="flex flex-col sm:flex-row sm:items-center gap-2 p-2 sm:p-3 rounded-xl bg-muted/40 hover:bg-muted/70 transition-colors">
+                  <div className="flex items-center gap-3 flex-1 min-w-0 flex-wrap">
                     <Badge variant="secondary">
                       {DAYS.find(d => d.value === slot.dayOfWeek)?.label}
                     </Badge>
@@ -194,7 +194,7 @@ export const AvailabilityManager = () => {
                       </Badge>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     {!slot.hasTimeSlots && (
                       <Button
                         variant="default"
@@ -223,7 +223,7 @@ export const AvailabilityManager = () => {
         {(editing || savedAvailability.length === 0) && (
           <>
             {activeSlots.map((slot, index) => (
-              <div key={index} className="flex items-center gap-4 p-4 border rounded-lg">
+              <div key={index} className="flex flex-wrap items-center gap-2 p-3 border rounded-lg">
                 <select
                   value={slot.dayOfWeek}
                   onChange={(e) => updateAvailabilitySlot(index, 'dayOfWeek', parseInt(e.target.value))}
@@ -265,7 +265,7 @@ export const AvailabilityManager = () => {
         )}
 
         {(editing || savedAvailability.length === 0) && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={addAvailabilitySlot}>
               <Plus className="h-4 w-4 mr-2" />
               Add Time Slot

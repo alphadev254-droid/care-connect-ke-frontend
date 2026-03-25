@@ -103,7 +103,7 @@ const Contact = () => {
       <main>
         {/* Hero Section */}
         <section 
-          className="py-6 lg:py-8 relative bg-cover bg-no-repeat rounded-b-3xl overflow-hidden"
+          className="py-6 lg:py-8 relative bg-cover bg-no-repeat overflow-hidden"
           style={{ backgroundImage: `url(${CLOUDINARY_IMAGES.contact})`, backgroundPosition: '0 45%' }}
         >
           <div className="absolute inset-0 bg-black/60"></div>

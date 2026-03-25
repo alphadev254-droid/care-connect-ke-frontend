@@ -52,7 +52,7 @@ const Dashboard = () => {
   const { data: adminData } = useQuery({
     queryKey: ["admin", "dashboard"],
     queryFn: async () => {
-      const requests = [api.get("/admin/users")];
+      const requests = [api.get("/admin/users?slim=true&limit=5"), api.get("/admin/users/stats")];
 
       // Only fetch pending caregivers if user has view_caregivers permission
       if (hasPermission('view_caregivers')) {
@@ -60,12 +60,10 @@ const Dashboard = () => {
       }
 
       const responses = await Promise.all(requests);
-      const usersRes = responses[0];
-      const pendingRes = responses[1];
-
       return {
-        users: usersRes.data.users || [],
-        pendingCaregivers: pendingRes?.data.caregivers || []
+        users: responses[0].data.users || [],
+        stats: responses[1].data || {},
+        pendingCaregivers: responses[2]?.data.caregivers || []
       };
     },
     enabled: user?.role === 'system_manager' || user?.role === 'regional_manager' || user?.role === 'Accountant'
@@ -114,20 +112,21 @@ const Dashboard = () => {
     queryFn: async () => {
       const isAdmin = ['system_manager', 'regional_manager', 'Accountant'].includes(user?.role || '');
       const endpoint = isAdmin
-        ? '/earnings/admin?period=this-month&limit=1000'
+        ? '/earnings/admin?period=this-month&summary=true'
         : user?.role === 'caregiver'
-        ? '/earnings/caregiver?period=this-month&limit=1000'
-        : '/earnings/payments/history?period=this-month&limit=1000';
+        ? '/earnings/caregiver?period=this-month&summary=true'
+        : null;
 
+      if (!endpoint) return {};
       const response = await api.get(endpoint);
-      return response.data.transactions || response.data.payments || [];
+      return response.data;
     },
     enabled: ['caregiver', 'system_manager', 'regional_manager', 'Accountant'].includes(user?.role || '')
   });
 
   const upcomingAppointments = appointmentsData?.appointments || [];
   const recentReports = reportsData?.reports || [];
-  const transactions = earningsData || [];
+  const earnings = earningsData || {};
 
   // Format date for display
   const formatDate = (dateString: string) => {
@@ -353,15 +352,8 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={responsive.bodyMuted}>Total Collections</p>
-                      <p className={responsive.statValue}>
-                        MWK {transactions
-                          .filter((t: Record<string, unknown>) => t.status === 'completed')
-                          .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.amount || 0), 0)
-                          .toLocaleString()}
-                      </p>
-                      <p className={responsive.bodyMuted}>
-                        {transactions.filter((t: Record<string, unknown>) => t.status === 'completed').length} transactions
-                      </p>
+                      <p className={responsive.statValue}>KES {Number(earnings.totalAmount || 0).toLocaleString()}</p>
+                      <p className={responsive.bodyMuted}>{earnings.completedCount || 0} transactions</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <DollarSign className="h-5 w-5 text-primary" />
@@ -374,14 +366,9 @@ const Dashboard = () => {
                 <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={responsive.bodyMuted}>Tax Collected</p>
-                      <p className={responsive.statValue}>
-                        MWK {transactions
-                          .filter((t: Record<string, unknown>) => t.status === 'completed')
-                          .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.taxAmount || 0), 0)
-                          .toLocaleString()}
-                      </p>
-                      <p className={responsive.bodyMuted}>VAT @ 17.5%</p>
+                      <p className={responsive.bodyMuted}>Platform Commission</p>
+                      <p className={responsive.statValue}>KES {Number(earnings.totalCommission || 0).toLocaleString()}</p>
+                      <p className={`${responsive.bodyMuted} text-success`}>Platform revenue (20%)</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-secondary/10 flex items-center justify-center">
                       <FileText className="h-5 w-5 text-secondary" />
@@ -394,14 +381,9 @@ const Dashboard = () => {
                 <CardContent className={dashboardCard.statContent}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={responsive.bodyMuted}>Platform Commission</p>
-                      <p className={responsive.statValue}>
-                        MWK {transactions
-                          .filter((t: Record<string, unknown>) => t.status === 'completed')
-                          .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.convenienceFeeAmount || 0), 0)
-                          .toLocaleString()}
-                      </p>
-                      <p className={`${responsive.bodyMuted} text-success`}>Platform revenue</p>
+                      <p className={responsive.bodyMuted}>Convenience Fee</p>
+                      <p className={responsive.statValue}>KES {Number(earnings.totalConvenienceFee || 0).toLocaleString()}</p>
+                      <p className={`${responsive.bodyMuted} text-success`}>Convenience fee (2%)</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center">
                       <TrendingUp className="h-5 w-5 text-success" />
@@ -415,12 +397,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={responsive.bodyMuted}>Caregiver Earnings</p>
-                      <p className={responsive.statValue}>
-                        MWK {transactions
-                          .filter((t: Record<string, unknown>) => t.status === 'completed')
-                          .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.baseFee || 0), 0)
-                          .toLocaleString()}
-                      </p>
+                      <p className={responsive.statValue}>KES {Number(earnings.totalCaregiverEarnings || 0).toLocaleString()}</p>
                       <p className={responsive.bodyMuted}>Total payable</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
@@ -437,12 +414,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={responsive.bodyMuted}>Net Earnings</p>
-                      <p className={responsive.statValue}>
-                        MWK {transactions
-                          .filter((t: Record<string, unknown>) => t.status === 'completed' && t.paymentType === 'session_fee')
-                          .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.caregiverEarnings || 0), 0)
-                          .toLocaleString()}
-                      </p>
+                      <p className={responsive.statValue}>KES {Number(earnings.netEarnings || 0).toLocaleString()}</p>
                       <p className={responsive.bodyMuted}>After commission</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -457,12 +429,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={responsive.bodyMuted}>Commission Deducted</p>
-                      <p className={responsive.statValue}>
-                        MWK {transactions
-                          .filter((t: Record<string, unknown>) => t.status === 'completed' && t.paymentType === 'session_fee')
-                          .reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.platformCommissionAmount || 0), 0)
-                          .toLocaleString()}
-                      </p>
+                      <p className={responsive.statValue}>KES {Number(earnings.totalCommission || 0).toLocaleString()}</p>
                       <p className={responsive.bodyMuted}>Platform fee @ 20%</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-secondary/10 flex items-center justify-center">
@@ -477,9 +444,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={responsive.bodyMuted}>Sessions Completed</p>
-                      <p className={responsive.statValue}>
-                        {transactions.filter((t: Record<string, unknown>) => t.status === 'completed' && t.paymentType === 'session_fee').length}
-                      </p>
+                      <p className={responsive.statValue}>{earnings.sessionsCompleted || 0}</p>
                       <p className={responsive.bodyMuted}>Total sessions</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center">
@@ -494,14 +459,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={responsive.bodyMuted}>Avg Earnings/Session</p>
-                      <p className={responsive.statValue}>
-                        MWK {(() => {
-                          const sessionTxs = transactions.filter((t: Record<string, unknown>) => t.status === 'completed' && t.paymentType === 'session_fee');
-                          const totalEarnings = sessionTxs.reduce((sum: number, t: Record<string, unknown>) => sum + Number(t.caregiverEarnings || 0), 0);
-                          const avgEarnings = sessionTxs.length > 0 ? Math.round(totalEarnings / sessionTxs.length) : 0;
-                          return avgEarnings.toLocaleString();
-                        })()}
-                      </p>
+                      <p className={responsive.statValue}>KES {Number(earnings.averagePerSession || 0).toLocaleString()}</p>
                       <p className={responsive.bodyMuted}>Per completed session</p>
                     </div>
                     <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
@@ -895,7 +853,7 @@ const Dashboard = () => {
                   <>
                     <div className="p-3 rounded-lg border bg-primary/5">
                       <h4 className="font-semibold text-primary text-xs mb-1">Total Users</h4>
-                      <p className="text-xl font-bold">{adminData?.users?.length || 0}</p>
+                      <p className="text-xl font-bold">{adminData?.stats?.total || 0}</p>
                     </div>
                     <div className="p-3 rounded-lg border bg-warning/5">
                       <h4 className="font-semibold text-warning text-xs mb-1">Pending Approvals</h4>
@@ -903,7 +861,7 @@ const Dashboard = () => {
                     </div>
                     <div className="p-3 rounded-lg border bg-success/5">
                       <h4 className="font-semibold text-success text-xs mb-1">Active Caregivers</h4>
-                      <p className="text-xl font-bold">{adminData?.users?.filter((u: Record<string, unknown>) => u.Role?.name === 'caregiver' && u.isActive)?.length || 0}</p>
+                      <p className="text-xl font-bold">{adminData?.stats?.caregivers || 0}</p>
                     </div>
                   </>
                 ) : user?.role === 'caregiver' ? (
@@ -1025,3 +983,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

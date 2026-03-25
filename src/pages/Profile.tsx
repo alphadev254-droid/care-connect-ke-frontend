@@ -23,6 +23,7 @@ const Profile = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [removeImage, setRemoveImage] = useState(false);
   const [allVillages, setAllVillages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     firstName: "", lastName: "", phone: "",
@@ -103,7 +104,7 @@ const Profile = () => {
       (await api.put("/users/profile", data, { headers: { "Content-Type": "multipart/form-data" } })).data,
     onSuccess: () => {
       toast.success("Profile updated successfully!");
-      setIsEditing(false); setProfileImage(null); setImagePreview(null);
+      setIsEditing(false); setProfileImage(null); setImagePreview(null); setRemoveImage(false);
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
     onError: () => toast.error("Failed to update profile"),
@@ -123,11 +124,12 @@ const Profile = () => {
       }
     });
     if (profileImage) fd.append("profileImage", profileImage);
+    if (removeImage) fd.append("removeProfileImage", "true");
     updateMutation.mutate(fd);
   };
 
   const handleCancel = () => {
-    setIsEditing(false); setProfileImage(null); setImagePreview(null);
+    setIsEditing(false); setProfileImage(null); setImagePreview(null); setRemoveImage(false);
     if (profileData) syncForm(profileData);
   };
 
@@ -135,9 +137,16 @@ const Profile = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     setProfileImage(file);
+    setRemoveImage(false);
     const reader = new FileReader();
     reader.onloadend = () => setImagePreview(reader.result as string);
     reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = () => {
+    setProfileImage(null);
+    setImagePreview(null);
+    setRemoveImage(true);
   };
 
   const handleDeleteAccount = async () => {
@@ -201,10 +210,12 @@ const Profile = () => {
               profileData={profileData}
               isEditing={isEditing}
               imagePreview={imagePreview}
+              removeImage={removeImage}
               onImageChange={handleImageChange}
+              onRemoveImage={handleRemoveImage}
             />
             {profileData?.role === "caregiver" &&
-              profileData?.Caregiver?.verificationStatus === "APPROVED" && (
+              profileData?.Caregiver?.verificationStatus === "verified" && (
                 <ReferralSection />
               )}
           </div>

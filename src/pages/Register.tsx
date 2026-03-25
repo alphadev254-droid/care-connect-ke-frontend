@@ -433,31 +433,31 @@ const Register = () => {
     // Step 3 validations - Location mandatory for ALL users
     if (step === 3) {
       if (!formData.region) {
-        toast.error("Region is required");
+        toast.error("County is required");
         return false;
       }
       if (!formData.district) {
-        toast.error("District is required");
+        toast.error("Constituency is required");
         return false;
       }
       // For caregivers, check if arrays have at least one item
       if (formData.userType === 'caregiver') {
         if (!Array.isArray(formData.traditionalAuthority) || formData.traditionalAuthority.length === 0) {
-          toast.error("Please select at least one Traditional Authority");
+          toast.error("Please select at least one Ward");
           return false;
         }
         if (!Array.isArray(formData.village) || formData.village.length === 0) {
-          toast.error("Please select at least one Village");
+          toast.error("Please select at least one Sub-location");
           return false;
         }
       } else {
         // For patients, check single values
         if (!formData.traditionalAuthority) {
-          toast.error("Traditional Authority is required");
+          toast.error("Ward is required");
           return false;
         }
         if (!formData.village) {
-          toast.error("Village is required");
+          toast.error("Sub-location is required");
           return false;
         }
       }
@@ -1192,17 +1192,17 @@ const Register = () => {
                     {/* Location Fields */}
                     <div className="grid md:grid-cols-2 gap-3 pb-3 border-b">
                       <div className="space-y-2">
-                        <Label htmlFor="region">Region <span className="text-destructive">*</span></Label>
+                        <Label htmlFor="region">County <span className="text-destructive">*</span></Label>
                         <Select
                           value={formData.region}
                           onValueChange={(value) => {
-                            setFormData({ ...formData, region: value, district: "", traditionalAuthority: "", village: "" });
+                            setFormData({ ...formData, region: value, district: "", traditionalAuthority: formData.userType === 'caregiver' ? [] : "", village: formData.userType === 'caregiver' ? [] : "" });
                             fetchDistricts(value);
                           }}
                           disabled={loadingRegions}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder={loadingRegions ? "Loading regions..." : "Select region"} />
+                            <SelectValue placeholder={loadingRegions ? "Loading counties..." : "Select county"} />
                             {loadingRegions && <Loader2 className="h-4 w-4 animate-spin ml-2" />}
                           </SelectTrigger>
                           <SelectContent>
@@ -1212,7 +1212,7 @@ const Register = () => {
                                 <span className="text-sm">Loading...</span>
                               </div>
                             ) : regions.length === 0 ? (
-                              <div className="py-4 text-center text-sm text-muted-foreground">No regions available</div>
+                              <div className="py-4 text-center text-sm text-muted-foreground">No counties available</div>
                             ) : (
                               regions.map((region: string) => (
                                 <SelectItem key={region} value={region}>{region}</SelectItem>
@@ -1222,17 +1222,17 @@ const Register = () => {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="district">District <span className="text-destructive">*</span></Label>
+                        <Label htmlFor="district">Constituency <span className="text-destructive">*</span></Label>
                         <Select
                           value={formData.district}
                           onValueChange={(value) => {
-                            setFormData({ ...formData, district: value, traditionalAuthority: "", village: "" });
+                            setFormData({ ...formData, district: value, traditionalAuthority: formData.userType === 'caregiver' ? [] : "", village: formData.userType === 'caregiver' ? [] : "" });
                             fetchTraditionalAuthorities(formData.region, value);
                           }}
                           disabled={!formData.region || loadingDistricts}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder={loadingDistricts ? "Loading districts..." : !formData.region ? "Select a region first" : "Select district"} />
+                            <SelectValue placeholder={loadingDistricts ? "Loading constituencies..." : !formData.region ? "Select a county first" : "Select constituency"} />
                             {loadingDistricts && <Loader2 className="h-4 w-4 animate-spin ml-2" />}
                           </SelectTrigger>
                           <SelectContent>
@@ -1243,7 +1243,7 @@ const Register = () => {
                               </div>
                             ) : districts.length === 0 ? (
                               <div className="py-4 text-center text-sm text-muted-foreground">
-                                {!formData.region ? "Select a region first" : "No districts available"}
+                                {!formData.region ? "Select a county first" : "No constituencies available"}
                               </div>
                             ) : (
                               districts.map((district: string) => (
@@ -1255,7 +1255,7 @@ const Register = () => {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="traditionalAuthority">
-                          Traditional Authority <span className="text-destructive">*</span>
+                          Ward <span className="text-destructive">*</span>
                           {formData.userType === 'caregiver' && <span className="text-xs text-muted-foreground ml-2">(Select multiple)</span>}
                         </Label>
                         {formData.userType === 'caregiver' ? (
@@ -1264,12 +1264,12 @@ const Register = () => {
                             {loadingTAs ? (
                               <div className="flex items-center justify-center py-4 text-muted-foreground">
                                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                <span className="text-sm">Loading TAs...</span>
+                                <span className="text-sm">Loading wards...</span>
                               </div>
                             ) : !formData.district ? (
-                              <p className="text-sm text-muted-foreground">Select a district first</p>
+                              <p className="text-sm text-muted-foreground">Select a constituency first</p>
                             ) : traditionalAuthorities.length === 0 ? (
-                              <p className="text-sm text-muted-foreground">No TAs available</p>
+                              <p className="text-sm text-muted-foreground">No wards available</p>
                             ) : (
                               traditionalAuthorities.map((ta: string) => (
                                 <div key={ta} className="flex items-center space-x-2">
@@ -1317,7 +1317,7 @@ const Register = () => {
                             disabled={!formData.district || loadingTAs}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder={loadingTAs ? "Loading TAs..." : !formData.district ? "Select a district first" : "Select TA"} />
+                              <SelectValue placeholder={loadingTAs ? "Loading wards..." : !formData.district ? "Select a constituency first" : "Select ward"} />
                               {loadingTAs && <Loader2 className="h-4 w-4 animate-spin ml-2" />}
                             </SelectTrigger>
                             <SelectContent>
@@ -1328,7 +1328,7 @@ const Register = () => {
                                 </div>
                               ) : traditionalAuthorities.length === 0 ? (
                                 <div className="py-4 text-center text-sm text-muted-foreground">
-                                  {!formData.district ? "Select a district first" : "No TAs available"}
+                                  {!formData.district ? "Select a constituency first" : "No wards available"}
                                 </div>
                               ) : (
                                 traditionalAuthorities.map((ta: string) => (
@@ -1341,7 +1341,7 @@ const Register = () => {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="village">
-                          Village <span className="text-destructive">*</span>
+                          Sub-location <span className="text-destructive">*</span>
                           {formData.userType === 'caregiver' && <span className="text-xs text-muted-foreground ml-2">(Select multiple)</span>}
                         </Label>
                         {formData.userType === 'caregiver' ? (
@@ -1350,12 +1350,12 @@ const Register = () => {
                             {loadingVillages ? (
                               <div className="flex items-center justify-center py-4 text-muted-foreground">
                                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                <span className="text-sm">Loading villages...</span>
+                                <span className="text-sm">Loading sub-locations...</span>
                               </div>
                             ) : (!Array.isArray(formData.traditionalAuthority) || formData.traditionalAuthority.length === 0) ? (
-                              <p className="text-sm text-muted-foreground">Select at least one TA first</p>
+                              <p className="text-sm text-muted-foreground">Select at least one ward first</p>
                             ) : villages.length === 0 ? (
-                              <p className="text-sm text-muted-foreground">No villages available</p>
+                              <p className="text-sm text-muted-foreground">No sub-locations available</p>
                             ) : (
                               villages.map((village: string) => (
                                 <div key={village} className="flex items-center space-x-2">
@@ -1383,7 +1383,7 @@ const Register = () => {
                             disabled={!formData.traditionalAuthority || loadingVillages}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder={loadingVillages ? "Loading villages..." : !formData.traditionalAuthority ? "Select a TA first" : "Select village"} />
+                              <SelectValue placeholder={loadingVillages ? "Loading sub-locations..." : !formData.traditionalAuthority ? "Select a ward first" : "Select sub-location"} />
                               {loadingVillages && <Loader2 className="h-4 w-4 animate-spin ml-2" />}
                             </SelectTrigger>
                             <SelectContent>
@@ -1394,7 +1394,7 @@ const Register = () => {
                                 </div>
                               ) : villages.length === 0 ? (
                                 <div className="py-4 text-center text-sm text-muted-foreground">
-                                  {!formData.traditionalAuthority ? "Select a TA first" : "No villages available"}
+                                  {!formData.traditionalAuthority ? "Select a ward first" : "No sub-locations available"}
                                 </div>
                               ) : (
                                 villages.map((village: string) => (

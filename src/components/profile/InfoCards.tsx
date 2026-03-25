@@ -116,7 +116,7 @@ export const ProfessionalInfoCard = ({
           <div className="space-y-1">
             <Label className={responsive.bodyMuted}>Verification Status</Label>
             <div className="p-2">
-              <Badge variant={cg?.verificationStatus === "APPROVED" ? "default" : "secondary"} className="text-xs uppercase">
+              <Badge variant={cg?.verificationStatus === "verified" ? "default" : "secondary"} className="text-xs uppercase">
                 {cg?.verificationStatus}
               </Badge>
             </div>

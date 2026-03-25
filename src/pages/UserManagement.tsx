@@ -564,15 +564,15 @@ const UserManagement = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {user.role === 'caregiver' && user.Caregiver ? (
+                        {user.Role?.name === 'caregiver' && user.Caregiver ? (
                           <Badge
                             variant={
-                              user.Caregiver.verificationStatus === 'APPROVED' ? "default" :
-                              user.Caregiver.verificationStatus === 'REJECTED' ? "destructive" : "secondary"
+                              user.Caregiver.verificationStatus === 'verified' ? "default" :
+                              user.Caregiver.verificationStatus === 'rejected' ? "destructive" : "secondary"
                             }
                             className="whitespace-nowrap"
                           >
-                            {user.Caregiver.verificationStatus === 'PENDING' ? 'Awaiting' : user.Caregiver.verificationStatus}
+                            {user.Caregiver.verificationStatus === 'pending' ? 'Awaiting' : user.Caregiver.verificationStatus}
                           </Badge>
                         ) : (
                           <span className={responsive.bodyMuted}>N/A</span>
@@ -622,9 +622,9 @@ const UserManagement = () => {
                               )}
 
                               {/* Caregiver verification actions */}
-                              {user.role === 'caregiver' && user.Caregiver && (
+                              {user.Role?.name === 'caregiver' && user.Caregiver && (
                                 <>
-                                  {(user.Caregiver.verificationStatus === 'PENDING' || user.Caregiver.verificationStatus === 'REJECTED') && (
+                                  {(['pending','rejected'].includes(user.Caregiver.verificationStatus) && hasPermission('approve_caregivers')) && (
                                     <>
                                       <DropdownMenuSeparator />
                                       <DropdownMenuItem
@@ -632,11 +632,11 @@ const UserManagement = () => {
                                         disabled={verifyCaregiver.isPending && verifyCaregiver.variables === user.id}
                                       >
                                         <UserCheck className="h-4 w-4 mr-2 text-green-600" />
-                                        {user.Caregiver.verificationStatus === 'REJECTED' ? 'Re-verify' : 'Verify'}
+                                        {user.Caregiver.verificationStatus === 'rejected' ? 'Re-verify' : 'Verify'}
                                       </DropdownMenuItem>
                                     </>
                                   )}
-                                  {user.Caregiver.verificationStatus === 'PENDING' && (
+                                  {user.Caregiver.verificationStatus === 'pending' && hasPermission('approve_caregivers') && (
                                     <DropdownMenuItem
                                       onClick={() => handleRejectCaregiver(user.id)}
                                       disabled={rejectCaregiver.isPending}
@@ -665,7 +665,7 @@ const UserManagement = () => {
                               )}
 
                               {/* Delete - show for inactive users or rejected caregivers */}
-                              {hasPermission('delete_users') && (!user.isActive || (user.role === 'caregiver' && user.Caregiver?.verificationStatus === 'REJECTED')) && (
+                              {hasPermission('delete_users') && (!user.isActive || (user.Role?.name === 'caregiver' && user.Caregiver?.verificationStatus === 'rejected')) && (
                                 <>
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem

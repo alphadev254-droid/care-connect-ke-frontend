@@ -17,11 +17,12 @@ export interface Appointment {
 }
 
 export interface CreateAppointmentData {
-  timeSlotId: number;
-  specialtyId: number;
+  timeSlotId: string;
+  specialtyId: string;
   sessionType: 'in_person' | 'teleconference';
   notes?: string;
   phoneNumber?: string;
+  paymentMethod: 'card' | 'mobile_money';
 }
 
 export const appointmentService = {
@@ -30,13 +31,18 @@ export const appointmentService = {
     return response.data;
   },
 
-  getAppointmentById: async (id: number) => {
+  getAppointmentById: async (id: string) => {
     const response = await api.get(`/appointments/${id}`);
     return response.data.appointment;
   },
 
   createAppointment: async (data: CreateAppointmentData) => {
     const response = await api.post('/payments/initiate-booking', data);
+    return response.data;
+  },
+
+  initiateSessionPayment: async (appointmentId: string, paymentMethod: 'card' | 'mobile_money') => {
+    const response = await api.post('/payments/initiate-session', { appointmentId, paymentMethod });
     return response.data;
   },
 

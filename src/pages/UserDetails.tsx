@@ -14,8 +14,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { api } from "@/lib/api";
 import { mapUserRole } from "@/lib/roleMapper";
 import { toast } from "sonner";
+import { dashboardCard, responsive } from "@/theme";
+import { useSecureFile, openSecureFile } from "@/hooks/useSecureFile";
 import {
-  User,
   Mail,
   Phone,
   Calendar,
@@ -23,7 +24,6 @@ import {
   Heart,
   Award,
   DollarSign,
-  Clock,
   ArrowLeft,
   Download,
   FileText,
@@ -39,6 +39,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
+// Fetches profile image via authenticated token — prevents direct URL access
+const SecureImage = ({ src, alt, className }: { src: string; alt: string; className?: string }) => {
+  const blobUrl = useSecureFile(src);
+  if (!blobUrl) return <div className={`${className} bg-muted animate-pulse rounded-full`} />;
+  return <img src={blobUrl} alt={alt} className={className} />;
+};
 
 const UserDetails = () => {
   const { userId } = useParams();
@@ -151,181 +158,163 @@ const UserDetails = () => {
 
   return (
     <DashboardLayout userRole={mapUserRole(currentUser?.role || 'system_manager')}>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={() => navigate(-1)}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+      <div className="space-y-4 md:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
+              <ArrowLeft className="h-4 w-4 mr-1" />
               Back
             </Button>
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold">
-                {userData.firstName} {userData.lastName}
-              </h1>
-              <p className="text-muted-foreground">User Profile Details</p>
+              <h1 className={responsive.pageTitle}>{userData.firstName} {userData.lastName}</h1>
+              <p className={responsive.pageSubtitle}>User Profile Details</p>
             </div>
           </div>
           {userData.Role?.name === 'caregiver' && (
-            <Button onClick={() => setEmailDialogOpen(true)} className="gap-2">
-              <Send className="h-4 w-4" />
+            <Button size="sm" onClick={() => setEmailDialogOpen(true)}>
+              <Send className="h-4 w-4 mr-1" />
               Send Email
             </Button>
           )}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
           {/* Profile Overview */}
-          <Card className="lg:col-span-1">
-            <CardHeader className="text-center">
+          <Card className={`${dashboardCard.base} lg:col-span-1`}>
+            <CardHeader className="text-center pb-3">
               {userData.Caregiver?.profileImage ? (
-                <img
+                <SecureImage
                   src={userData.Caregiver.profileImage}
                   alt={`${userData.firstName} ${userData.lastName}`}
-                  className="h-24 w-24 rounded-full object-cover mx-auto mb-4 border-2 border-primary/20"
+                  className="h-20 w-20 rounded-full object-cover mx-auto mb-3 border-2 border-primary/20"
                 />
               ) : (
-                <div className="h-24 w-24 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mx-auto mb-4">
+                <div className="h-20 w-20 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mx-auto mb-3">
                   {userData.firstName?.charAt(0)}{userData.lastName?.charAt(0)}
                 </div>
               )}
-              <CardTitle>{userData.firstName} {userData.lastName}</CardTitle>
-              <div className="flex items-center justify-center gap-2">
-                <Badge variant="outline" className="capitalize">
+              <CardTitle className={responsive.cardTitle}>{userData.firstName} {userData.lastName}</CardTitle>
+              <div className="flex items-center justify-center gap-2 mt-1">
+                <Badge variant="outline" className="capitalize text-xs">
                   {userData.Role?.name?.replace('_', ' ')}
                 </Badge>
-                <Badge variant={userData.isActive ? "default" : "secondary"}>
+                <Badge variant={userData.isActive ? "default" : "secondary"} className="text-xs">
                   {userData.isActive ? "Active" : "Inactive"}
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className={`${dashboardCard.body} space-y-3`}>
               <div className="flex items-center gap-3">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{userData.email}</span>
+                <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className={responsive.body}>{userData.email}</span>
               </div>
               <div className="flex items-center gap-3">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{userData.phone || 'Not provided'}</span>
+                <Phone className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className={responsive.body}>{userData.phone || 'Not provided'}</span>
               </div>
               <div className="flex items-center gap-3">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  Joined {new Date(userData.createdAt).toLocaleDateString()}
-                </span>
+                <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className={responsive.body}>Joined {new Date(userData.createdAt).toLocaleDateString()}</span>
               </div>
             </CardContent>
           </Card>
 
           {/* Detailed Information */}
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle>Detailed Information</CardTitle>
+          <Card className={`${dashboardCard.base} lg:col-span-2`}>
+            <CardHeader className={dashboardCard.compactHeader}>
+              <CardTitle className={responsive.cardTitle}>Detailed Information</CardTitle>
             </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="general" className="space-y-4">
-                <TabsList>
-                  <TabsTrigger value="general">General</TabsTrigger>
+            <CardContent className={dashboardCard.compactBody}>
+              <Tabs defaultValue="general" className="flex gap-3">
+                <TabsList className="flex flex-col h-auto w-32 shrink-0 items-stretch gap-0.5 bg-muted/50 p-1 rounded-lg self-start">
+                  <TabsTrigger value="general" className="justify-start text-xs px-2 py-1.5">General</TabsTrigger>
                   {userData.Role?.name === 'caregiver' && (
                     <>
-                      <TabsTrigger value="caregiver">Caregiver Info</TabsTrigger>
-                      <TabsTrigger value="appointments">Appointments</TabsTrigger>
-                      <TabsTrigger value="patients">Patients</TabsTrigger>
-                      <TabsTrigger value="transactions">Transactions</TabsTrigger>
+                      <TabsTrigger value="caregiver" className="justify-start text-xs px-2 py-1.5">Caregiver Info</TabsTrigger>
+                      <TabsTrigger value="appointments" className="justify-start text-xs px-2 py-1.5">Appointments</TabsTrigger>
+                      <TabsTrigger value="patients" className="justify-start text-xs px-2 py-1.5">Patients</TabsTrigger>
+                      <TabsTrigger value="transactions" className="justify-start text-xs px-2 py-1.5">Transactions</TabsTrigger>
                     </>
                   )}
                   {userData.Role?.name === 'patient' && (
-                    <TabsTrigger value="patient">Patient Info</TabsTrigger>
+                    <TabsTrigger value="patient" className="justify-start text-xs px-2 py-1.5">Patient Info</TabsTrigger>
                   )}
                 </TabsList>
+                <div className="flex-1 min-w-0 overflow-y-auto max-h-[520px] pr-1">
 
-                <TabsContent value="general" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                <TabsContent value="general" className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">First Name</label>
-                      <p className="font-medium">{userData.firstName}</p>
+                      <p className={responsive.label}>First Name</p>
+                      <p className={responsive.body}>{userData.firstName}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">Last Name</label>
-                      <p className="font-medium">{userData.lastName}</p>
+                      <p className={responsive.label}>Last Name</p>
+                      <p className={responsive.body}>{userData.lastName}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">Email</label>
-                      <p className="font-medium">{userData.email}</p>
+                      <p className={responsive.label}>Email</p>
+                      <p className={responsive.body}>{userData.email}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">Phone</label>
-                      <p className="font-medium">{userData.phone || 'Not provided'}</p>
+                      <p className={responsive.label}>Phone</p>
+                      <p className={responsive.body}>{userData.phone || 'Not provided'}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">Role</label>
-                      <p className="font-medium capitalize">{userData.Role?.name?.replace('_', ' ')}</p>
+                      <p className={responsive.label}>Role</p>
+                      <p className={`${responsive.body} capitalize`}>{userData.Role?.name?.replace('_', ' ')}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">Status</label>
-                      <p className="font-medium">{userData.isActive ? 'Active' : 'Inactive'}</p>
+                      <p className={responsive.label}>Status</p>
+                      <p className={responsive.body}>{userData.isActive ? 'Active' : 'Inactive'}</p>
                     </div>
                     {userData.assignedRegion && (
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">Assigned Region</label>
-                        <p className="font-medium">{userData.assignedRegion}</p>
+                        <p className={responsive.label}>Assigned Region</p>
+                        <p className={responsive.body}>{userData.assignedRegion}</p>
                       </div>
                     )}
                   </div>
                 </TabsContent>
 
                 {userData.Role?.name === 'caregiver' && userData.Caregiver && (
-                  <TabsContent value="caregiver" className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
+                  <TabsContent value="caregiver" className="space-y-5">
+                    <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">ID Number</label>
-                        <p className="font-medium">{userData.idNumber || 'Not provided'}</p>
+                        <p className={responsive.label}>ID Number</p>
+                        <p className={responsive.body}>{userData.idNumber || 'Not provided'}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">License Number</label>
-                        <p className="font-medium">{userData.Caregiver.licenseNumber}</p>
+                        <p className={responsive.label}>License Number</p>
+                        <p className={responsive.body}>{userData.Caregiver.licenseNumber}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">Licensing Institution</label>
-                        <p className="font-medium">{userData.Caregiver.licensingInstitution || 'Not provided'}</p>
+                        <p className={responsive.label}>Licensing Institution</p>
+                        <p className={responsive.body}>{userData.Caregiver.licensingInstitution || 'Not provided'}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">Experience</label>
-                        <p className="font-medium">{userData.Caregiver.experience} years</p>
+                        <p className={responsive.label}>Experience</p>
+                        <p className={responsive.body}>{userData.Caregiver.experience} years</p>
                       </div>
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">Qualifications</label>
-                        <p className="font-medium">{userData.Caregiver.qualifications}</p>
+                      <div className="col-span-2">
+                        <p className={responsive.label}>Qualifications</p>
+                        <p className={responsive.body}>{userData.Caregiver.qualifications}</p>
                       </div>
                     </div>
 
                     {/* Specialties with Fees */}
                     {userData.Caregiver.Specialties && userData.Caregiver.Specialties.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
-                          <Heart className="h-4 w-4" />
-                          Specialties & Fees
-                        </h3>
-                        <div className="space-y-3">
+                        <p className={`${responsive.label} mb-2 flex items-center gap-1.5`}>
+                          <Heart className="h-3.5 w-3.5" />Specialties & Fees
+                        </p>
+                        <div className="space-y-1.5">
                           {userData.Caregiver.Specialties.map((specialty: any) => (
-                            <div key={specialty.id} className="p-3 rounded-lg border bg-muted/30">
-                              <div className="flex items-start justify-between mb-2">
-                                <Badge variant="secondary" className="font-medium">
-                                  {specialty.name}
-                                </Badge>
-                              </div>
-                              <div className="grid grid-cols-2 gap-3 text-sm">
-                                <div>
-                                  <label className="text-xs text-muted-foreground">Session Fee</label>
-                                  <p className="font-semibold text-primary">
-                                    MWK {specialty.sessionFee ? Number(specialty.sessionFee).toFixed(2) : '0.00'}
-                                  </p>
-                                </div>
-                                <div>
-                                  <label className="text-xs text-muted-foreground">Booking Fee</label>
-                                  <p className="font-semibold text-secondary">
-                                    MWK {specialty.bookingFee ? Number(specialty.bookingFee).toFixed(2) : '0.00'}
-                                  </p>
-                                </div>
+                            <div key={specialty.id} className={`p-2 rounded-lg border ${dashboardCard.sectionBg} flex items-center justify-between gap-2 flex-wrap`}>
+                              <Badge variant="secondary" className="text-xs shrink-0">{specialty.name}</Badge>
+                              <div className="flex gap-3 text-xs">
+                                <span className="text-muted-foreground">Session: <span className="font-semibold text-primary">KES {specialty.sessionFee ? Number(specialty.sessionFee).toFixed(2) : '0.00'}</span></span>
+                                <span className="text-muted-foreground">Booking: <span className="font-semibold text-secondary">KES {specialty.bookingFee ? Number(specialty.bookingFee).toFixed(2) : '0.00'}</span></span>
                               </div>
                             </div>
                           ))}
@@ -335,26 +324,25 @@ const UserDetails = () => {
 
                     {/* Location Information */}
                     <div>
-                      <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        Location Information
-                      </h3>
-                      <div className="grid grid-cols-2 gap-4">
+                      <p className={`${responsive.label} mb-2 flex items-center gap-1.5`}>
+                        <MapPin className="h-3.5 w-3.5" />Location Information
+                      </p>
+                      <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">Region</label>
-                          <p className="font-medium">{userData.Caregiver.region || 'Not provided'}</p>
+                          <p className={responsive.label}>County</p>
+                          <p className={responsive.body}>{userData.Caregiver.region || 'Not provided'}</p>
                         </div>
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">District</label>
-                          <p className="font-medium">{userData.Caregiver.district || 'Not provided'}</p>
+                          <p className={responsive.label}>Constituency</p>
+                          <p className={responsive.body}>{userData.Caregiver.district || 'Not provided'}</p>
                         </div>
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">Traditional Authority</label>
-                          <p className="font-medium">{userData.Caregiver.traditionalAuthority || 'Not provided'}</p>
+                          <p className={responsive.label}>Ward</p>
+                          <p className={responsive.body}>{userData.Caregiver.traditionalAuthority || 'Not provided'}</p>
                         </div>
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">Village</label>
-                          <p className="font-medium">{userData.Caregiver.village || 'Not provided'}</p>
+                          <p className={responsive.label}>Sub-location</p>
+                          <p className={responsive.body}>{userData.Caregiver.village || 'Not provided'}</p>
                         </div>
                       </div>
                     </div>
@@ -364,25 +352,19 @@ const UserDetails = () => {
                       const documents = parseDocuments(userData.Caregiver.supportingDocuments);
                       return documents.length > 0 && (
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground mb-3 block">Supporting Documents</label>
-                          <div className="grid gap-3">
+                          <p className={`${responsive.label} mb-2`}>Supporting Documents</p>
+                          <div className="grid gap-2">
                             {documents.map((doc: any, index: number) => (
-                              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                                <div className="flex items-center gap-3">
-                                  <FileText className="h-5 w-5 text-muted-foreground" />
+                              <div key={index} className={dashboardCard.listRow}>
+                                <div className="flex items-center gap-2">
+                                  <FileText className="h-4 w-4 text-muted-foreground" />
                                   <div>
-                                    <p className="font-medium text-sm">{doc.filename}</p>
+                                    <p className={responsive.body}>{doc.filename}</p>
                                     <p className="text-xs text-muted-foreground">{doc.format?.toUpperCase()}</p>
                                   </div>
                                 </div>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => window.open(doc.url, '_blank')}
-                                  className="gap-2"
-                                >
-                                  <Download className="h-4 w-4" />
-                                  Download
+                                <Button size="sm" variant="outline" onClick={() => openSecureFile(doc.url, doc.filename)}>
+                                  <Download className="h-3.5 w-3.5 mr-1" />Download
                                 </Button>
                               </div>
                             ))}
@@ -396,25 +378,19 @@ const UserDetails = () => {
                       const idDocuments = parseDocuments(userData.Caregiver.idDocuments);
                       return idDocuments.length > 0 && (
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground mb-3 block">ID Documents</label>
-                          <div className="grid gap-3">
+                          <p className={`${responsive.label} mb-2`}>ID Documents</p>
+                          <div className="grid gap-2">
                             {idDocuments.map((doc: any, index: number) => (
-                              <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                                <div className="flex items-center gap-3">
-                                  <CreditCard className="h-5 w-5 text-muted-foreground" />
+                              <div key={index} className={dashboardCard.listRow}>
+                                <div className="flex items-center gap-2">
+                                  <CreditCard className="h-4 w-4 text-muted-foreground" />
                                   <div>
-                                    <p className="font-medium text-sm">{doc.filename}</p>
+                                    <p className={responsive.body}>{doc.filename}</p>
                                     <p className="text-xs text-muted-foreground">{doc.format?.toUpperCase()}</p>
                                   </div>
                                 </div>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => window.open(doc.url, '_blank')}
-                                  className="gap-2"
-                                >
-                                  <Download className="h-4 w-4" />
-                                  View
+                                <Button size="sm" variant="outline" onClick={() => openSecureFile(doc.url, doc.filename)}>
+                                  <Download className="h-3.5 w-3.5 mr-1" />View
                                 </Button>
                               </div>
                             ))}
@@ -427,15 +403,14 @@ const UserDetails = () => {
 
                 {userData.Role?.name === 'caregiver' && (
                   <>
-                    <TabsContent value="appointments" className="space-y-4">
-                      <Card>
-                        <CardHeader className="p-4">
-                          <CardTitle className="text-base">All Appointments</CardTitle>
-                          <CardDescription className="text-xs">
-                            Complete appointment history for this caregiver
-                          </CardDescription>
+                    <TabsContent value="appointments" className="space-y-3">
+                      <Card className={dashboardCard.base}>
+                        <CardHeader className={dashboardCard.compactHeader}>
+                          <CardTitle className={responsive.cardTitle}>All Appointments</CardTitle>
+                          <CardDescription className={responsive.cardDesc}>Complete appointment history</CardDescription>
                         </CardHeader>
                         <CardContent className="p-0">
+                          <div className={dashboardCard.tableWrapper}>
                           {appointments && appointments.length > 0 ? (
                             <Table>
                               <TableHeader>
@@ -451,24 +426,24 @@ const UserDetails = () => {
                               <TableBody>
                                 {appointments.map((apt: any) => (
                                   <TableRow key={apt.id}>
-                                    <TableCell className="py-2">
+                                    <TableCell className={`py-2 ${dashboardCard.td}`}>
                                       {new Date(apt.scheduledDate).toLocaleDateString()}
                                     </TableCell>
-                                    <TableCell className="py-2">
+                                    <TableCell className={`py-2 ${dashboardCard.td}`}>
                                       {apt.Patient?.User?.firstName} {apt.Patient?.User?.lastName}
                                     </TableCell>
-                                    <TableCell className="py-2 text-xs">
+                                    <TableCell className={`py-2 text-xs ${dashboardCard.td}`}>
                                       {apt.Specialty?.name || 'N/A'}
                                     </TableCell>
-                                    <TableCell className="py-2">
+                                    <TableCell className={`py-2 ${dashboardCard.td}`}>
                                       <Badge variant={apt.status === 'completed' ? 'default' : 'secondary'} className="text-xs capitalize">
                                         {apt.status}
                                       </Badge>
                                     </TableCell>
-                                    <TableCell className="py-2 text-right font-semibold">
-                                      MWK {parseFloat(apt.totalCost || 0).toLocaleString()}
+                                    <TableCell className={`py-2 text-right font-semibold ${dashboardCard.td}`}>
+                                      KES {parseFloat(apt.totalCost || 0).toLocaleString()}
                                     </TableCell>
-                                    <TableCell className="py-2 text-right">
+                                    <TableCell className={`py-2 text-right ${dashboardCard.td}`}>
                                       {apt.PaymentTransaction ? (
                                         <Badge variant={apt.PaymentTransaction.status === 'completed' ? 'default' : 'secondary'} className="text-xs capitalize">
                                           {apt.PaymentTransaction.status}
@@ -487,19 +462,19 @@ const UserDetails = () => {
                               <p>No appointments found</p>
                             </div>
                           )}
+                          </div>
                         </CardContent>
                       </Card>
                     </TabsContent>
 
-                    <TabsContent value="patients" className="space-y-4">
-                      <Card>
-                        <CardHeader className="p-4">
-                          <CardTitle className="text-base">Patients Served</CardTitle>
-                          <CardDescription className="text-xs">
-                            Unique patients this caregiver has worked with
-                          </CardDescription>
+                    <TabsContent value="patients" className="space-y-3">
+                      <Card className={dashboardCard.base}>
+                        <CardHeader className={dashboardCard.compactHeader}>
+                          <CardTitle className={responsive.cardTitle}>Patients Served</CardTitle>
+                          <CardDescription className={responsive.cardDesc}>Unique patients this caregiver has worked with</CardDescription>
                         </CardHeader>
                         <CardContent className="p-0">
+                          <div className={dashboardCard.tableWrapper}>
                           {patients && patients.length > 0 ? (
                             <Table>
                               <TableHeader>
@@ -514,19 +489,19 @@ const UserDetails = () => {
                               <TableBody>
                                 {patients.map((p: any) => (
                                   <TableRow key={p.patientId}>
-                                    <TableCell className="py-2 font-medium">
+                                    <TableCell className={`py-2 font-medium ${dashboardCard.td}`}>
                                       {p.Patient?.User?.firstName} {p.Patient?.User?.lastName}
                                     </TableCell>
-                                    <TableCell className="py-2 text-xs text-muted-foreground">
+                                    <TableCell className={`py-2 text-xs text-muted-foreground ${dashboardCard.td}`}>
                                       {p.Patient?.User?.email}
                                     </TableCell>
-                                    <TableCell className="py-2 text-xs">
+                                    <TableCell className={`py-2 text-xs ${dashboardCard.td}`}>
                                       {p.Patient?.User?.phone || 'N/A'}
                                     </TableCell>
-                                    <TableCell className="py-2 text-right font-semibold">
+                                    <TableCell className={`py-2 text-right font-semibold ${dashboardCard.td}`}>
                                       {p.appointmentCount}
                                     </TableCell>
-                                    <TableCell className="py-2 text-right text-xs">
+                                    <TableCell className={`py-2 text-right text-xs ${dashboardCard.td}`}>
                                       {new Date(p.lastAppointment).toLocaleDateString()}
                                     </TableCell>
                                   </TableRow>
@@ -539,59 +514,59 @@ const UserDetails = () => {
                               <p>No patients found</p>
                             </div>
                           )}
+                          </div>
                         </CardContent>
                       </Card>
                     </TabsContent>
 
-                    <TabsContent value="transactions" className="space-y-4">
-                      <div className="grid md:grid-cols-3 gap-4 mb-4">
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-xs text-muted-foreground">Total Transactions</p>
-                                <p className="text-xl font-bold mt-1">{transactionsData?.transactions?.length || 0}</p>
-                              </div>
-                              <CreditCard className="h-8 w-8 text-primary opacity-50" />
+                    <TabsContent value="transactions" className="space-y-3">
+                      <div className="grid grid-cols-1 gap-2">
+                        <Card className={dashboardCard.base}>
+                          <CardContent className={dashboardCard.compactStatContent}>
+                            <div>
+                              <p className={responsive.bodyMuted}>Total</p>
+                              <p className={dashboardCard.compactStatValue}>{transactionsData?.transactions?.length || 0}</p>
+                            </div>
+                            <div className={dashboardCard.iconWell.primary}>
+                              <CreditCard className="h-4 w-4 text-primary" />
                             </div>
                           </CardContent>
                         </Card>
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-xs text-muted-foreground">Total Earnings</p>
-                                <p className="text-xl font-bold mt-1 text-success">
-                                  MWK {(transactionsData?.totalEarnings || 0).toLocaleString()}
-                                </p>
-                              </div>
-                              <DollarSign className="h-8 w-8 text-success opacity-50" />
+                        <Card className={dashboardCard.base}>
+                          <CardContent className={dashboardCard.compactStatContent}>
+                            <div>
+                              <p className={responsive.bodyMuted}>Earnings</p>
+                              <p className={`${dashboardCard.compactStatValue} text-success`}>
+                                KES {(transactionsData?.totalEarnings || 0).toLocaleString()}
+                              </p>
+                            </div>
+                            <div className={dashboardCard.iconWell.success}>
+                              <DollarSign className="h-4 w-4 text-success" />
                             </div>
                           </CardContent>
                         </Card>
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-xs text-muted-foreground">Completed</p>
-                                <p className="text-xl font-bold mt-1">
-                                  {transactionsData?.transactions?.filter((t: any) => t.status === 'completed').length || 0}
-                                </p>
-                              </div>
-                              <Award className="h-8 w-8 text-accent opacity-50" />
+                        <Card className={dashboardCard.base}>
+                          <CardContent className={dashboardCard.compactStatContent}>
+                            <div>
+                              <p className={responsive.bodyMuted}>Completed</p>
+                              <p className={dashboardCard.compactStatValue}>
+                                {transactionsData?.transactions?.filter((t: any) => t.status === 'completed').length || 0}
+                              </p>
+                            </div>
+                            <div className={dashboardCard.iconWell.accent}>
+                              <Award className="h-4 w-4 text-accent" />
                             </div>
                           </CardContent>
                         </Card>
                       </div>
 
-                      <Card>
-                        <CardHeader className="p-4">
-                          <CardTitle className="text-base">Payment Transactions</CardTitle>
-                          <CardDescription className="text-xs">
-                            All payment transactions for this caregiver's appointments
-                          </CardDescription>
+                      <Card className={dashboardCard.base}>
+                        <CardHeader className={dashboardCard.compactHeader}>
+                          <CardTitle className={responsive.cardTitle}>Payment Transactions</CardTitle>
+                          <CardDescription className={responsive.cardDesc}>All payment transactions for this caregiver</CardDescription>
                         </CardHeader>
                         <CardContent className="p-0">
+                          <div className={dashboardCard.tableWrapper}>
                           {transactionsData?.transactions && transactionsData.transactions.length > 0 ? (
                             <Table>
                               <TableHeader>
@@ -607,20 +582,20 @@ const UserDetails = () => {
                               <TableBody>
                                 {transactionsData.transactions.map((txn: any) => (
                                   <TableRow key={txn.id}>
-                                    <TableCell className="py-2 text-xs">
+                                    <TableCell className={`py-2 text-xs ${dashboardCard.td}`}>
                                       {new Date(txn.createdAt).toLocaleDateString()}
                                     </TableCell>
-                                    <TableCell className="py-2 text-xs font-mono">
-                                      {txn.transactionId || 'N/A'}
+                                    <TableCell className={`py-2 text-xs font-mono ${dashboardCard.td}`}>
+                                      {txn.paystackReference || 'N/A'}
                                     </TableCell>
-                                    <TableCell className="py-2">
+                                    <TableCell className={`py-2 ${dashboardCard.td}`}>
                                       {txn.Appointment?.Patient?.User?.firstName} {txn.Appointment?.Patient?.User?.lastName}
                                     </TableCell>
-                                    <TableCell className="py-2 text-xs">
+                                    <TableCell className={`py-2 text-xs ${dashboardCard.td}`}>
                                       {txn.Appointment?.Specialty?.name || 'N/A'}
                                     </TableCell>
-                                    <TableCell className="py-2 text-right font-bold">
-                                      MWK {parseFloat(txn.amount || 0).toLocaleString()}
+                                    <TableCell className={`py-2 text-right font-bold ${dashboardCard.td}`}>
+                                      KES {parseFloat(txn.amount || 0).toLocaleString()}
                                     </TableCell>
                                     <TableCell className="py-2">
                                       <Badge variant={txn.status === 'completed' ? 'default' : 'secondary'} className="text-xs capitalize">
@@ -637,6 +612,7 @@ const UserDetails = () => {
                               <p>No transactions found</p>
                             </div>
                           )}
+                          </div>
                         </CardContent>
                       </Card>
                     </TabsContent>
@@ -644,49 +620,46 @@ const UserDetails = () => {
                 )}
 
                 {userData.Role?.name === 'patient' && userData.Patient && (
-                  <TabsContent value="patient" className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
+                  <TabsContent value="patient" className="space-y-5">
+                    <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">ID Number</label>
-                        <p className="font-medium">{userData.idNumber || 'Not provided'}</p>
+                        <p className={responsive.label}>ID Number</p>
+                        <p className={responsive.body}>{userData.idNumber || 'Not provided'}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">Date of Birth</label>
-                        <p className="font-medium">
-                          {userData.Patient.dateOfBirth ? 
-                            new Date(userData.Patient.dateOfBirth).toLocaleDateString() : 
-                            'Not provided'
-                          }
+                        <p className={responsive.label}>Date of Birth</p>
+                        <p className={responsive.body}>
+                          {userData.Patient.dateOfBirth ? new Date(userData.Patient.dateOfBirth).toLocaleDateString() : 'Not provided'}
                         </p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">Address</label>
-                        <p className="font-medium">{userData.Patient.address || 'Not provided'}</p>
+                        <p className={responsive.label}>Address</p>
+                        <p className={responsive.body}>{userData.Patient.address || 'Not provided'}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">Emergency Contact</label>
-                        <p className="font-medium">{userData.Patient.emergencyContact || 'Not provided'}</p>
+                        <p className={responsive.label}>Emergency Contact</p>
+                        <p className={responsive.body}>{userData.Patient.emergencyContact || 'Not provided'}</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">Patient Type</label>
-                        <p className="font-medium capitalize">{userData.Patient.patientType || 'Not provided'}</p>
+                        <p className={responsive.label}>Patient Type</p>
+                        <p className={`${responsive.body} capitalize`}>{userData.Patient.patientType || 'Not provided'}</p>
                       </div>
                       {userData.Patient.medicalHistory && (
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">Medical History</label>
-                          <p className="font-medium">{userData.Patient.medicalHistory}</p>
+                          <p className={responsive.label}>Medical History</p>
+                          <p className={responsive.body}>{userData.Patient.medicalHistory}</p>
                         </div>
                       )}
                       {userData.Patient.currentMedications && (
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">Current Medications</label>
-                          <p className="font-medium">{userData.Patient.currentMedications}</p>
+                          <p className={responsive.label}>Current Medications</p>
+                          <p className={responsive.body}>{userData.Patient.currentMedications}</p>
                         </div>
                       )}
                       {userData.Patient.allergies && (
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">Allergies</label>
-                          <p className="font-medium">{userData.Patient.allergies}</p>
+                          <p className={responsive.label}>Allergies</p>
+                          <p className={responsive.body}>{userData.Patient.allergies}</p>
                         </div>
                       )}
                     </div>
@@ -694,32 +667,29 @@ const UserDetails = () => {
                     {/* Guardian Information */}
                     {(userData.Patient.patientType === 'child' || userData.Patient.patientType === 'elderly') && (
                       <div>
-                        <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          Guardian Information
-                        </h3>
-                        <div className="grid grid-cols-2 gap-4">
+                        <p className={`${responsive.label} mb-2 flex items-center gap-1.5`}>
+                          <Users className="h-3.5 w-3.5" />Guardian Information
+                        </p>
+                        <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="text-sm font-medium text-muted-foreground">Guardian Name</label>
-                            <p className="font-medium">
-                              {userData.Patient.guardianFirstName} {userData.Patient.guardianLastName}
-                            </p>
+                            <p className={responsive.label}>Guardian Name</p>
+                            <p className={responsive.body}>{userData.Patient.guardianFirstName} {userData.Patient.guardianLastName}</p>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-muted-foreground">Guardian Phone</label>
-                            <p className="font-medium">{userData.Patient.guardianPhone || 'Not provided'}</p>
+                            <p className={responsive.label}>Guardian Phone</p>
+                            <p className={responsive.body}>{userData.Patient.guardianPhone || 'Not provided'}</p>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-muted-foreground">Guardian Email</label>
-                            <p className="font-medium">{userData.Patient.guardianEmail || 'Not provided'}</p>
+                            <p className={responsive.label}>Guardian Email</p>
+                            <p className={responsive.body}>{userData.Patient.guardianEmail || 'Not provided'}</p>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-muted-foreground">Relationship</label>
-                            <p className="font-medium capitalize">{userData.Patient.guardianRelationship || 'Not provided'}</p>
+                            <p className={responsive.label}>Relationship</p>
+                            <p className={`${responsive.body} capitalize`}>{userData.Patient.guardianRelationship || 'Not provided'}</p>
                           </div>
                           <div>
-                            <label className="text-sm font-medium text-muted-foreground">Guardian ID Number</label>
-                            <p className="font-medium">{userData.Patient.guardianIdNumber || 'Not provided'}</p>
+                            <p className={responsive.label}>Guardian ID Number</p>
+                            <p className={responsive.body}>{userData.Patient.guardianIdNumber || 'Not provided'}</p>
                           </div>
                         </div>
                       </div>
@@ -727,32 +697,32 @@ const UserDetails = () => {
 
                     {/* Location Information */}
                     <div>
-                      <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        Location Information
-                      </h3>
-                      <div className="grid grid-cols-2 gap-4">
+                      <p className={`${responsive.label} mb-2 flex items-center gap-1.5`}>
+                        <MapPin className="h-3.5 w-3.5" />Location Information
+                      </p>
+                      <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">Region</label>
-                          <p className="font-medium">{userData.Patient.region || 'Not provided'}</p>
+                          <p className={responsive.label}>County</p>
+                          <p className={responsive.body}>{userData.Patient.region || 'Not provided'}</p>
                         </div>
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">District</label>
-                          <p className="font-medium">{userData.Patient.district || 'Not provided'}</p>
+                          <p className={responsive.label}>Constituency</p>
+                          <p className={responsive.body}>{userData.Patient.district || 'Not provided'}</p>
                         </div>
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">Traditional Authority</label>
-                          <p className="font-medium">{userData.Patient.traditionalAuthority || 'Not provided'}</p>
+                          <p className={responsive.label}>Ward</p>
+                          <p className={responsive.body}>{userData.Patient.traditionalAuthority || 'Not provided'}</p>
                         </div>
                         <div>
-                          <label className="text-sm font-medium text-muted-foreground">Village</label>
-                          <p className="font-medium">{userData.Patient.village || 'Not provided'}</p>
+                          <p className={responsive.label}>Sub-location</p>
+                          <p className={responsive.body}>{userData.Patient.village || 'Not provided'}</p>
                         </div>
                       </div>
                     </div>
                   </TabsContent>
                 )}
 
+                </div>
               </Tabs>
             </CardContent>
           </Card>
@@ -763,50 +733,31 @@ const UserDetails = () => {
       <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Mail className="h-5 w-5" />
+            <DialogTitle className={`flex items-center gap-2 ${responsive.dialogTitle}`}>
+              <Mail className="h-4 w-4" />
               Send Email to {userData?.firstName} {userData?.lastName}
             </DialogTitle>
-            <DialogDescription>
-              Compose and send an email message to this caregiver. The email will be sent from the system.
+            <DialogDescription className={responsive.dialogDesc}>
+              Compose and send an email message to this caregiver.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
+          <div className="space-y-3 py-3">
+            <div className="space-y-1.5">
               <Label htmlFor="email-subject">Subject</Label>
-              <Input
-                id="email-subject"
-                placeholder="Enter email subject..."
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-              />
+              <Input id="email-subject" placeholder="Enter email subject..." value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="email-message">Message</Label>
-              <Textarea
-                id="email-message"
-                placeholder="Enter your message here..."
-                value={emailMessage}
-                onChange={(e) => setEmailMessage(e.target.value)}
-                rows={6}
-              />
+              <Textarea id="email-message" placeholder="Enter your message here..." value={emailMessage} onChange={(e) => setEmailMessage(e.target.value)} rows={6} />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEmailDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleSendEmail} disabled={sendEmailMutation.isPending}>
+            <Button variant="outline" size="sm" onClick={() => setEmailDialogOpen(false)}>Cancel</Button>
+            <Button size="sm" onClick={handleSendEmail} disabled={sendEmailMutation.isPending}>
               {sendEmailMutation.isPending ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Sending...
-                </>
+                <><div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-white mr-1.5" />Sending...</>
               ) : (
-                <>
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Email
-                </>
+                <><Send className="h-3.5 w-3.5 mr-1.5" />Send Email</>
               )}
             </Button>
           </DialogFooter>
