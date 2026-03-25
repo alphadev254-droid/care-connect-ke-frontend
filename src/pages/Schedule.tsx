@@ -153,6 +153,7 @@ const Schedule = () => {
                       <TableRow>
                         <TableHead>Date & Time</TableHead>
                         <TableHead>Patient</TableHead>
+                        <TableHead>Appointment</TableHead>
                         <TableHead>Service</TableHead>
                         <TableHead>Session Type</TableHead>
                         <TableHead>Payment Status</TableHead>
@@ -182,10 +183,14 @@ const Schedule = () => {
                                 </div>
                                 <div>
                                   <p className="font-medium">{appointment.Patient?.User?.firstName} {appointment.Patient?.User?.lastName}</p>
-                                  <p className={responsive.bodyMuted}>ID: #{appointment.id}</p>
                                 </div>
                               </div>
                             </TableCell>
+                            <TableCell>
+                              <div>
+                                  <p className={responsive.bodyMuted}>Ref: #{appointment.id.toString().slice(0,-11)+'***********'}</p>
+                                </div>
+                                </TableCell>
                             <TableCell>
                               <p>{appointment.Specialty?.name || 'General Care'}</p>
                               <p className={responsive.bodyMuted}>{appointment.TimeSlot?.duration || 180} min</p>
@@ -276,6 +281,7 @@ const Schedule = () => {
                       <TableRow>
                         <TableHead>Date & Time</TableHead>
                         <TableHead>Patient</TableHead>
+                        <TableHead>Appointment</TableHead>
                         <TableHead>Service</TableHead>
                         <TableHead>Session Type</TableHead>
                         <TableHead>Payment Status</TableHead>
@@ -305,10 +311,14 @@ const Schedule = () => {
                                 </div>
                                 <div>
                                   <p className="font-medium">{appointment.Patient?.User?.firstName} {appointment.Patient?.User?.lastName}</p>
-                                  <p className={responsive.bodyMuted}>ID: #{appointment.id}</p>
                                 </div>
                               </div>
                             </TableCell>
+                            <TableCell>
+                              <div>
+                                  <p className={responsive.bodyMuted}>Ref: #{appointment.id.toString().slice(0,-11)+'***********'}</p>
+                                </div>
+                                </TableCell>
                             <TableCell>
                               <p>{appointment.Specialty?.name || 'General Care'}</p>
                               <p className={responsive.bodyMuted}>{appointment.TimeSlot?.duration || 180} min</p>

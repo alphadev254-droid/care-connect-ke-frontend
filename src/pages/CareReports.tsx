@@ -28,6 +28,7 @@ import {
   Upload,
   Plus,
   Eye,
+  Edit3,
   CheckCircle,
   AlertCircle,
   User,
@@ -75,6 +76,7 @@ const CareReports = () => {
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: pageSize.toString(),
+        slim: 'true',
         ...(appliedFilters.searchTerm && { search: appliedFilters.searchTerm }),
         ...(appliedFilters.region && { region: appliedFilters.region }),
         ...(appliedFilters.district && { district: appliedFilters.district }),
@@ -89,7 +91,7 @@ const CareReports = () => {
   const { data: reportsData, isLoading: reportsLoading } = useQuery({
     queryKey: ["care-reports"],
     queryFn: async () => {
-      const response = await api.get("/reports");
+      const response = await api.get("/reports?slim=true");
       const reports = response.data.reports || [];
 
       // Parse JSON strings for attachments and vitals
@@ -298,36 +300,67 @@ const CareReports = () => {
   const bloodSugarRef = useRef<HTMLInputElement>(null);
   const attachmentsRef = useRef<HTMLInputElement>(null);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [isEditingReport, setIsEditingReport] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
+
+  const fillReportFormFromAppointment = (appointment: any) => {
+    const report = appointment?.report;
+    if (!report) {
+      if (observationsRef.current) observationsRef.current.value = '';
+      if (interventionsRef.current) interventionsRef.current.value = '';
+      if (sessionSummaryRef.current) sessionSummaryRef.current.value = '';
+      if (patientStatusRef.current) patientStatusRef.current.value = 'stable';
+      if (recommendationsRef.current) recommendationsRef.current.value = '';
+      if (followUpDateRef.current) followUpDateRef.current.value = '';
+      if (medicationsRef.current) medicationsRef.current.value = '';
+      if (activitiesRef.current) activitiesRef.current.value = '';
+      if (notesRef.current) notesRef.current.value = '';
+      if (bloodPressureRef.current) bloodPressureRef.current.value = '';
+      if (heartRateRef.current) heartRateRef.current.value = '';
+      if (temperatureRef.current) temperatureRef.current.value = '';
+      if (respiratoryRateRef.current) respiratoryRateRef.current.value = '';
+      if (oxygenSaturationRef.current) oxygenSaturationRef.current.value = '';
+      if (bloodSugarRef.current) bloodSugarRef.current.value = '';
+      if (attachmentsRef.current) attachmentsRef.current.value = '';
+      return;
+    }
+
+    if (observationsRef.current) observationsRef.current.value = report.observations || '';
+    if (interventionsRef.current) interventionsRef.current.value = report.interventions || '';
+    if (sessionSummaryRef.current) sessionSummaryRef.current.value = report.sessionSummary || '';
+    if (patientStatusRef.current) patientStatusRef.current.value = report.patientStatus || 'stable';
+    if (recommendationsRef.current) recommendationsRef.current.value = report.recommendations || '';
+    if (followUpDateRef.current) followUpDateRef.current.value = report.followUpDate || '';
+    if (medicationsRef.current) medicationsRef.current.value = report.medications || '';
+    if (activitiesRef.current) activitiesRef.current.value = report.activities || '';
+    if (notesRef.current) notesRef.current.value = report.notes || '';
+
+    const vitals = report.vitals || {};
+    if (bloodPressureRef.current) bloodPressureRef.current.value = vitals.bloodPressure || '';
+    if (heartRateRef.current) heartRateRef.current.value = vitals.heartRate || '';
+    if (temperatureRef.current) temperatureRef.current.value = vitals.temperature || '';
+    if (respiratoryRateRef.current) respiratoryRateRef.current.value = vitals.respiratoryRate || '';
+    if (oxygenSaturationRef.current) oxygenSaturationRef.current.value = vitals.oxygenSaturation || '';
+    if (bloodSugarRef.current) bloodSugarRef.current.value = vitals.bloodSugar || '';
+  };
 
   useEffect(() => {
     if (appointmentId && completedAppointments.length > 0) {
       const appointment = appointmentsWithReports.find(apt => apt.id.toString() === appointmentId);
       if (appointment) {
         setSelectedAppointment(appointment);
-        if (appointment.report) {
-          // Set form values using refs
-          if (observationsRef.current) observationsRef.current.value = appointment.report.observations || '';
-          if (interventionsRef.current) interventionsRef.current.value = appointment.report.interventions || '';
-          if (sessionSummaryRef.current) sessionSummaryRef.current.value = appointment.report.sessionSummary || '';
-          if (patientStatusRef.current) patientStatusRef.current.value = appointment.report.patientStatus || 'stable';
-          if (recommendationsRef.current) recommendationsRef.current.value = appointment.report.recommendations || '';
-          if (followUpDateRef.current) followUpDateRef.current.value = appointment.report.followUpDate || '';
-          if (medicationsRef.current) medicationsRef.current.value = appointment.report.medications || '';
-          if (activitiesRef.current) activitiesRef.current.value = appointment.report.activities || '';
-          if (notesRef.current) notesRef.current.value = appointment.report.notes || '';
-          if (appointment.report.vitals) {
-            if (bloodPressureRef.current) bloodPressureRef.current.value = appointment.report.vitals.bloodPressure || '';
-            if (heartRateRef.current) heartRateRef.current.value = appointment.report.vitals.heartRate || '';
-            if (temperatureRef.current) temperatureRef.current.value = appointment.report.vitals.temperature || '';
-            if (respiratoryRateRef.current) respiratoryRateRef.current.value = appointment.report.vitals.respiratoryRate || '';
-            if (oxygenSaturationRef.current) oxygenSaturationRef.current.value = appointment.report.vitals.oxygenSaturation || '';
-            if (bloodSugarRef.current) bloodSugarRef.current.value = appointment.report.vitals.bloodSugar || '';
-          }
-        }
+        setIsEditingReport(false);
+        fillReportFormFromAppointment(appointment);
       }
     }
   }, [appointmentId, appointmentsWithReports]);
+
+  useEffect(() => {
+    if (!selectedAppointment) return;
+    // Ensure form always reflects the currently opened appointment,
+    // regardless of whether we navigated via query param or table actions.
+    fillReportFormFromAppointment(selectedAppointment);
+  }, [selectedAppointment, isEditingReport]);
 
   const createReportMutation = useMutation({
     mutationFn: async (reportData: any) => {
@@ -384,11 +417,18 @@ const CareReports = () => {
       // Mark appointment as completed
       api.patch(`/appointments/${selectedAppointment.id}/status`, { status: 'session_attended' });
       // Close the form and go back to sessions list
+      setIsEditingReport(false);
       setSelectedAppointment(null);
     },
     onError: (error: any) => {
       console.error('Report creation error:', error);
       console.error('Error response:', error.response?.data);
+      const details = error.response?.data?.details;
+      if (Array.isArray(details) && details.length > 0) {
+        const msg = details.map((d: any) => d?.msg || `${d?.path || 'field'}: invalid`).join(', ');
+        toast.error(msg);
+        return;
+      }
       toast.error(error.response?.data?.message || 'Failed to create report');
     }
   });
@@ -805,7 +845,13 @@ const CareReports = () => {
                 <div>
                   <CardTitle className="text-base">Session Report</CardTitle>
                   <CardDescription className="text-xs">
-                    {isCaregiver ? 'Create report for' : 'Report for'} {selectedAppointment.Patient?.User?.firstName} {selectedAppointment.Patient?.User?.lastName} - {new Date(selectedAppointment.scheduledDate).toLocaleDateString()}
+                    {isCaregiver
+                      ? selectedAppointment.hasReport
+                        ? 'Edit report for'
+                        : 'Create report for'
+                      : 'Report for'}{' '}
+                    {selectedAppointment.Patient?.User?.firstName} {selectedAppointment.Patient?.User?.lastName} -{' '}
+                    {new Date(selectedAppointment.scheduledDate).toLocaleDateString()}
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
@@ -817,7 +863,26 @@ const CareReports = () => {
                       title={`Session Report - ${selectedAppointment.Patient?.User?.firstName} ${selectedAppointment.Patient?.User?.lastName}`}
                     />
                   )}
-                  <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => setSelectedAppointment(null)}>
+                  {isCaregiver && selectedAppointment.hasReport && !isEditingReport && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs"
+                      onClick={() => setIsEditingReport(true)}
+                    >
+                      <Edit3 className="h-3 w-3 mr-1" />
+                      Edit Report
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs"
+                    onClick={() => {
+                      setIsEditingReport(false);
+                      setSelectedAppointment(null);
+                    }}
+                  >
                     <ArrowLeft className="h-3 w-3 mr-1" />
                     Back to Sessions
                   </Button>
@@ -825,7 +890,7 @@ const CareReports = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-4 p-4">
-              {isCaregiver && !selectedAppointment.hasReport ? (
+              {isCaregiver && (!selectedAppointment.hasReport || isEditingReport) ? (
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div>
@@ -1144,10 +1209,25 @@ const CareReports = () => {
                                     variant="outline"
                                     size="sm"
                                     className="h-8 text-xs ml-2"
-                                    onClick={() => {
-                                      const url = attachment.url || attachment.path;
-                                      if (url) {
-                                        window.open(url, '_blank');
+                                    onClick={async () => {
+                                      try {
+                                        const reportId = selectedAppointment?.report?.id;
+                                        if (!reportId) {
+                                          toast.error('Report not found for this session');
+                                          return;
+                                        }
+
+                                        const response = await api.get(`/reports/${reportId}/attachments/${index}/token`);
+                                        const viewUrl = response.data?.viewUrl;
+                                        if (!viewUrl) {
+                                          toast.error('Failed to generate secure link');
+                                          return;
+                                        }
+
+                                        const base = String(api.defaults.baseURL || '').replace(/\/api\/?$/, '');
+                                        window.open(`${base}${viewUrl}`, '_blank');
+                                      } catch (e: any) {
+                                        toast.error(e?.response?.data?.error || 'Failed to open attachment');
                                       }
                                     }}
                                   >
@@ -1172,7 +1252,7 @@ const CareReports = () => {
                 </div>
               )}
 
-              {isCaregiver && !selectedAppointment.hasReport && (
+              {isCaregiver && (!selectedAppointment.hasReport || isEditingReport) && (
                 <div className="flex justify-end gap-2 pt-2">
                   <Button
                     onClick={handleSubmitReport}
@@ -1180,7 +1260,11 @@ const CareReports = () => {
                     disabled={createReportMutation.isPending}
                   >
                     <Save className="h-3 w-3 mr-1" />
-                    {createReportMutation.isPending ? 'Saving...' : 'Save Report & Complete Session'}
+                    {createReportMutation.isPending
+                      ? 'Saving...'
+                      : selectedAppointment.hasReport
+                        ? 'Save Report Changes'
+                        : 'Save Report & Complete Session'}
                   </Button>
                 </div>
               )}
@@ -1241,6 +1325,7 @@ const CareReports = () => {
                         <TableRow className="bg-muted/50">
                           <TableHead className="text-xs font-semibold">Session</TableHead>
                           <TableHead className="text-xs font-semibold">Patient</TableHead>
+                          <TableHead className="text-xs font-semibold">Reference</TableHead>
                           <TableHead className="text-xs font-semibold">Caregiver</TableHead>
                           <TableHead className="text-xs font-semibold">Specialty</TableHead>
                           <TableHead className="text-xs font-semibold">Payment Status</TableHead>
@@ -1275,12 +1360,16 @@ const CareReports = () => {
                                     <p className="text-sm font-medium">
                                       {appointment.Patient?.User?.firstName} {appointment.Patient?.User?.lastName}
                                     </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      ID: #{appointment.id}
-                                    </p>
+                                
                                   </div>
                                 </div>
                               </TableCell>
+                              <TableCell className="p-3">
+                                 <p className="text-xs text-muted-foreground">
+                                      Ref: #{appointment.id.toString().slice(0, -11)+'**********'}
+                                    </p>
+                              </TableCell>  
+
                               <TableCell className="p-3">
                                 <div className="flex items-center gap-2">
                                   <div className="h-7 w-7 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-semibold">
@@ -1327,14 +1416,17 @@ const CareReports = () => {
                                   <Button
                                     size="sm"
                                     className="h-7 text-xs"
-                                    onClick={() => setSelectedAppointment(appointment)}
+                                    onClick={() => {
+                                      setSelectedAppointment(appointment);
+                                      setIsEditingReport(false);
+                                    }}
                                   >
                                     <Plus className="h-3 w-3 mr-1" />
                                     Create Report
                                   </Button>
                                 ) : (
                                   <Badge variant="outline" className="text-xs">
-                                    Pending
+                                    {isPatient ? 'Waiting caregiver upload' : 'Pending'}
                                   </Badge>
                                 )}
                               </TableCell>
@@ -1384,6 +1476,7 @@ const CareReports = () => {
                         <TableRow className="bg-muted/50">
                           <TableHead className="text-xs font-semibold">Session</TableHead>
                           <TableHead className="text-xs font-semibold">Patient</TableHead>
+                          <TableHead className="text-xs font-semibold">Appointment</TableHead>
                           <TableHead className="text-xs font-semibold">Caregiver</TableHead>
                           <TableHead className="text-xs font-semibold">Specialty</TableHead>
                           <TableHead className="text-xs font-semibold">Report Status</TableHead>
@@ -1418,11 +1511,14 @@ const CareReports = () => {
                                     <p className="text-sm font-medium">
                                       {appointment.Patient?.User?.firstName} {appointment.Patient?.User?.lastName}
                                     </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      ID: #{appointment.id}
-                                    </p>
+                                
                                   </div>
                                 </div>
+                              </TableCell>
+                              <TableCell className="p-3">
+                                <p className="text-sm text-muted-foreground">
+                                  Ref: #{appointment.id.toString().slice(0, -11)+'**********'}
+                                </p>
                               </TableCell>
                               <TableCell className="p-3">
                                 <div className="flex items-center gap-2">
@@ -1476,11 +1572,29 @@ const CareReports = () => {
                                     size="sm"
                                     variant="outline"
                                     className="h-7 text-xs"
-                                    onClick={() => setSelectedAppointment(appointment)}
+                                    onClick={() => {
+                                      setSelectedAppointment(appointment);
+                                      setIsEditingReport(false);
+                                    }}
                                   >
                                     <Eye className="h-3 w-3 mr-1" />
-                                    View Report
+                                    View
                                   </Button>
+
+                                  {isCaregiver && (
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="h-7 text-xs"
+                                      onClick={() => {
+                                        setSelectedAppointment(appointment);
+                                        setIsEditingReport(true);
+                                      }}
+                                    >
+                                      <Edit3 className="h-3 w-3 mr-1" />
+                                      Edit
+                                    </Button>
+                                  )}
                                   {isPatient && !appointment.patientRating && (
                                     <Button
                                       size="sm"
