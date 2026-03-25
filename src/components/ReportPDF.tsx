@@ -87,7 +87,7 @@ interface ReportPDFProps {
 const ReportPDF: React.FC<ReportPDFProps> = ({ usersData, stats, period }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      <Text style={styles.header}>CareConnect System Report</Text>
+      <Text style={styles.header}>TunzaConnect System Report</Text>
       <Text style={styles.subHeader}>Period: {period}</Text>
       <Text style={styles.subHeader}>Generated: {new Date().toLocaleDateString()}</Text>
 

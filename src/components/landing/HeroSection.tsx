@@ -25,7 +25,7 @@ const HeroSection = () => {
               <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-secondary border border-secondary/30 bg-secondary/5 px-3 py-1 rounded-sm">
                 <Activity className="h-3 w-3" /> Platform Active
               </span>
-              <span className="text-xs text-muted-foreground">Malawi's #1 Home Care Network</span>
+              <span className="text-xs text-muted-foreground">Kenya's #1 Home Care Network</span>
             </div>
 
             <h1 className="font-display text-3xl md:text-4xl lg:text-[2.6rem] font-bold leading-tight text-foreground mb-4">
@@ -34,8 +34,8 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-sm text-muted-foreground max-w-lg leading-relaxed mb-8 border-l-2 border-primary/30 pl-4">
-              CareConnect is a licensed platform connecting patients with verified home-based
-              caregivers across all regions of Malawi. We provide supportive care services —
+              TunzaConnect is a licensed platform connecting patients with verified home-based
+              caregivers across all regions of Kenya. We provide supportive care services —
               not medical treatment. All patients must have a physician for diagnosis and prescriptions.
             </p>
 
@@ -79,7 +79,7 @@ const HeroSection = () => {
             <div className="flex-1 overflow-hidden">
               <img
                 src={CLOUDINARY_IMAGES.landing2}
-                alt="CareConnect Healthcare Professional"
+                alt="TunzaConnect Healthcare Professional"
                 className="w-full h-full object-cover"
               />
             </div>

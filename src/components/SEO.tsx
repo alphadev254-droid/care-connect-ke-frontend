@@ -17,8 +17,8 @@ const SEO = ({
   ogImage = "https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566755/landing-pages/careconnectlogo.png",
   structuredData 
 }: SEOProps) => {
-  const fullTitle = title.includes("CareConnect") ? title : `${title} | CareConnect Malawi`;
-  const url = canonical || "https://careconnectmalawi.com";
+  const fullTitle = title.includes("TunzaConnect") ? title : `${title} | TunzaConnect `;
+  const url = canonical || "https://tunzaconnect.com";
 
   return (
     <Helmet>

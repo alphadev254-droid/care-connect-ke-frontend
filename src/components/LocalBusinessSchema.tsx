@@ -4,23 +4,23 @@ export const LocalBusinessSchema = () => {
   const schema = {
     "@context": "https://schema.org",
     "@type": "MedicalBusiness",
-    "name": "CareConnect Malawi",
+    "name": "TunzaConnect ",
     "image": "https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566755/landing-pages/careconnectlogo.png",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Area 58",
-      "addressLocality": "Lilongwe",
+      "addressLocality": "Nairobi",
       "addressRegion": "Central Region",
-      "addressCountry": "MW"
+      "addressCountry": "KE"
     },
     "geo": {
       "@type": "GeoCoordinates",
       "latitude": -13.9626,
       "longitude": 33.7741
     },
-    "url": "https://careconnectmalawi.com",
+    "url": "https://tunzaconnect.com",
     "telephone": "+265 986 227 240",
-    "email": "support@careconnectmalawi.com",
+    "email": "support@tunzaconnect.com",
     "priceRange": "$$",
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
@@ -29,9 +29,9 @@ export const LocalBusinessSchema = () => {
       "closes": "18:00"
     },
     "areaServed": [
-      {"@type": "City", "name": "Lilongwe"},
-      {"@type": "City", "name": "Blantyre"},
-      {"@type": "City", "name": "Mzuzu"}
+      {"@type": "City", "name": "Nairobi"},
+      {"@type": "City", "name": "Mombasa"},
+      {"@type": "City", "name": "Kisumu"}
     ]
   };
 

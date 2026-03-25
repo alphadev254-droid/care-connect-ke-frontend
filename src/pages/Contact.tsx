@@ -31,7 +31,7 @@ const Contact = () => {
       icon: Mail,
       title: "Email Support",
       description: "Send us your questions or concerns",
-      contact: "support@careconnectmalawi.com",
+      contact: "support@tunzaconnect.com",
       availability: "Response within 2 hours"
     },
     {
@@ -53,21 +53,21 @@ const Contact = () => {
   const offices = [
     {
       city: "Lilongwe",
-      address: "Area 58, Lilongwe, Central Region, Malawi",
+      address: "Area 58, Lilongwe, Central Region, Kenya",
       phone: "+265 986 227 240",
-      email: "support@careconnectmalawi.com"
+      email: "support@tunzaconnect.com"
     },
     {
       city: "Blantyre",
       address: "Limbe, Makata Road, Building 45",
       phone: "+265 986 227 240",
-      email: "support@careconnectmalawi.com"
+      email: "support@tunzaconnect.com"
     },
     {
       city: "Mzuzu",
       address: "Mzimba Street, Near Central Hospital",
       phone: "+265 986 227 240",
-      email: "support@careconnectmalawi.com"
+      email: "support@tunzaconnect.com"
     }
   ];
 
@@ -93,8 +93,8 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Contact Us | CareConnect Malawi - 24/7 Support</title>
-        <meta name="description" content="Contact CareConnect Malawi for home healthcare services. Call +265 986 227 240 or email support@careconnectmalawi.com. Offices in Lilongwe, Blantyre & Mzuzu." />
+        <title>Contact Us | TunzaConnect  - 24/7 Support</title>
+        <meta name="description" content="Contact TunzaConnect  for home healthcare services. Call +265 986 227 240 or email support@tunzaconnect.com. Offices in Lilongwe, Blantyre & Mzuzu." />
         <script type="application/ld+json">
           {JSON.stringify(faqSchema(faqs))}
         </script>
@@ -131,7 +131,7 @@ const Contact = () => {
               <div className="hidden lg:grid grid-cols-2 gap-3">
                 {[
                   { icon: Phone, label: "Phone", value: "+265 986 227 240" },
-                  { icon: Mail, label: "Email", value: "support@careconnectmalawi.com" },
+                  { icon: Mail, label: "Email", value: "support@tunzaconnect.com" },
                   { icon: MessageCircle, label: "WhatsApp", value: "+265 991 234 567" },
                   { icon: Clock, label: "Support", value: "24/7 Available" },
                 ].map((item, i) => (
@@ -223,7 +223,7 @@ const Contact = () => {
               <div className="space-y-4">
                 <div className="mb-2">
                   <h3 className="font-semibold text-base mb-1">Our Offices</h3>
-                  <p className="text-xs text-muted-foreground">Visit us at any of our locations across Malawi.</p>
+                  <p className="text-xs text-muted-foreground">Visit us at any of our locations across Kenya.</p>
                 </div>
                 {offices.map((office, index) => (
                   <Card key={index} className="border-l-[3px] border-primary/60 hover:shadow-md transition-shadow">

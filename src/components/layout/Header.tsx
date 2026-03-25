@@ -33,7 +33,7 @@ const Header = () => {
               <Clock className="h-3 w-3" /> Mon–Fri: 8AM–6PM
             </span>
             <span className="hidden md:flex items-center gap-1.5 pl-4">
-              <MapPin className="h-3 w-3" /> Serving All Regions of Malawi
+              <MapPin className="h-3 w-3" /> Serving All Regions of Kenya
             </span>
           </div>
           <div className="hidden md:flex items-center gap-4 text-white/80">
@@ -49,10 +49,10 @@ const Header = () => {
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <img src={CLOUDINARY_IMAGES.logo} alt="CareConnect" className="h-10 w-10 rounded" />
+            <img src={CLOUDINARY_IMAGES.logo} alt="TunzaConnect Logo" className="h-10 w-10 rounded" />
             <div className="flex flex-col leading-none">
               <span className="font-display text-lg font-bold text-foreground tracking-tight">
-                Care<span className="text-primary">Connect</span>
+                Tunza<span className="text-primary">Connect</span>
               </span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
                 Home Healthcare

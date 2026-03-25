@@ -112,7 +112,7 @@ const AdminReports = () => {
     },
     {
       title: "Total Revenue",
-      value: `MWK ${(appointmentStats?.totalRevenue || 0).toLocaleString()}`,
+      value: `Ksh ${(appointmentStats?.totalRevenue || 0).toLocaleString()}`,
       icon: TrendingUp,
       color: "bg-success/10 text-success",
     },
@@ -227,10 +227,10 @@ const AdminReports = () => {
                             <TableCell className="font-medium">{item.Specialty?.name || 'Unknown'}</TableCell>
                             <TableCell className="text-right">{item.appointmentCount}</TableCell>
                             <TableCell className="text-right text-muted-foreground">
-                              MWK {parseFloat(item.avgRevenue || 0).toLocaleString()}
+                              Ksh {parseFloat(item.avgRevenue || 0).toLocaleString()}
                             </TableCell>
                             <TableCell className="text-right font-semibold">
-                              MWK {parseFloat(item.totalRevenue || 0).toLocaleString()}
+                              Ksh {parseFloat(item.totalRevenue || 0).toLocaleString()}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -271,7 +271,7 @@ const AdminReports = () => {
                               {((item.count / appointmentStats.total) * 100).toFixed(1)}%
                             </TableCell>
                             <TableCell className="text-right font-semibold">
-                              MWK {parseFloat(item.totalAmount || 0).toLocaleString()}
+                              Ksh {parseFloat(item.totalAmount || 0).toLocaleString()}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -354,10 +354,10 @@ const AdminReports = () => {
                               {item.appointmentCount}
                             </TableCell>
                             <TableCell className="text-right font-bold text-success">
-                              MWK {parseFloat(item.totalEarnings || 0).toLocaleString()}
+                              Ksh {parseFloat(item.totalEarnings || 0).toLocaleString()}
                             </TableCell>
                             <TableCell className="text-right text-muted-foreground">
-                              MWK {(parseFloat(item.totalEarnings || 0) / item.appointmentCount).toLocaleString()}
+                              Ksh {(parseFloat(item.totalEarnings || 0) / item.appointmentCount).toLocaleString()}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -402,10 +402,10 @@ const AdminReports = () => {
                             <TableCell className="font-medium">{item.Specialty?.name || 'Unknown'}</TableCell>
                             <TableCell className="text-right">{item.appointmentCount}</TableCell>
                             <TableCell className="text-right font-bold text-success">
-                              MWK {parseFloat(item.totalRevenue || 0).toLocaleString()}
+                              Ksh {parseFloat(item.totalRevenue || 0).toLocaleString()}
                             </TableCell>
                             <TableCell className="text-right text-muted-foreground">
-                              MWK {(parseFloat(item.totalRevenue || 0) / item.appointmentCount).toLocaleString()}
+                              Ksh {(parseFloat(item.totalRevenue || 0) / item.appointmentCount).toLocaleString()}
                             </TableCell>
                             <TableCell className="text-right">{percentage}%</TableCell>
                           </TableRow>

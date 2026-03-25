@@ -125,9 +125,9 @@ const HowItWorks = () => {
   return (
     <div className="min-h-screen bg-white">
       <Helmet>
-        <title>How CareConnect Works - Book Home Healthcare Services in 3 Easy Steps</title>
-        <meta name="description" content="Easy 3-step process: Find a caregiver in your region, book appointment, receive quality care at home. Secure payments, verified professionals, quality home healthcare across all Malawi regions." />
-        <meta name="keywords" content="book healthcare Malawi, how to book caregiver, home healthcare booking, find caregiver near me, healthcare appointment booking" />
+        <title>How TunzaConnect Works - Book Home Healthcare Services in 3 Easy Steps</title>
+        <meta name="description" content="Easy 3-step process: Find a caregiver in your region, book appointment, receive quality care at home. Secure payments, verified professionals, quality home healthcare across all Kenya regions." />
+        <meta name="keywords" content="book healthcare Kenya, how to book caregiver, home healthcare booking, find caregiver near me, healthcare appointment booking" />
       </Helmet>
       <Header />
 
@@ -144,7 +144,7 @@ const HowItWorks = () => {
                 Care Process
               </span>
               <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-                How <span className="text-primary">CareConnect</span> Works
+                How <span className="text-primary">TunzaConnect</span> Works
               </h1>
               <p className="text-white/80 text-base mb-8 max-w-lg leading-relaxed">
                 A simple, transparent 5-step process — from finding your caregiver
@@ -225,7 +225,7 @@ const HowItWorks = () => {
             <div className="text-center mb-10">
               <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-2">Why Us</p>
               <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                Why Choose CareConnect?
+                Why Choose TunzaConnect?
               </h2>
               <p className="text-muted-foreground text-sm mt-2 max-w-md mx-auto">
                 Built for trust, safety, and the human touch.
@@ -254,7 +254,7 @@ const HowItWorks = () => {
                 Ready to Get Started?
               </h2>
               <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
-                Join thousands of patients who trust CareConnect for their home healthcare needs.
+                Join thousands of patients who trust TunzaConnect for their home healthcare needs.
                 Register today and connect with a verified caregiver near you.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">

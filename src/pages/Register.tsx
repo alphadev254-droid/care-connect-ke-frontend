@@ -586,7 +586,7 @@ const Register = () => {
         toast.success("Registration submitted successfully! Please check your email for confirmation and wait for admin approval.");
         navigate("/login");
       } else {
-        toast.success("Account created successfully! Welcome to CareConnect.");
+        toast.success("Account created successfully! Welcome to TunzaConnect.");
         navigate("/dashboard");
       }
     } catch (error: any) {
@@ -684,7 +684,7 @@ const Register = () => {
                   </div>
                   <CardTitle className="font-display text-xl">Create Account</CardTitle>
                   <CardDescription className="text-sm">
-                    Join CareConnect in just a few steps
+                    Join TunzaConnect in just a few steps
                   </CardDescription>
 
               <div className="flex items-center justify-center gap-1 mt-4">
@@ -1036,7 +1036,7 @@ const Register = () => {
                             <Label htmlFor="licensingInstitution">Licensing Institution</Label>
                             <Input
                               id="licensingInstitution"
-                              placeholder="e.g., Nurses Council of Malawi"
+                              placeholder="e.g., Nurses Council of Kenya"
                               value={formData.licensingInstitution}
                               onChange={(e) => setFormData({ ...formData, licensingInstitution: e.target.value })}
                               required
@@ -1600,14 +1600,14 @@ const Register = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <CreditCard className="h-5 w-5" />
-              CareConnect Rate Card
+              TunzaConnect Rate Card
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="bg-muted/50 p-4 rounded-lg">
               <h3 className="font-semibold mb-2">Platform Commission</h3>
               <p className="text-sm text-muted-foreground mb-2">
-                CareConnect charges a {platformCommission}% commission on all completed sessions.
+                TunzaConnect charges a {platformCommission}% commission on all completed sessions.
               </p>
               <p className="text-xs text-muted-foreground">
                 This covers platform maintenance, payment processing, and customer support.
@@ -1626,7 +1626,7 @@ const Register = () => {
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="font-medium text-sm">{specialty.name}</h4>
                         <div className="text-right">
-                          <p className="text-sm font-semibold">MWK {sessionFee.toLocaleString()}</p>
+                          <p className="text-sm font-semibold">Ksh {sessionFee.toLocaleString()}</p>
                           <p className="text-xs text-muted-foreground">Session Fee</p>
                         </div>
                       </div>
@@ -1639,7 +1639,7 @@ const Register = () => {
                         <div className="bg-green-50 p-2 rounded">
                           <p className="font-medium text-green-800">Your Earnings</p>
                           <p className="text-green-600 font-semibold">
-                            MWK {caregiverEarnings.toLocaleString()}
+                            Ksh {caregiverEarnings.toLocaleString()}
                           </p>
                           <p className="text-green-600 text-xs">
                             ({100 - platformCommission}% of session fee)
@@ -1649,7 +1649,7 @@ const Register = () => {
                         <div className="bg-blue-50 p-2 rounded">
                           <p className="font-medium text-blue-800">Platform Fee</p>
                           <p className="text-blue-600 font-semibold">
-                            MWK {(sessionFee - caregiverEarnings).toLocaleString()}
+                            Ksh {(sessionFee - caregiverEarnings).toLocaleString()}
                           </p>
                           <p className="text-blue-600 text-xs">
                             ({platformCommission}% commission)
@@ -1660,7 +1660,7 @@ const Register = () => {
                       {specialty.bookingFee && (
                         <div className="mt-2 pt-2 border-t">
                           <p className="text-xs text-muted-foreground">
-                            Booking Fee: MWK {parseFloat(specialty.bookingFee).toLocaleString()} (paid by patient)
+                            Booking Fee: Ksh {parseFloat(specialty.bookingFee).toLocaleString()} (paid by patient)
                           </p>
                         </div>
                       )}
@@ -1673,7 +1673,7 @@ const Register = () => {
             <div className="bg-yellow-50 p-4 rounded-lg">
               <h4 className="font-medium text-yellow-800 mb-2">Important Notes</h4>
               <ul className="text-xs text-yellow-700 space-y-1">
-                <li>• All fees are in Malawian Kwacha (MWK)</li>
+                <li>• All fees are in Kenyan Shilling (KES)</li>
                 <li>• Commission is deducted from completed sessions only</li>
                 <li>• Booking fees go directly to the platform</li>
                 <li>• Payments are processed weekly to your account</li>

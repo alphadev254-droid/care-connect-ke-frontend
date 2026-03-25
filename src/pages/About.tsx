@@ -49,13 +49,13 @@ const About = () => {
   const milestones = [
     {
       year: "2020",
-      title: "CareConnect Founded",
+      title: "TunzaConnect Founded",
       description: "Started with a vision to make quality healthcare accessible at home."
     },
     {
       year: "2021",
       title: "First 1,000 Patients",
-      description: "Reached our first milestone of serving 1,000 patients across Malawi."
+      description: "Reached our first milestone of serving 1,000 patients across Kenya."
     },
     {
       year: "2022",
@@ -77,9 +77,9 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>About CareConnect - Quality Home Healthcare Services Across Malawi</title>
-        <meta name="description" content="CareConnect connects patients with verified healthcare professionals across all regions of Malawi. Our mission: accessible, affordable, quality healthcare at home. Serving Northern, Central, and Southern regions." />
-        <meta name="keywords" content="about CareConnect, healthcare platform Malawi, home care mission, verified caregivers nationwide, accessible healthcare" />
+        <title>About TunzaConnect - Quality Home Healthcare Services Across Kenya</title>
+        <meta name="description" content="TunzaConnect connects patients with verified healthcare professionals across all regions of Kenya. Our mission: accessible, affordable, quality healthcare at home. Serving Northern, Central, and Southern regions." />
+        <meta name="keywords" content="about TunzaConnect, healthcare platform Kenya, home care mission, verified caregivers nationwide, accessible healthcare" />
       </Helmet>
       <Header />
       <main>
@@ -93,7 +93,7 @@ const About = () => {
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               <div>
                 <h1 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white">
-                  About <span className="text-primary">CareConnect</span>
+                  About <span className="text-primary">TunzaConnect</span>
                 </h1>
                 <p className="text-lg text-white/90 mb-6">
                   We connect patients with professional home-based caregivers for quality supportive health 
@@ -160,7 +160,7 @@ const About = () => {
             <div className="mb-10">
               <h2 className="font-display text-2xl md:text-3xl font-bold mb-2">Our Journey</h2>
               <p className="text-muted-foreground max-w-2xl">
-                From a simple idea to transforming healthcare delivery across Malawi.
+                From a simple idea to transforming healthcare delivery across Kenya.
               </p>
             </div>
             <div className="relative">
@@ -198,7 +198,7 @@ const About = () => {
                 <div>
                   <h2 className="font-display text-2xl font-bold mb-3">Ready to Transform Healthcare Together?</h2>
                   <p className="text-base text-muted-foreground max-w-lg">
-                    Join thousands of patients and caregivers who are revolutionizing healthcare delivery in Malawi.
+                    Join thousands of patients and caregivers who are revolutionizing healthcare delivery in Kenya.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 lg:justify-end">

@@ -50,7 +50,7 @@ const Settings = () => {
       icon: HelpCircle,
       title: "Help & Support",
       description: "Need assistance? Contact our support team",
-      action: () => { window.location.href = 'mailto:support@careconnect.mw'; },
+      action: () => { window.location.href = 'mailto:support@tunzaconnect.com'; },
       buttonText: "Contact Support",
       iconWell: dashboardCard.iconWell.accent,
       iconColor: "text-accent",
@@ -186,7 +186,7 @@ const Settings = () => {
                   className="h-7 text-xs shrink-0"
                   onClick={() => {
                     if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                      window.location.href = 'mailto:support@careconnect.mw?subject=Account Deletion Request&body=I would like to delete my account. Please process this request.';
+                      window.location.href = 'mailto:support@tunzaconnect.com?subject=Account Deletion Request&body=I would like to delete my account. Please process this request.';
                     }
                   }}
                 >
@@ -201,11 +201,11 @@ const Settings = () => {
         {/* Footer */}
         <Card className={`${dashboardCard.base} bg-muted/30`}>
           <CardContent className={dashboardCard.compactBody}>
-            <p className={responsive.bodyMuted}>CareConnect Health Management System</p>
+            <p className={responsive.bodyMuted}>TunzaConnect Health Management System</p>
             <p className={responsive.bodyMuted}>
               Support:{" "}
-              <a href="mailto:support@careconnect.mw" className="text-primary hover:underline">
-                support@careconnect.mw
+              <a href="mailto:support@tunzaconnect.com" className="text-primary hover:underline">
+                support@tunzaconnect.com
               </a>
             </p>
           </CardContent>

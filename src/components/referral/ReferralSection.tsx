@@ -50,7 +50,7 @@ export const ReferralSection = () => {
     if (!referralData) return;
 
     const message = encodeURIComponent(
-      `Hi! I'm a verified healthcare caregiver on CareConnect. ` +
+      `Hi! I'm a verified healthcare caregiver on TunzaConnect. ` +
       `I'd like to recommend this platform to you - whether you're looking for quality home healthcare services or you're a fellow caregiver wanting to join!\n\n` +
       `Sign up using my referral link: ${referralData.referralLink}\n\n` +
       `Or use code: ${referralData.referralCode}`

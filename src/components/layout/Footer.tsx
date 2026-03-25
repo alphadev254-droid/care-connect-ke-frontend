@@ -27,23 +27,23 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-4">
-              <img src={CLOUDINARY_IMAGES.logo} alt="CareConnect" className="h-9 w-9 rounded" />
+              <img src={CLOUDINARY_IMAGES.logo} alt="TunzaConnect Logo" className="h-9 w-9 rounded" />
               <div className="flex flex-col leading-none">
                 <span className="font-display text-base font-bold text-white">
-                  Care<span className="text-primary">Connect</span>
+                  Tunza<span className="text-primary">Connect</span>
                 </span>
                 <span className="text-[10px] text-white/50 uppercase tracking-widest">Home Healthcare</span>
               </div>
             </Link>
             <p className="text-sm text-white/60 mb-5 max-w-xs leading-relaxed">
-              Malawi's licensed platform connecting patients with verified home-based caregivers
+              Kenya's licensed platform connecting patients with verified home-based caregivers
               across all regions. Supportive care services — not medical treatment.
             </p>
             <div className="space-y-2">
               {[
-                { icon: Phone, text: "+265 986 227 240" },
-                { icon: Mail, text: "support@careconnectmalawi.com" },
-                { icon: MapPin, text: "Area 58, Lilongwe, Central Region, Malawi" },
+                { icon: Phone, text: "+254 986 227 240" },
+                { icon: Mail, text: "support@tunzaconnect.com" },
+                { icon: MapPin, text: "Area 58, Nairobi, Kenya" },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-2.5 text-xs text-white/60">
                   <Icon className="h-3.5 w-3.5 text-primary flex-shrink-0" />
@@ -104,10 +104,10 @@ const Footer = () => {
       <div className="border-t border-white/10">
         <div className="container py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-white/40">
-            © {currentYear} CareConnect. All rights reserved.
+            © {currentYear} TunzaConnect. All rights reserved.
           </p>
           <p className="text-xs text-white/30 uppercase tracking-widest">
-            Malawi Home Healthcare Platform
+            Kenya Home Healthcare Platform
           </p>
         </div>
       </div>

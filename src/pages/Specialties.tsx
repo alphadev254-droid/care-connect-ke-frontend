@@ -55,9 +55,9 @@ const Specialties = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Healthcare Specialties & Home Care Services | CareConnect Malawi</title>
-        <meta name="description" content="Comprehensive home healthcare services: Medication management, wound care, health education, chronic disease management, elderly care, palliative care, post-surgery care, diabetes management. Available across all Malawi regions." />
-        <meta name="keywords" content="healthcare services Malawi, medication management, wound care, health education, chronic disease care, elderly care, palliative care, post-surgery care, diabetes management, specialized nursing care" />
+        <title>Healthcare Specialties & Home Care Services | TunzaConnect Kenya</title>
+        <meta name="description" content="Comprehensive home healthcare services: Medication management, wound care, health education, chronic disease management, elderly care, palliative care, post-surgery care, diabetes management. Available across all Kenya regions." />
+        <meta name="keywords" content="healthcare services Kenya, medication management, wound care, health education, chronic disease care, elderly care, palliative care, post-surgery care, diabetes management, specialized nursing care" />
       </Helmet>
       <Header />
 

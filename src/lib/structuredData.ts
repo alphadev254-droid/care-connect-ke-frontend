@@ -3,12 +3,12 @@
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "MedicalBusiness",
-  "name": "CareConnect Malawi",
-  "description": "Professional home healthcare services connecting patients with verified caregivers across all regions of Malawi",
-  "url": "https://careconnectmalawi.com",
-  "logo": "https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566755/landing-pages/careconnectlogo.png",
+  "name": "TunzaConnect ",
+  "description": "Professional home healthcare services connecting patients with verified caregivers across all regions of Kenya",
+  "url": "https://tunzaconnect.com",
+  "logo": "https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566755/landing-pages/tunzaconnectlogo.png",
   "telephone": "+265986227240",
-  "email": "support@careconnectmalawi.com",
+  "email": "support@tunzaconnect.com",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Area 58",
@@ -19,23 +19,23 @@ export const organizationSchema = {
   "areaServed": [
     {
       "@type": "Country",
-      "name": "Malawi"
+      "name": "Kenya"
     },
     {
       "@type": "AdministrativeArea",
-      "name": "Northern Region, Malawi"
+      "name": "Northern Region, Kenya"
     },
     {
       "@type": "AdministrativeArea",
-      "name": "Central Region, Malawi"
+      "name": "Central Region, Kenya"
     },
     {
       "@type": "AdministrativeArea",
-      "name": "Southern Region, Malawi"
+      "name": "Southern Region, Kenya"
     }
   ],
   "sameAs": [
-    "https://careconnectmalawi.com"
+    "https://tunzaconnect.com"
   ],
   "priceRange": "$$",
   "openingHours": "Mo-Su 00:00-23:59"
@@ -72,7 +72,7 @@ export const serviceSchema = (serviceName: string, description: string) => ({
   "description": description,
   "provider": {
     "@type": "MedicalBusiness",
-    "name": "CareConnect Malawi",
+    "name": "TunzaConnect ",
     "telephone": "+265986227240"
   }
 });
@@ -91,7 +91,7 @@ export const personSchema = (caregiver: {
   "jobTitle": "Healthcare Caregiver",
   "hasCredential": caregiver.qualifications,
   "yearsOfExperience": caregiver.experience,
-  "priceRange": `MWK ${caregiver.hourlyRate}/hour`
+  "priceRange": `Ksh ${caregiver.hourlyRate}/hour`
 });
 
 export const reviewSchema = (reviews: {
@@ -102,7 +102,7 @@ export const reviewSchema = (reviews: {
 }[]) => ({
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "CareConnect Malawi",
+  "name": "TunzaConnect ",
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length,
@@ -131,16 +131,16 @@ export const localBusinessSchema = (location: {
 }) => ({
   "@context": "https://schema.org",
   "@type": "MedicalBusiness",
-  "name": `CareConnect Malawi - ${location.city}`,
-  "description": `Professional home healthcare services in ${location.city}, Malawi`,
-  "telephone": "+265986227240",
-  "email": "support@careconnectmalawi.com",
+  "name": `TunzaConnect  - ${location.city}`,
+  "description": `Professional home healthcare services in ${location.city}, Kenya. Connecting patients with verified caregivers for quality home care.`,
+  "telephone": "+254986227240",
+  "email": "support@tunzaconnect.com",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": location.address,
     "addressLocality": location.city,
     "addressRegion": location.region,
-    "addressCountry": "MW"
+    "addressCountry": "KE"
   },
   "geo": {
     "@type": "GeoCoordinates",

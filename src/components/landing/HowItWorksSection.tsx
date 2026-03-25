@@ -35,7 +35,7 @@ const HowItWorksSection = () => {
         <div className="flex items-end justify-between mb-8 pb-4 border-b border-border">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">Process</p>
-            <h2 className="text-2xl font-bold text-foreground font-display">How CareConnect Works</h2>
+            <h2 className="text-2xl font-bold text-foreground font-display">How TunzaConnect Works</h2>
           </div>
           <span className="text-xs text-muted-foreground hidden md:block">3-step care delivery process</span>
         </div>

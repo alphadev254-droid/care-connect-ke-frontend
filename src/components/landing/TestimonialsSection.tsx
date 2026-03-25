@@ -7,28 +7,28 @@ const testimonials = [
     role: "Patient",
     rating: 5,
     content:
-      "CareConnect has been a blessing for our family. The caregiver assigned to my mother is incredibly professional and caring. The detailed reports keep us informed every step of the way.",
+      "TunzaConnect has been a blessing for our family. The caregiver assigned to my mother is incredibly professional and caring. The detailed reports keep us informed every step of the way.",
   },
   {
     name: "Grace Okonkwo",
     role: "Caregiver",
     rating: 5,
     content:
-      "Being a caregiver on CareConnect has been rewarding. The platform is user-friendly, payments are prompt, and I can manage my schedule flexibly while helping patients.",
+      "Being a caregiver on TunzaConnect has been rewarding. The platform is user-friendly, payments are prompt, and I can manage my schedule flexibly while helping patients.",
   },
   {
     name: "James Muthoni",
     role: "Patient",
     rating: 5,
     content:
-      "After my surgery, I needed physiotherapy at home. CareConnect matched me with an excellent therapist. The teleconference feature made follow-ups so convenient.",
+      "After my surgery, I needed physiotherapy at home. TunzaConnect matched me with an excellent therapist. The teleconference feature made follow-ups so convenient.",
   },
   {
     name: "Mary Banda",
     role: "Caregiver",
     rating: 5,
     content:
-      "Working through CareConnect has allowed me to help families in my community while earning a good income. The support from the platform team is excellent.",
+      "Working through TunzaConnect has allowed me to help families in my community while earning a good income. The support from the platform team is excellent.",
   },
 ];
 

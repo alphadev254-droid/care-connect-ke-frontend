@@ -1,5 +1,5 @@
 /**
- * CareConnect Centralized Theme
+ * TunzaConnect Centralized Theme
  *
  * To change the entire look of the app, edit ONLY this file.
  *

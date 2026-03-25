@@ -82,7 +82,7 @@ const CaregiverOnboardingDialog = ({ open, onClose }: Props) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg">
             <Heart className="h-5 w-5 text-primary" />
-            Welcome to CareConnect!
+            Welcome to TunzaConnect!
           </DialogTitle>
         </DialogHeader>
 

@@ -175,9 +175,9 @@ const PublicCaregivers = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Find Verified Healthcare Caregivers Across Malawi | All Regions</title>
-        <meta name="description" content="Browse verified healthcare professionals across all Malawi regions. Registered nurses, health surveillance assistants, and specialized caregivers available for home visits. Northern, Central, and Southern regions covered." />
-        <meta name="keywords" content="find caregiver Malawi, registered nurses all regions, healthcare professionals nationwide, home care providers, verified caregivers, health surveillance assistants, nursing care" />
+        <title>Find Verified Healthcare Caregivers Across Kenya | All Regions</title>
+        <meta name="description" content="Browse verified healthcare professionals across all Kenya regions. Registered nurses, health surveillance assistants, and specialized caregivers available for home visits. Northern, Central, and Southern regions covered." />
+        <meta name="keywords" content="find caregiver Kenya, registered nurses all regions, healthcare professionals nationwide, home care providers, verified caregivers, health surveillance assistants, nursing care" />
       </Helmet>
       <Header />
       
@@ -568,14 +568,14 @@ const PublicCaregivers = () => {
               <p className="text-sm text-amber-700">
                 Our caregivers provide supportive care services and assistance - not medical treatment. 
                 All patients must have a physician for medical diagnosis, treatment, and prescriptions. 
-                CareConnect complements your doctor's care with supportive home services.
+                TunzaConnect complements your doctor's care with supportive home services.
               </p>
             </div>
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               <div>
                 <h2 className="font-display text-2xl font-bold mb-3">Ready to Get Started?</h2>
                 <p className="text-base text-muted-foreground max-w-lg">
-                  Join thousands of patients who trust CareConnect for their supportive healthcare needs.
+                  Join thousands of patients who trust TunzaConnect for their supportive healthcare needs.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 lg:justify-end">
@@ -673,13 +673,13 @@ const PublicCaregivers = () => {
                           <div className="flex items-center justify-between p-2 bg-background rounded">
                             <span className="text-muted-foreground">Session Fee:</span>
                             <span className="font-semibold text-primary">
-                              MWK {specialty.sessionFee ? Number(specialty.sessionFee).toFixed(0) : '0'}
+                              Ksh {specialty.sessionFee ? Number(specialty.sessionFee).toFixed(0) : '0'}
                             </span>
                           </div>
                           <div className="flex items-center justify-between p-2 bg-background rounded">
                             <span className="text-muted-foreground">Booking Fee:</span>
                             <span className="font-semibold text-secondary">
-                              MWK {specialty.bookingFee ? Number(specialty.bookingFee).toFixed(0) : '0'}
+                              Ksh {specialty.bookingFee ? Number(specialty.bookingFee).toFixed(0) : '0'}
                             </span>
                           </div>
                         </div>

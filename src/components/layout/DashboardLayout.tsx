@@ -182,7 +182,7 @@ const DashboardLayout = ({ children, userRole = "patient" }: DashboardLayoutProp
         <Sidebar className="border-r">
           <div className="p-4 border-b">
             <Link to="/" className="flex items-center gap-2">
-              <img src={CLOUDINARY_IMAGES.logo} alt="CareConnect" className="h-8 w-auto" />
+              <img src={CLOUDINARY_IMAGES.logo} alt="TunzaConnect Logo" className="h-8 w-auto" />
               <span className="font-display text-lg font-bold">
                 Care<span className="text-primary">Connect</span>
               </span>

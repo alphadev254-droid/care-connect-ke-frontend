@@ -236,21 +236,21 @@ const AppointmentDetails = () => {
                   <tr>
                     <td className="py-2 text-center">
                       <div className="text-xs text-muted-foreground mb-1">Booking Fee</div>
-                      <div className="font-semibold mb-1">MWK {appointment.bookingFee}</div>
+                      <div className="font-semibold mb-1">Ksh {appointment.bookingFee}</div>
                       <Badge variant={appointment.bookingFeeStatus === 'completed' ? 'default' : 'outline'} className="text-xs">
                         {appointment.bookingFeeStatus === 'completed' ? 'Paid' : 'Pending'}
                       </Badge>
                     </td>
                     <td className="py-2 text-center">
                       <div className="text-xs text-muted-foreground mb-1">Session Fee</div>
-                      <div className="font-semibold mb-1">MWK {appointment.sessionFee}</div>
+                      <div className="font-semibold mb-1">Ksh {appointment.sessionFee}</div>
                       <Badge variant={appointment.sessionFeeStatus === 'completed' ? 'default' : 'outline'} className="text-xs">
                         {appointment.sessionFeeStatus === 'completed' ? 'Paid' : 'Pending'}
                       </Badge>
                     </td>
                     <td className="py-2 text-center">
                       <div className="text-xs text-muted-foreground mb-1">Total</div>
-                      <div className="font-bold text-lg mb-1">MWK {appointment.totalCost}</div>
+                      <div className="font-bold text-lg mb-1">Ksh {appointment.totalCost}</div>
                       <Badge variant={appointment.paymentStatus === 'completed' ? 'default' : 'secondary'} className="text-xs">
                         {appointment.paymentStatus === 'completed' ? 'Paid' : appointment.paymentStatus === 'partial' ? 'Partial' : 'Pending'}
                       </Badge>

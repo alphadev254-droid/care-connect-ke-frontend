@@ -62,7 +62,7 @@ const Login = () => {
                   </div>
                   <CardTitle className="font-display text-2xl">Welcome Back</CardTitle>
                   <CardDescription>
-                    Sign in to your CareConnect account
+                    Sign in to your TunzaConnect account
                   </CardDescription>
                 </CardHeader>
             <CardContent className="pt-6">

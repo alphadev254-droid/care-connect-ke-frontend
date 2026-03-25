@@ -50,7 +50,7 @@ const CTASection = () => {
                 </div>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Are you a licensed healthcare professional? Join CareConnect to connect with
+                Are you a licensed healthcare professional? Join TunzaConnect to connect with
                 patients who need your expertise. Manage your schedule, earn securely, and
                 make a difference in your community.
               </p>
