@@ -3,7 +3,7 @@ export const CLOUDINARY_IMAGES = {
   logo: 'https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566755/landing-pages/careconnectlogo.png',
   caregivers: 'https://res.cloudinary.com/dmpcgydyf/image/upload/v1773908747/landing-pages/caregivers.png',
   landing1: 'https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566729/landing-pages/landing1.png',
-  landing2: 'https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566730/landing-pages/landing2.png',
+  landing2: 'https://res.cloudinary.com/dancxhgah/image/upload/f_webp/q_auto/Gemini_Generated_Image_uk4ct3uk4ct3uk4c_bwsrjd.png',
   bookAppointment: 'https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566732/landing-pages/book_appointment.png',
   careReport: 'https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566734/landing-pages/care_report.png',
   contact: 'https://res.cloudinary.com/dmpcgydyf/image/upload/v1773908780/landing-pages/contact.png',
