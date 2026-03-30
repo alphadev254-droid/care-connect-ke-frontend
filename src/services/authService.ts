@@ -46,7 +46,7 @@ export const authService = {
   },
 
   logout: async () => {
-    await api.post('/auth/logout');
+    try { await api.post('/auth/logout'); } catch { /* ignore */ }
     localStorage.removeItem('user');
   },
 
@@ -66,12 +66,8 @@ export const authService = {
     return userStr ? JSON.parse(userStr) : null;
   },
 
-  isAuthenticated: async (): Promise<boolean> => {
-    try {
-      await api.get('/auth/profile');
-      return true;
-    } catch {
-      return false;
-    }
+  // Synchronous check — just reads localStorage, no API call
+  isAuthenticated: (): boolean => {
+    return !!localStorage.getItem('user');
   }
 };

@@ -20,18 +20,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initAuth = async () => {
       try {
         const currentUser = authService.getCurrentUser();
-        if (currentUser && authService.isAuthenticated()) {
+        if (currentUser) {
           try {
+            // getProfile validates the session cookie with the server
             const profile = await authService.getProfile();
             setUser(profile);
-          } catch (error) {
-            console.error('Failed to fetch user profile:', error);
-            authService.logout();
+          } catch {
+            // Cookie expired or invalid — clear stale localStorage and stay logged out
+            localStorage.removeItem('user');
             setUser(null);
           }
         }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
+      } catch {
         setUser(null);
       } finally {
         setLoading(false);
