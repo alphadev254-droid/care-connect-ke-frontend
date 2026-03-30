@@ -1,0 +1,203 @@
+{
+  "generated": "2026-07-10",
+  "siteRoot": "https://tunzaconnect.com",
+  "totalPages": 8,
+  "note": "Single-page React/Vite application. One physical HTML entry point (index.html). All routes are client-side via React Router. Only public/indexable routes are included; authenticated /dashboard/* routes are excluded.",
+  "pages": [
+    {
+      "url": "https://tunzaconnect.com/",
+      "filePath": "Frontend/index.html",
+      "canonical": "https://tunzaconnect.com",
+      "title": "Home Healthcare Services Across Kenya | Verified Caregivers Nationwide",
+      "metaDescription": "Professional home healthcare services across all regions of Kenya. Book verified caregivers, registered nurses, and healthcare professionals. Serving Northern, Central, and Southern regions. 24/7 support.",
+      "metaKeywords": "home healthcare Kenya, caregivers Kenya nationwide, home nursing services all regions, healthcare services Northern Central Southern Kenya, verified caregivers, registered nurses, elderly care, chronic disease management, wound care, medication management",
+      "openGraph": {
+        "title": "Home Healthcare Services Across Kenya | TunzaConnect",
+        "description": "Professional home healthcare services across all regions of Kenya. Book verified caregivers nationwide. 24/7 support.",
+        "type": "website",
+        "url": "https://tunzaconnect.com",
+        "image": "https://res.cloudinary.com/dmpcgydyf/image/upload/v1771566755/landing-pages/careconnectlogo.png"
+      },
+      "headings": {
+        "h1": [],
+        "h2": [],
+        "h3": []
+      },
+      "note": "H1/H2/H3 are rendered inside HeroSection, HowItWorksSection, SpecialtiesSection, FeaturesSection, TestimonialsSection, StatsSection, CTASection components — see individual landing components.",
+      "internalLinks": [
+        "/how-it-works",
+        "/specialties",
+        "/caregivers",
+        "/about",
+        "/contact",
+        "/login",
+        "/register"
+      ],
+      "structuredData": ["Organization schema (organizationSchema)"],
+      "priority": 1.0,
+      "changefreq": "daily"
+    },
+    {
+      "url": "https://tunzaconnect.com/about",
+      "filePath": "Frontend/src/pages/About.tsx",
+      "canonical": "https://tunzaconnect.com/about",
+      "title": "About TunzaConnect - Quality Home Healthcare Services Across Kenya",
+      "metaDescription": "TunzaConnect connects patients with verified healthcare professionals across all regions of Kenya. Our mission: accessible, affordable, quality healthcare at home. Serving Northern, Central, and Southern regions.",
+      "metaKeywords": "about TunzaConnect, healthcare platform Kenya, home care mission, verified caregivers nationwide, accessible healthcare",
+      "headings": {
+        "h1": ["About TunzaConnect"],
+        "h2": ["Our Core Values", "Our Journey", "Ready to Transform Healthcare Together?"],
+        "h3": ["Compassionate Care", "Safety First", "Accessibility", "Excellence", "TunzaConnect Founded", "First 1,000 Patients", "Telehealth Integration", "Mobile Money Integration", "10,000+ Patients"]
+      },
+      "internalLinks": [
+        "/register",
+        "/how-it-works",
+        "/caregivers"
+      ],
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    {
+      "url": "https://tunzaconnect.com/contact",
+      "filePath": "Frontend/src/pages/Contact.tsx",
+      "canonical": "https://tunzaconnect.com/contact",
+      "title": "Contact Us | TunzaConnect - 24/7 Support",
+      "metaDescription": "Contact TunzaConnect for home healthcare services. Call +265 986 227 240 or email support@tunzaconnect.com. Offices in Lilongwe, Blantyre & Mzuzu.",
+      "metaKeywords": null,
+      "headings": {
+        "h1": ["Get in Touch"],
+        "h2": ["Multiple Ways to Reach Us", "Frequently Asked Questions", "Emergency Support"],
+        "h3": ["Send us a Message", "Our Offices", "Phone Support", "Email Support", "WhatsApp", "Online Chat", "How do I book an appointment?", "Are all caregivers verified?", "What payment methods do you accept?", "Do you provide emergency services?"]
+      },
+      "internalLinks": [],
+      "structuredData": ["FAQ schema (faqSchema)"],
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    {
+      "url": "https://tunzaconnect.com/how-it-works",
+      "filePath": "Frontend/src/pages/HowItWorks.tsx",
+      "canonical": "https://tunzaconnect.com/how-it-works",
+      "title": "How TunzaConnect Works - Book Home Healthcare Services in 3 Easy Steps",
+      "metaDescription": "Easy 3-step process: Find a caregiver in your region, book appointment, receive quality care at home. Secure payments, verified professionals, quality home healthcare across all Kenya regions.",
+      "metaKeywords": "book healthcare Kenya, how to book caregiver, home healthcare booking, find caregiver near me, healthcare appointment booking",
+      "headings": {
+        "h1": ["How TunzaConnect Works"],
+        "h2": ["Your Care Journey", "Why Choose TunzaConnect?", "Ready to Get Started?"],
+        "h3": ["Find Your Caregiver", "Book an Appointment", "Receive Care at Home", "Receive Your Care Report", "Secure Payment", "Verified Caregivers", "Secure Platform", "24/7 Support"]
+      },
+      "internalLinks": [
+        "/register",
+        "/caregivers"
+      ],
+      "priority": 0.8,
+      "changefreq": "monthly"
+    },
+    {
+      "url": "https://tunzaconnect.com/specialties",
+      "filePath": "Frontend/src/pages/Specialties.tsx",
+      "canonical": "https://tunzaconnect.com/specialties",
+      "title": "Healthcare Specialties & Home Care Services | TunzaConnect Kenya",
+      "metaDescription": "Comprehensive home healthcare services: Medication management, wound care, health education, chronic disease management, elderly care, palliative care, post-surgery care, diabetes management. Available across all Kenya regions.",
+      "metaKeywords": "healthcare services Kenya, medication management, wound care, health education, chronic disease care, elderly care, palliative care, post-surgery care, diabetes management, specialized nursing care",
+      "headings": {
+        "h1": ["Healthcare Specialties"],
+        "h2": ["Available Care Services", "Why Choose Our Specialized Care?", "Ready to Find Your Specialist?"],
+        "h3": []
+      },
+      "note": "Specialty h3 headings are dynamically rendered from API (/public/specialties). Known specialties: Elderly Care, General Care, Health Education & Promotion, Medication Management, Mental Health, Nursing Care, Pediatric Care, Personal Care, Physiotherapy, Psychosocial Support, Wound Management and Basic Care.",
+      "internalLinks": [
+        "/register",
+        "/how-it-works",
+        "/caregivers"
+      ],
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    {
+      "url": "https://tunzaconnect.com/caregivers",
+      "filePath": "Frontend/src/pages/PublicCaregivers.tsx",
+      "canonical": "https://tunzaconnect.com/caregivers",
+      "title": "Find Verified Healthcare Caregivers Across Kenya | All Regions",
+      "metaDescription": "Browse verified healthcare professionals across all Kenya regions. Registered nurses, health surveillance assistants, and specialized caregivers available for home visits. Northern, Central, and Southern regions covered.",
+      "metaKeywords": "find caregiver Kenya, registered nurses all regions, healthcare professionals nationwide, home care providers, verified caregivers, health surveillance assistants, nursing care",
+      "headings": {
+        "h1": ["Our Verified Caregivers"],
+        "h2": ["Ready to Get Started?"],
+        "h3": ["Important Notice"]
+      },
+      "note": "Caregiver cards are dynamically rendered from API (/public/caregivers). Supports filtering by specialty, region, district, traditional authority, and village.",
+      "internalLinks": [
+        "/login",
+        "/register"
+      ],
+      "priority": 0.9,
+      "changefreq": "daily"
+    },
+    {
+      "url": "https://tunzaconnect.com/login",
+      "filePath": "Frontend/src/pages/Login.tsx",
+      "canonical": "https://tunzaconnect.com/login",
+      "title": "Login | TunzaConnect",
+      "metaDescription": "Sign in to your TunzaConnect account to manage appointments, view care reports, and connect with caregivers.",
+      "headings": {
+        "h1": ["Sign In"],
+        "h2": [],
+        "h3": []
+      },
+      "internalLinks": [
+        "/register",
+        "/forgot-password",
+        "/"
+      ],
+      "priority": 0.5,
+      "changefreq": "monthly"
+    },
+    {
+      "url": "https://tunzaconnect.com/register",
+      "filePath": "Frontend/src/pages/Register.tsx",
+      "canonical": "https://tunzaconnect.com/register",
+      "title": "Register | TunzaConnect",
+      "metaDescription": "Create your TunzaConnect account. Register as a patient to book home healthcare services or as a caregiver to offer your professional services across Kenya.",
+      "headings": {
+        "h1": ["Create Account"],
+        "h2": [],
+        "h3": []
+      },
+      "internalLinks": [
+        "/login",
+        "/"
+      ],
+      "priority": 0.6,
+      "changefreq": "monthly"
+    }
+  ],
+  "excludedRoutes": [
+    "/dashboard",
+    "/dashboard/caregivers",
+    "/dashboard/appointments",
+    "/dashboard/reports",
+    "/dashboard/teleconference",
+    "/dashboard/billing",
+    "/dashboard/profile",
+    "/dashboard/settings",
+    "/dashboard/schedule",
+    "/dashboard/patients",
+    "/dashboard/earnings",
+    "/dashboard/withdrawals",
+    "/dashboard/admin",
+    "/dashboard/admin/withdrawals",
+    "/dashboard/admin/teleconference",
+    "/dashboard/admin/teleconference/session/:sessionId",
+    "/dashboard/users",
+    "/dashboard/user/:userId",
+    "/dashboard/users/edit/:userId",
+    "/dashboard/specialties",
+    "/dashboard/roles",
+    "/dashboard/permissions",
+    "/appointment/:id",
+    "/meeting/join/:token",
+    "/forgot-password",
+    "/reset-password"
+  ]
+}

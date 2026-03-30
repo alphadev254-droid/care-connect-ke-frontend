@@ -1,6 +1,11 @@
 User-agent: *
 Allow: /
 Disallow: /dashboard/
+Disallow: /dashboard
 Disallow: /api/
+Disallow: /meeting/
+Disallow: /appointment/
+Disallow: /forgot-password
+Disallow: /reset-password
 
-Sitemap: https://careconnectmalawi.com/sitemap.xml
+Sitemap: https://tunzaconnect.com/sitemap.xml
