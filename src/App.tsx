@@ -42,6 +42,7 @@ import AppointmentDetails from "./pages/AppointmentDetails";
 import MeetingJoin from "./pages/MeetingJoin";
 import TeleconferenceAdmin from "./pages/TeleconferenceAdmin";
 import TeleconferenceSessionDetails from "./pages/TeleconferenceSessionDetails";
+import CaregiverVerification from "./pages/CaregiverVerification";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -66,6 +67,14 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/meeting/join/:token" element={<MeetingJoin />} />
+            <Route
+              path="/dashboard/verification"
+              element={
+                <ProtectedRoute>
+                  <CaregiverVerification />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/dashboard"
               element={

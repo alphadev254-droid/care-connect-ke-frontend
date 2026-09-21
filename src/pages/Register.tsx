@@ -292,49 +292,14 @@ const Register = () => {
           return false;
         }
       }
-      if (!formData.dateOfBirth) {
+      if (formData.userType !== 'caregiver' && !formData.dateOfBirth) {
         toast.error("Date of birth is required");
         return false;
       }
 
-      // Caregiver-specific validations - ALL fields mandatory including images
+      // Caregiver verification details are collected after login to keep signup lightweight.
       if (formData.userType === 'caregiver') {
-        if (!formData.idNumber.trim()) {
-          toast.error("National ID number is required for caregivers");
-          return false;
-        }
-        if (!formData.licensingInstitution.trim()) {
-          toast.error("Licensing institution is required");
-          return false;
-        }
-        if (!formData.licenseNumber.trim()) {
-          toast.error("License number is required");
-          return false;
-        }
-        if (!formData.experience) {
-          toast.error("Years of experience is required");
-          return false;
-        }
-        if (!formData.qualifications.trim()) {
-          toast.error("Qualifications are required");
-          return false;
-        }
-        if (formData.specialties.length === 0) {
-          toast.error("Please select at least one specialty");
-          return false;
-        }
-        if (!formData.profilePicture) {
-          toast.error("Profile picture is required for caregivers");
-          return false;
-        }
-        if (!formData.idDocuments || formData.idDocuments.length === 0) {
-          toast.error("ID documents are required for caregivers");
-          return false;
-        }
-        if (!formData.supportingDocuments || formData.supportingDocuments.length === 0) {
-          toast.error("Supporting documents (certificates/licenses) are required");
-          return false;
-        }
+        return true;
       }
 
       // Patient Adult - ALL fields mandatory
@@ -469,7 +434,7 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const maxSteps = formData.userType === 'caregiver' ? 4 : 3;
+    const maxSteps = formData.userType === 'caregiver' ? 2 : 3;
 
     if (step < maxSteps) {
       // Validate mandatory fields before proceeding
@@ -477,7 +442,7 @@ const Register = () => {
         return;
       }
       // Validate age before moving to step 3 if we're on step 2
-      if (step === 2) {
+      if (step === 2 && formData.userType !== 'caregiver') {
         if (!validateAge()) {
           return;
         }
@@ -541,49 +506,16 @@ const Register = () => {
         formDataToSend.append('guardianAccountType', formData.guardianAccountType);
         formDataToSend.set('role', 'guardian');
       } else if (formData.userType === 'caregiver') {
-        formDataToSend.append('idNumber', formData.idNumber);
-        formDataToSend.append('licensingInstitution', formData.licensingInstitution);
-        formDataToSend.append('licenseNumber', formData.licenseNumber);
-        formDataToSend.append('experience', formData.experience || '0');
-        formDataToSend.append('qualifications', formData.qualifications);
-
-        if (formData.specialties.length > 0) {
-          formData.specialties.forEach(specialtyId => {
-            formDataToSend.append('specialties[]', specialtyId);
-          });
-        }
-        
-        if (formData.supportingDocuments) {
-          Array.from(formData.supportingDocuments).slice(0, 5).forEach((file: any) => {
-            formDataToSend.append('supportingDocuments', file);
-          });
-        }
-        
-        if (formData.profilePicture) {
-          formDataToSend.append('profilePicture', formData.profilePicture);
-        }
-        
-        if (formData.idDocuments) {
-          Array.from(formData.idDocuments).slice(0, 3).forEach((file: any) => {
-            formDataToSend.append('idDocuments', file);
-          });
-        }
-
         // Add referral code for caregiver-to-caregiver referrals
         if (formData.referralCode) {
           formDataToSend.append('referralCode', formData.referralCode);
-        }
-
-        // Add availability data if set
-        if (regAvailability.length > 0) {
-          formDataToSend.append('availability', JSON.stringify(regAvailability));
         }
       }
 
       const result = await register(formDataToSend);
       
       if (result?.requiresApproval) {
-        toast.success("Registration submitted successfully! Please check your email for confirmation and wait for admin approval.");
+        toast.success("Account created. Sign in to complete caregiver verification.");
         navigate("/login");
       } else {
         toast.success("Account created successfully! Welcome to TunzaConnect.");
@@ -688,8 +620,8 @@ const Register = () => {
                   </CardDescription>
 
               <div className="flex items-center justify-center gap-1 mt-4">
-                {Array.from({ length: formData.userType === 'caregiver' ? 4 : 3 }, (_, i) => i + 1).map((i) => {
-                  const totalStepsIndicator = formData.userType === 'caregiver' ? 4 : 3;
+                {Array.from({ length: formData.userType === 'caregiver' ? 2 : 3 }, (_, i) => i + 1).map((i) => {
+                  const totalStepsIndicator = formData.userType === 'caregiver' ? 2 : 3;
                   return (
                   <div key={i} className="flex items-center gap-1">
                     <div
@@ -827,6 +759,7 @@ const Register = () => {
                           Enter phone number with country code (+265xxx) or local format (0999xxx)
                         </p>
                       </div>
+                      {formData.userType !== 'caregiver' && (
                       <div className="space-y-2">
                         <Label htmlFor="idNumber">{(formData.userType === 'child_patient' || formData.userType === 'elderly_patient') ? 'Patient ID Number (Optional)' : 'National ID Number'} <span className="text-destructive">*</span></Label>
                         <Input
@@ -836,6 +769,8 @@ const Register = () => {
                           onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
                         />
                       </div>
+                      )}
+                      {formData.userType !== 'caregiver' && (
                       <div className="space-y-2">
                         <Label htmlFor="dateOfBirth">
                           {formData.userType === 'child_patient' ? "Child's Date of Birth" :
@@ -865,20 +800,6 @@ const Register = () => {
                           {formData.userType === 'caregiver' && "Must be 18 years or older"}
                         </p>
                       </div>
-                      {formData.userType === 'caregiver' && (
-                        <div className="space-y-2">
-                          <Label htmlFor="profilePicture">Profile Picture <span className="text-destructive">*</span></Label>
-                          <Input
-                            id="profilePicture"
-                            type="file"
-                            accept=".jpg,.jpeg,.png"
-                            onChange={(e) => setFormData({ ...formData, profilePicture: e.target.files?.[0] || null })}
-                          />
-                          {formData.profilePicture && (
-                            <p className="text-xs text-muted-foreground font-medium">Selected: {formData.profilePicture.name}</p>
-                          )}
-                          <p className="text-xs text-muted-foreground">Upload a professional photo (JPG, PNG)</p>
-                        </div>
                       )}
                     </div>
 
@@ -1032,136 +953,8 @@ const Register = () => {
                       {/* Caregiver Type */}
                       {formData.userType === 'caregiver' && (
                         <>
-                          <div className="space-y-2">
-                            <Label htmlFor="licensingInstitution">Licensing Institution</Label>
-                            <Input
-                              id="licensingInstitution"
-                              placeholder="e.g., Nurses Council of Kenya"
-                              value={formData.licensingInstitution}
-                              onChange={(e) => setFormData({ ...formData, licensingInstitution: e.target.value })}
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="licenseNumber">License Number</Label>
-                            <Input
-                              id="licenseNumber"
-                              placeholder="Professional license number"
-                              value={formData.licenseNumber}
-                              onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="experience">Years of Experience</Label>
-                            <Input
-                              id="experience"
-                              type="number"
-                              placeholder="5"
-                              value={formData.experience}
-                              onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="qualifications">Qualifications</Label>
-                            <Input
-                              id="qualifications"
-                              placeholder="RN, BSN, Certified Nursing Assistant"
-                              value={formData.qualifications}
-                              onChange={(e) => setFormData({ ...formData, qualifications: e.target.value })}
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <Label>Specialties</Label>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setShowRateCard(true)}
-                                className="gap-2 h-7 text-xs"
-                              >
-                                <CreditCard className="h-3 w-3" />
-                                Our Rate Card
-                              </Button>
-                            </div>
-                            <div className="max-h-24 overflow-y-auto border rounded-md p-2">
-                              {loadingSpecialties ? (
-                                <div className="flex items-center justify-center py-4 text-muted-foreground">
-                                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                  <span className="text-sm">Loading specialties...</span>
-                                </div>
-                              ) : specialties.length === 0 ? (
-                                <div className="flex items-center justify-center py-4 text-muted-foreground">
-                                  <span className="text-sm">No specialties available</span>
-                                </div>
-                              ) : (
-                                specialties.map((specialty: any) => (
-                                  <div key={specialty.id} className="flex items-center space-x-2 py-1">
-                                    <Checkbox
-                                      id={`specialty-${specialty.id}`}
-                                      checked={formData.specialties.includes(specialty.id.toString())}
-                                      onCheckedChange={(checked) => {
-                                        if (checked) {
-                                          setFormData({
-                                            ...formData,
-                                            specialties: [...formData.specialties, specialty.id.toString()]
-                                          });
-                                        } else {
-                                          setFormData({
-                                            ...formData,
-                                            specialties: formData.specialties.filter(id => id !== specialty.id.toString())
-                                          });
-                                        }
-                                      }}
-                                    />
-                                    <Label htmlFor={`specialty-${specialty.id}`} className="text-sm">
-                                      {specialty.name}
-                                    </Label>
-                                  </div>
-                                ))
-                              )}
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="idDocuments">ID Documents <span className="text-destructive">*</span></Label>
-                            <Input
-                              id="idDocuments"
-                              type="file"
-                              multiple
-                              accept=".pdf,.jpg,.jpeg,.png"
-                              onChange={(e) => setFormData({ ...formData, idDocuments: e.target.files })}
-                            />
-                            {formData.idDocuments && formData.idDocuments.length > 0 && (
-                              <div className="text-xs text-muted-foreground">
-                                <p className="font-medium">Selected files ({formData.idDocuments.length}/3):</p>
-                                {Array.from(formData.idDocuments).slice(0, 3).map((file, index) => (
-                                  <p key={index} className="truncate">• {file.name}</p>
-                                ))}
-                              </div>
-                            )}
-                            <p className="text-xs text-muted-foreground">Upload ID documents (max 3 files: PDF, JPG, PNG)</p>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="supportingDocuments">Supporting Documents (Certificates, Licenses) <span className="text-destructive">*</span></Label>
-                            <Input
-                              id="supportingDocuments"
-                              type="file"
-                              multiple
-                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                              onChange={(e) => setFormData({ ...formData, supportingDocuments: e.target.files })}
-                            />
-                            {formData.supportingDocuments && formData.supportingDocuments.length > 0 && (
-                              <div className="text-xs text-muted-foreground">
-                                <p className="font-medium">Selected files ({formData.supportingDocuments.length}/5):</p>
-                                {Array.from(formData.supportingDocuments).slice(0, 5).map((file, index) => (
-                                  <p key={index} className="truncate">• {file.name}</p>
-                                ))}
-                              </div>
-                            )}
-                            <p className="text-xs text-muted-foreground">Upload certificates, licenses (max 5 files)</p>
+                          <div className="rounded-lg border bg-muted/40 p-4 text-sm text-muted-foreground">
+                            Create your caregiver account now. After you sign in, you will complete verification on a dedicated page where each field and document saves separately for better performance on slow networks.
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="caregiverReferralCode" className="flex items-center gap-2">
@@ -1564,7 +1357,7 @@ const Register = () => {
                     className="flex-1 bg-primary text-white hover:bg-primary/90 gap-2 h-9"
                     disabled={isLoading}
                   >
-                    {step < (formData.userType === 'caregiver' ? 4 : 3) ? (
+                    {step < (formData.userType === 'caregiver' ? 2 : 3) ? (
                       <>
                         Continue
                         <ArrowRight className="h-3 w-3" />

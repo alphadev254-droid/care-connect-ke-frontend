@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,8 +22,9 @@ const ProtectedRoute = ({
   requireAll = false,
   fallbackPath = '/dashboard'
 }: ProtectedRouteProps) => {
-  const { loading: authLoading, isAuthenticated } = useAuth();
+  const { loading: authLoading, isAuthenticated, user } = useAuth();
   const { hasPermission, hasAnyPermission, hasAllPermissions, loading: permissionsLoading } = usePermissions();
+  const location = useLocation();
 
   // Show loading while authentication or permissions are loading
   if (authLoading || permissionsLoading) {
@@ -33,6 +34,15 @@ const ProtectedRoute = ({
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  const caregiverStatus = user?.Caregiver?.verificationStatus;
+  if (
+    user?.role === 'caregiver' &&
+    caregiverStatus !== 'verified' &&
+    location.pathname !== '/dashboard/verification'
+  ) {
+    return <Navigate to="/dashboard/verification" replace />;
   }
 
   // Check single permission

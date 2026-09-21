@@ -10,6 +10,9 @@ export interface User {
   isVerified: boolean;
   isActive: boolean;
   permissions?: string[];
+  Caregiver?: {
+    verificationStatus?: 'pending' | 'verified' | 'rejected';
+  };
 }
 
 export interface LoginData {
