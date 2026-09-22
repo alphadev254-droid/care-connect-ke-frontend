@@ -304,20 +304,20 @@ const CaregiverVerification = () => {
         <Card>
           <CardHeader><CardTitle className="text-base">Documents</CardTitle></CardHeader>
           <CardContent className="grid gap-3 md:grid-cols-3">
-            {[
-              ["profilePicture", "Profile picture", ".jpg,.jpeg,.png"],
-              ["idDocuments", "ID document", ".pdf,.jpg,.jpeg,.png"],
-              ["supportingDocuments", "Supporting document", ".pdf,.doc,.docx,.jpg,.jpeg,.png"],
-            ].map(([field, label, accept]) => (
+            {([
+              ["profilePicture", "Profile picture", ".jpg,.jpeg,.png", "JPG or PNG · max 10MB"],
+              ["idDocuments", "ID document", ".pdf,.doc,.docx,.jpg,.jpeg,.png", "PDF, DOC, DOCX or image · max 10MB · upload one at a time (up to 3)"],
+              ["supportingDocuments", "Supporting document", ".pdf,.doc,.docx,.jpg,.jpeg,.png", "PDF, DOC, DOCX or image · max 10MB · upload one at a time (up to 5)"],
+            ] as [string, string, string, string][]).map(([field, label, accept, hint]) => (
               <div key={field} className="space-y-2 rounded-md border p-3">
                 <Label>{label}</Label>
                 <Input type="file" accept={accept} onChange={(event) => {
                   const file = event.target.files?.[0];
                   if (file) uploadMutation.mutate({ field, file });
                 }} />
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <p className="text-xs text-amber-600 flex items-center gap-1 font-medium">
                   <FileUp className="h-3 w-3" />
-                  Saves immediately after selection
+                  {hint}
                 </p>
               </div>
             ))}
